@@ -1,0 +1,40 @@
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[{*.md,*.rst}]
+trim_trailing_whitespace = false
+
+[{Makefile,*.mk,*.bat}]
+indent_style = tab
+indent_size = 2
+
+[*.{c,h,cpp,hpp}]
+indent_size = 2
+
+[*.{sv,svh,v,vhl}]
+indent_size = 2
+indent_tab = space
+
+[*.mak]
+indent_style = tab
+indent_size = 4
+
+[*.py]
+indent_style = space
+indent_size = 4
+
+[**.js]
+indent_style = space
+indent_size = 2
+
+[{*.json,*.yml}]
+indent_style = space
+indent_size = 2
