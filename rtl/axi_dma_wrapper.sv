@@ -12,50 +12,47 @@ module axi_dma_wrapper
   input                 rst,
   // CSR DMA I/F
   input   s_axil_mosi_t dma_csr_mosi_i,
-  output  s_axil_mosi_t dma_csr_miso_o,
+  output  s_axil_miso_t dma_csr_miso_o,
   // Master DMA I/F
   output  s_axi_mosi_t  dma_m_mosi_o,
-  input   s_axi_mosi_t  dma_m_miso_i,
+  input   s_axi_miso_t  dma_m_miso_i,
   // Triggers - IRQs
   output  logic         dma_done_o,
   output  logic         dma_error_o
 );
-  rggen_axi4lite_if.slave csr_axi_if;
-
   always_comb begin
     dma_m_mosi_o = s_axi_mosi_t'('0);
-    dma_done = 1'b0;
-    dma_error = 1'b0;
-
-    //csr_axi_if.awvalid     = dma_csr_mosi_i.awvalid;
-    //dma_csr_miso_o.awready = csr_axi_if.awready;
-    //csr_axi_if.awid        = '0;
-    //csr_axi_if.awaddr      = dma_csr_mosi_i.awaddr;
-    //csr_axi_if.awprot      = dma_csr_mosi_i.awprot;
-    //csr_axi_if.wvalid      = dma_csr_mosi_i.wvalid;
-    //dma_csr_miso_o.wready  = csr_axi_if.wready;
-    //csr_axi_if.wdata       = dma_csr_mosi_i.wdata;
-    //csr_axi_if.wstrb       = dma_csr_mosi_i.wstrb;
-    //dma_csr_miso_o.bvalid  = csr_axi_if.bvalid;
-    //csr_axi_if.bready      = dma_csr_mosi_i.bready;
-    //csr_axi_if.bid         = '0;
-    //dma_csr_miso_o.bresp   = csr_axi_if.bresp;
-    //csr_axi_if.arvalid     = dma_csr_mosi_i.arvalid;
-    //dma_csr_miso_o.arready = csr_axi_if.arready;
-    //csr_axi_if.arid        = '0;
-    //csr_axi_if.araddr      = dma_csr_mosi_i.araddr;
-    //csr_axi_if.arprot      = dma_csr_mosi_i.arprot;
-    //dma_csr_miso_o.rvalid  = csr_axi_if.rvalid;
-    //csr_axi_if.rready      = dma_csr_mosi_i.rready;
-    //csr_axi_if.rid         = '0;
-    //dma_csr_miso_o.rresp   = csr_axi_if.rresp;
-    //dma_csr_miso_o.rdata   = csr_axi_if.rdata;
+    dma_done_o  = 1'b0;
+    dma_error_o = 1'b0;
   end
 
+  /* verilator lint_off WIDTH */
   csr_dma u_csr_dma(
     .i_clk                      (clk),
     .i_rst_n                    (~rst),
-    .axi4lite_if                (csr_axi_if),
+    .i_awvalid                  (dma_csr_mosi_i.awvalid),
+    .o_awready                  (dma_csr_miso_o.awready),
+    .i_awid                     ('0),
+    .i_awaddr                   (dma_csr_mosi_i.awaddr),
+    .i_awprot                   (dma_csr_mosi_i.awprot),
+    .i_wvalid                   (dma_csr_mosi_i.wvalid),
+    .o_wready                   (dma_csr_miso_o.wready),
+    .i_wdata                    (dma_csr_mosi_i.wdata),
+    .i_wstrb                    (dma_csr_mosi_i.wstrb),
+    .o_bvalid                   (dma_csr_miso_o.bvalid),
+    .i_bready                   (dma_csr_mosi_i.bready),
+    .o_bid                      (),
+    .o_bresp                    (dma_csr_miso_o.bresp),
+    .i_arvalid                  (dma_csr_mosi_i.arvalid),
+    .o_arready                  (dma_csr_miso_o.arready),
+    .i_arid                     (),
+    .i_araddr                   (dma_csr_mosi_i.araddr),
+    .i_arprot                   (dma_csr_mosi_i.arprot),
+    .o_rvalid                   (dma_csr_miso_o.rvalid),
+    .i_rready                   (dma_csr_mosi_i.rready),
+    .o_rid                      (),
+    .o_rdata                    (dma_csr_miso_o.rdata),
+    .o_rresp                    (dma_csr_miso_o.rresp),
     .o_dma_control_go           (),
     .o_dma_control_abort        (),
     .i_dma_status_done          ('0),
@@ -70,5 +67,6 @@ module axi_dma_wrapper
     .o_dma_descriptor_read_mode (),
     .o_dma_descriptor_enable    ()
   );
+  /* verilator lint_on WIDTH */
 
 endmodule

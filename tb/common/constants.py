@@ -21,13 +21,16 @@ class cfg_const:
     TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
     RTL_DIR   = os.path.join(TESTS_DIR,"../../rtl/")
     RGGEN_V_DIR = os.path.join(TESTS_DIR,"../../rggen-verilog-rtl/")
+    CSR_RGGEN_DIR = os.path.join(TESTS_DIR,"../../csr_out/")
     INC_DIR   = [f'{RTL_DIR}inc',f'{RGGEN_V_DIR}']
     TOPLEVEL  = str(os.getenv("DUT"))
     SIMULATOR = str(os.getenv("SIM"))
     VERILOG_SOURCES = [] # The sequence below is important...
+    VERILOG_SOURCES = ["rtl/verilator_config.vlt"]
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}inc/*.sv',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}inc/*.svh',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}**/*.sv',recursive=True)
+    VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{CSR_RGGEN_DIR}**/*.v',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RGGEN_V_DIR}**/*.v',recursive=True)
     EXTRA_ENV = {}
     # EXTRA_ENV['COCOTB_HDL_TIMEUNIT'] = os.getenv("TIMEUNIT")

@@ -43,6 +43,7 @@ class Tb:
         # Need to write the last strings in the buffer in the file
         self.log.info("Closing log file.")
         self.log.removeHandler(self.file_handler)
+        self.file_handler.close()
 
     def set_idle_generator(self, generator=None):
         if generator:
@@ -80,6 +81,9 @@ class Tb:
         self.log.info("[AXI Master - Read] Slave = Address = ["+str(hex(address))+"] / Length = ["+str(length)+" bytes]")
         read = self.csr_axi_if.init_read(address=address, length=length, **kwargs)
         await with_timeout(read.wait(), *cfg_const.TIMEOUT_AXI)
+        # try:
+        # except SimTimeoutError:
+            # print("[Error] AXI 4 read timeout")
         resp = read.data # read.data => AxiReadResp
         return resp
 

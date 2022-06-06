@@ -34,20 +34,17 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
     # tb.set_backpressure_generator(backpressure_inserter)
     await tb.setup_clks(config_clk)
     await tb.rst(config_clk)
-    rand_data = bytearray(tb._get_random_string(length=4),'utf-8')
-    try:
-        req = await tb.write(address=0x30, data=rand_data)
-    except SimTimeoutError:
-        print("AXI 4 Lite TIMEOUT!!!!!!!!!!!")
+    resp_row = await tb.read(address=0x04, length=4)
+    assert resp_row.resp == AxiResp.OKAY, "AXI bus should not have raised an error here!"
 
 def cycle_pause():
     return itertools.cycle([1, 1, 1, 0])
 
 if cocotb.SIM_NAME:
     factory = TestFactory(test_function=run_test)
-    factory.add_option("config_clk", ["100MHz", "200MHz"])
-    factory.add_option("idle_inserter", [None, cycle_pause])
-    factory.add_option("backpressure_inserter", [None, cycle_pause])
+    # factory.add_option("config_clk", ["100MHz", "200MHz"])
+    # factory.add_option("idle_inserter", [None, cycle_pause])
+    # factory.add_option("backpressure_inserter", [None, cycle_pause])
     factory.generate_tests()
 
 @pytest.mark.parametrize("flavor",cfg_const.regression_setup)
@@ -75,6 +72,7 @@ def test_dma_basic(flavor):
         toplevel=cfg_const.TOPLEVEL,
         module=module,
         sim_build=SIM_BUILD,
+        # compile_args=["-f verilator.flags"],
         extra_env=cfg_const.EXTRA_ENV,
         extra_args=extra_args_sim
     )
