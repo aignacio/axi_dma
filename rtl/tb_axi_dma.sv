@@ -5,12 +5,12 @@
  * Date              : 05.06.2022
  * Last Modified Date: 06.06.2022
  */
-module tb_axi_dma#
+module tb_axi_dma
+  import utils_pkg::*;
 (
   input                     clk,
   input                     rst,
-  // Slave AXI Lite I/F
-  // AXI Interface - MOSI
+  // Slave AXI Lite - MOSI
   // Write Address channel
   input axi_addr_t          dma_s_awaddr,
   input axi_prot_t          dma_s_awprot,
@@ -29,7 +29,7 @@ module tb_axi_dma#
   // Read Data channel
   input  logic              dma_s_rready,
 
-  // AXI Interface - MISO
+  // Slave AXI Lite Interface - MISO
   // Write Addr channel
   output logic              dma_s_awready,
   // Write Data channel
@@ -182,5 +182,16 @@ module tb_axi_dma#
     dma_m_miso.ruser   = dma_m_ruser;
     dma_m_miso.rvalid  = dma_m_rvalid;
   end
+
+  axi_dma_wrapper u_axi_dma(
+    .clk            (clk),
+    .rst            (rst),
+    .dma_csr_mosi_i (dma_s_mosi),
+    .dma_csr_miso_o (dma_s_miso),
+    .dma_m_mosi_o   (dma_m_mosi),
+    .dma_m_miso_i   (dma_m_miso),
+    .dma_done_o     (),
+    .dma_error_o    ()
+  );
 
 endmodule

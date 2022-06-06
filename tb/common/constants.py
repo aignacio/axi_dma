@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 05.06.2022
+# Last Modified Date: 06.06.2022
 import os
 import glob
 import copy
@@ -20,13 +20,15 @@ class cfg_const:
 
     TESTS_DIR = os.path.dirname(os.path.abspath(__file__))
     RTL_DIR   = os.path.join(TESTS_DIR,"../../rtl/")
-    INC_DIR   = [f'{RTL_DIR}inc']
+    RGGEN_V_DIR = os.path.join(TESTS_DIR,"../../rggen-verilog-rtl/")
+    INC_DIR   = [f'{RTL_DIR}inc',f'{RGGEN_V_DIR}']
     TOPLEVEL  = str(os.getenv("DUT"))
     SIMULATOR = str(os.getenv("SIM"))
     VERILOG_SOURCES = [] # The sequence below is important...
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}inc/*.sv',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}inc/*.svh',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}**/*.sv',recursive=True)
+    VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RGGEN_V_DIR}**/*.v',recursive=True)
     EXTRA_ENV = {}
     # EXTRA_ENV['COCOTB_HDL_TIMEUNIT'] = os.getenv("TIMEUNIT")
     # EXTRA_ENV['COCOTB_HDL_TIMEPRECISION'] = os.getenv("TIMEPREC")

@@ -2,20 +2,13 @@ RUN_CMD	:=	docker run --rm --name axi_dma	\
 						-v $(abspath .):/axi_dma -w			\
 						/axi_dma aignacio/axi_dma
 
-###########################################################
-#SIM ?= verilator
-#TOPLEVEL_LANG ?= verilog
-#VERILOG_SOURCES += dff.sv
-#TOPLEVEL = dff
-#MODULE = run_test
-#include $(shell cocotb-config --makefiles)/Makefile.sim
-###########################################################
+.PHONY: run_test csr_dma.sv clean
 
-run_test:
+run_test: csr_out
 	$(RUN_CMD) tox
 
-gen_csr:
-	$(RUN_CMD) rggen -c config.yml -o csr_out csr_dma.xlsx
+csr_out:
+	$(RUN_CMD) rggen --plugin rggen-verilog -c config.yml -o csr_out csr_dma.xlsx
 
 clean:
 	@rm -rf run_dir
