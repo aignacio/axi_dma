@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 04.06.2022
+# Last Modified Date: 05.06.2022
 import os
 import glob
 import copy
@@ -28,8 +28,8 @@ class cfg_const:
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}inc/*.svh',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}**/*.sv',recursive=True)
     EXTRA_ENV = {}
-    EXTRA_ENV['COCOTB_HDL_TIMEUNIT'] = os.getenv("TIMEUNIT")
-    EXTRA_ENV['COCOTB_HDL_TIMEPRECISION'] = os.getenv("TIMEPREC")
+    # EXTRA_ENV['COCOTB_HDL_TIMEUNIT'] = os.getenv("TIMEUNIT")
+    # EXTRA_ENV['COCOTB_HDL_TIMEPRECISION'] = os.getenv("TIMEPREC")
     if SIMULATOR == "verilator":
         EXTRA_ARGS = ["--trace-fst","--coverage","--trace-structs","--Wno-UNOPTFLAT","--Wno-REDEFMACRO"]
     else:
@@ -38,11 +38,11 @@ class cfg_const:
     DMA_CFG_32b = {}
     DMA_CFG_64b = {}
 
-    DMA_CFG_32b['axi_addr_w'] = 32
-    DMA_CFG_32b['axi_data_w'] = 32
+    DMA_CFG_32b['axi_addr_width'] = 32
+    DMA_CFG_32b['axi_data_width'] = 32
 
-    DMA_CFG_64b['axi_addr_w'] = 32
-    DMA_CFG_64b['axi_data_w'] = 64
+    DMA_CFG_64b['axi_addr_width'] = 32
+    DMA_CFG_64b['axi_data_width'] = 64
 
     EXTRA_ARGS_32b = copy.deepcopy(EXTRA_ARGS)
     EXTRA_ARGS_64b = copy.deepcopy(EXTRA_ARGS)

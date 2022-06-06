@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 04.06.2022
+# Last Modified Date: 06.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import random
 import cocotb
@@ -17,34 +17,41 @@ from common.constants import cfg_const
 from cocotb.regression import TestFactory
 from cocotb_test.simulator import run
 from cocotb.result import TestFailure
+from cocotb.triggers import ClockCycles, RisingEdge
+from cocotb.result import SimTimeoutError
 from random import randrange
 import itertools
 
-async def run_test(dut, config_clk='100MHz', idle_inserter=None, backpressure_inserter=None):
+@cocotb.test()
+async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_inserter=None):
     dma_flavor = os.getenv("FLAVOR")
-    dma_cfg = cfg_const#.NOC_CFG[noc_flavor]
-
+    dma_cfg = cfg_const
     # Setup testbench
     idle = "no_idle" if idle_inserter == None else "w_idle"
     backp = "no_backpressure" if backpressure_inserter == None else "w_backpressure"
     tb = Tb(dut, f"sim_{config_clk}_{idle}_{backp}", dma_cfg)
-    tb.set_idle_generator(idle_inserter)
-    tb.set_backpressure_generator(backpressure_inserter)
+    # tb.set_idle_generator(idle_inserter)
+    # tb.set_backpressure_generator(backpressure_inserter)
     await tb.setup_clks(config_clk)
     await tb.rst(config_clk)
+    rand_data = bytearray(tb._get_random_string(length=4),'utf-8')
+    try:
+        req = await tb.write(address=0x30, data=rand_data)
+    except SimTimeoutError:
+        print("AXI 4 Lite TIMEOUT!!!!!!!!!!!")
 
 def cycle_pause():
     return itertools.cycle([1, 1, 1, 0])
 
 if cocotb.SIM_NAME:
-    factory = TestFactory(run_test)
-    factory.add_option("config_clk", ['100MHz', '200MHz'])
+    factory = TestFactory(test_function=run_test)
+    factory.add_option("config_clk", ["100MHz", "200MHz"])
     factory.add_option("idle_inserter", [None, cycle_pause])
     factory.add_option("backpressure_inserter", [None, cycle_pause])
     factory.generate_tests()
 
 @pytest.mark.parametrize("flavor",cfg_const.regression_setup)
-def test_ravenoc_basic(flavor):
+def test_dma_basic(flavor):
     """
     Basic test that sends a packet over the NoC and checks it
 

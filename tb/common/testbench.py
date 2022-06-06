@@ -3,8 +3,8 @@
 # File              : testbench.py
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
-# Date              : 01.03.2021
-# Last Modified Date: 04.06.2022
+# Date              : 04.06.2022
+# Last Modified Date: 06.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import cocotb
 import os, errno
@@ -15,7 +15,8 @@ from common.constants import cfg_const
 from cocotb.clock import Clock
 from datetime import datetime
 from cocotb.triggers import ClockCycles, RisingEdge, with_timeout, ReadOnly, Event
-from cocotbext.axi import AxiBus, AxiMaster, AxiRam, AxiResp, AxiLiteMaster, AxiSlave
+from cocotbext.axi import AxiBus, AxiLiteBus, AxiMaster, AxiRam, AxiResp, AxiLiteMaster, AxiSlave
+from cocotbext.axi import AxiLiteRam
 from cocotb.result import TestFailure
 
 class Tb:
@@ -34,9 +35,9 @@ class Tb:
         self.log.info("------------[LOG - %s]------------",timenow_wstamp)
         self.log.info("SEED: %s",str(cocotb.RANDOM_SEED))
         self.log.info("Log file: %s",log_name)
-        # Create the AXI Master I/Fs and connect it to the two main AXI Slave I/Fs in the top wrappers
-        self.csr_axi_if = AxiLiteMaster(AxiBus.from_prefix(self.dut, "dma_s"), self.dut.clk, self.dut.rst)
-        self.dma_axi_if = AxiSlave(AxiBus.from_prefix(self.dut, "dma_m"), self.dut.clk, self.dut.rst)
+        self.csr_axi_if = AxiLiteMaster(AxiLiteBus.from_prefix(self.dut, "dma_s"), self.dut.clk, self.dut.rst)
+        # self.dma_axi_if = AxiSlave(AxiBus.from_prefix(self.dut, "dma_m"), self.dut.clk, self.dut.rst)
+        self.axil_ram = AxiLiteRam(AxiLiteBus.from_prefix(dut, "dma_s"), dut.clk, dut.rst, size=2**16)
 
     def __del__(self):
         # Need to write the last strings in the buffer in the file
@@ -45,22 +46,17 @@ class Tb:
 
     def set_idle_generator(self, generator=None):
         if generator:
-            self.csr_axi_if.write_if.aw_channel.set_pause_generator(generator())
-            self.csr_axi_if.write_if.w_channel.set_pause_generator(generator())
-            self.csr_axi_if.read_if.ar_channel.set_pause_generator(generator())
-            self.csr_axi_if.write_if.aw_channel.set_pause_generator(generator())
-            self.csr_axi_if.write_if.w_channel.set_pause_generator(generator())
-            self.csr_axi_if.read_if.ar_channel.set_pause_generator(generator())
+            self.csr_if.write_if.aw_channel.set_pause_generator(generator())
+            self.csr_if.write_if.w_channel.set_pause_generator(generator())
+            self.csr_if.read_if.ar_channel.set_pause_generator(generator())
 
     def set_backpressure_generator(self, generator=None):
         if generator:
-            self.csr_axi_if.write_if.b_channel.set_pause_generator(generator())
-            self.csr_axi_if.read_if.r_channel.set_pause_generator(generator())
-            self.csr_axi_if.write_if.b_channel.set_pause_generator(generator())
-            self.csr_axi_if.read_if.r_channel.set_pause_generator(generator())
+            self.csr_if.write_if.b_channel.set_pause_generator(generator())
+            self.csr_if.read_if.r_channel.set_pause_generator(generator())
 
     """
-    Write AXI method
+    Write AXILite I/F for the CSRs
 
     Args:
         kwargs: All aditional args that can be passed to the amba AXI driver
@@ -96,11 +92,11 @@ class Tb:
     async def setup_clks(self, clk_mode="100MHz"):
         self.log.info(f"[Setup] Configuring the clocks: {clk_mode}")
         if clk_mode == "100MHz":
-            cocotb.fork(Clock(self.dut.clk, *cfg_const.CLK_100MHz).start())
+            await cocotb.start(Clock(self.dut.clk, *cfg_const.CLK_100MHz).start())
         elif clk_mode == "200MHz":
-            cocotb.fork(Clock(self.dut.clk, *cfg_const.CLK_200MHz).start())
+            await cocotb.start(Clock(self.dut.clk, *cfg_const.CLK_200MHz).start())
         else:
-            cocotb.fork(Clock(self.dut.clk, *cfg_const.CLK_200MHz).start())
+            await cocotb.start(Clock(self.dut.clk, *cfg_const.CLK_200MHz).start())
 
     """
     Setup and apply the reset on the NoC
@@ -112,13 +108,13 @@ class Tb:
     async def rst(self, clk_mode="100MHz"):
         self.log.info("[Setup] Reset DUT")
         self.dut.rst.setimmediatevalue(1)
+        self.dut.rst.value = 1
         if clk_mode == "100MHz":
             await ClockCycles(self.dut.clk, cfg_const.RST_CYCLES)
         else:
             await ClockCycles(self.dut.clk, cfg_const.RST_CYCLES)
-        self.dut.rst <= 0
-        self.dut.rst <= 0
-        await ClockCycles(self.dut.clk, 5)
+        self.dut.rst.value = 0
+        await ClockCycles(self.dut.clk, 1)
 
     """
     Creates the tb log obj and start filling with headers

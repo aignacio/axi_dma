@@ -1,0 +1,179 @@
+[*]
+[*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
+[*] Sun Jun  5 17:19:12 2022
+[*]
+[dumpfile] "/Users/aignacio/projects/axi_dma/run_dir/run_verilator_test_dma_basic_32/dump.fst"
+[dumpfile_mtime] "Sun Jun  5 17:17:55 2022"
+[dumpfile_size] 2213
+[savefile] "/Users/aignacio/projects/axi_dma/fmt.gtkw"
+[timestart] 38000
+[size] 2285 1511
+[pos] 227 79
+*-17.399450 142600 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] .
+[treeopen] .tb_axi_dma.
+[sst_width] 310
+[signals_width] 278
+[sst_expanded] 1
+[sst_vpaned_height] 1020
+@28
+tb_axi_dma.clk
+tb_axi_dma.rst
+@22
+tb_axi_dma.dma_s_araddr[31:0]
+@100000028
+tb_axi_dma.dma_s_arburst[1:0]
+@22
+tb_axi_dma.dma_s_arcache[3:0]
+@28
+tb_axi_dma.dma_s_arid
+@22
+tb_axi_dma.dma_s_arlen[7:0]
+@28
+tb_axi_dma.dma_s_arlock
+@100000028
+tb_axi_dma.dma_s_arprot[2:0]
+@22
+tb_axi_dma.dma_s_arqos[3:0]
+@28
+tb_axi_dma.dma_s_arready
+@22
+tb_axi_dma.dma_s_arregion[3:0]
+@100000028
+tb_axi_dma.dma_s_arsize[2:0]
+@28
+tb_axi_dma.dma_s_aruser
+tb_axi_dma.dma_s_arvalid
+@22
+tb_axi_dma.dma_s_awaddr[31:0]
+@100000028
+tb_axi_dma.dma_s_awburst[1:0]
+@22
+tb_axi_dma.dma_s_awcache[3:0]
+@28
+tb_axi_dma.dma_s_awid
+@22
+tb_axi_dma.dma_s_awlen[7:0]
+@28
+tb_axi_dma.dma_s_awlock
+@100000028
+tb_axi_dma.dma_s_awprot[2:0]
+@22
+tb_axi_dma.dma_s_awqos[3:0]
+@28
+tb_axi_dma.dma_s_awready
+@22
+tb_axi_dma.dma_s_awregion[3:0]
+@100000028
+tb_axi_dma.dma_s_awsize[2:0]
+@28
+tb_axi_dma.dma_s_awuser
+tb_axi_dma.dma_s_awvalid
+tb_axi_dma.dma_s_bid
+tb_axi_dma.dma_s_bready
+@100000028
+tb_axi_dma.dma_s_bresp[1:0]
+@28
+tb_axi_dma.dma_s_buser
+tb_axi_dma.dma_s_bvalid
+@22
+tb_axi_dma.dma_s_rdata[31:0]
+@28
+tb_axi_dma.dma_s_rid
+tb_axi_dma.dma_s_rlast
+tb_axi_dma.dma_s_rready
+@100000028
+tb_axi_dma.dma_s_rresp[1:0]
+@28
+tb_axi_dma.dma_s_ruser
+tb_axi_dma.dma_s_rvalid
+@22
+tb_axi_dma.dma_s_wdata[31:0]
+@28
+tb_axi_dma.dma_s_wlast
+tb_axi_dma.dma_s_wready
+@22
+tb_axi_dma.dma_s_wstrb[3:0]
+@28
+tb_axi_dma.dma_s_wuser
+tb_axi_dma.dma_s_wvalid
+@22
+tb_axi_dma.dma_m_araddr[31:0]
+@100000028
+tb_axi_dma.dma_m_arburst[1:0]
+@22
+tb_axi_dma.dma_m_arcache[3:0]
+@28
+tb_axi_dma.dma_m_arid
+@23
+tb_axi_dma.dma_m_arlen[7:0]
+@28
+tb_axi_dma.dma_m_arlock
+@100000028
+tb_axi_dma.dma_m_arprot[2:0]
+@22
+tb_axi_dma.dma_m_arqos[3:0]
+@28
+tb_axi_dma.dma_m_arready
+@22
+tb_axi_dma.dma_m_arregion[3:0]
+@100000028
+tb_axi_dma.dma_m_arsize[2:0]
+@28
+tb_axi_dma.dma_m_aruser
+tb_axi_dma.dma_m_arvalid
+@22
+tb_axi_dma.dma_m_awaddr[31:0]
+@100000028
+tb_axi_dma.dma_m_awburst[1:0]
+@22
+tb_axi_dma.dma_m_awcache[3:0]
+@28
+tb_axi_dma.dma_m_awid
+@22
+tb_axi_dma.dma_m_awlen[7:0]
+@28
+tb_axi_dma.dma_m_awlock
+@100000028
+tb_axi_dma.dma_m_awprot[2:0]
+@22
+tb_axi_dma.dma_m_awqos[3:0]
+@28
+tb_axi_dma.dma_m_awready
+@22
+tb_axi_dma.dma_m_awregion[3:0]
+@100000028
+tb_axi_dma.dma_m_awsize[2:0]
+@28
+tb_axi_dma.dma_m_awuser
+tb_axi_dma.dma_m_awvalid
+tb_axi_dma.dma_m_bid
+tb_axi_dma.dma_m_bready
+@100000028
+tb_axi_dma.dma_m_bresp[1:0]
+@28
+tb_axi_dma.dma_m_buser
+tb_axi_dma.dma_m_bvalid
+@22
+tb_axi_dma.dma_m_rdata[31:0]
+@28
+tb_axi_dma.dma_m_rid
+tb_axi_dma.dma_m_rlast
+tb_axi_dma.dma_m_rready
+@100000028
+tb_axi_dma.dma_m_rresp[1:0]
+@28
+tb_axi_dma.dma_m_ruser
+tb_axi_dma.dma_m_rvalid
+@22
+tb_axi_dma.dma_m_wdata[31:0]
+@28
+tb_axi_dma.dma_m_wlast
+tb_axi_dma.dma_m_wready
+@22
+tb_axi_dma.dma_m_wstrb[3:0]
+@28
+tb_axi_dma.dma_m_wuser
+tb_axi_dma.dma_m_wvalid
+[pattern_trace] 1
+[pattern_trace] 0

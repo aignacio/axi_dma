@@ -88,6 +88,7 @@
     logic          arst;
   } s_axi_glb_t;
 
+  // AXI
   typedef struct packed {
     // Write Addr channel
     logic          awready;
@@ -148,6 +149,44 @@
     // Read Data channel
     logic           rready;
   } s_axi_mosi_t;
+
+  // AXI Lite
+  typedef struct packed {
+    // Write Addr channel
+    logic          awready;
+    // Write Data channel
+    logic          wready;
+    // Write Response channel
+    axi_error_t    bresp;
+    logic          bvalid;
+    // Read addr channel
+    logic          arready;
+    // Read data channel
+    axi_data_t     rdata;
+    axi_error_t    rresp;
+    logic          rlast;
+    logic          rvalid;
+  } s_axil_miso_t;
+
+  typedef struct packed {
+    // Write Address channel
+    axi_addr_t      awaddr;
+    axi_prot_t      awprot;
+    logic           awvalid;
+    // Write Data channel
+    axi_data_t      wdata;
+    axi_wr_strb_t   wstrb;
+    logic           wlast;
+    logic           wvalid;
+    // Write Response channel
+    logic           bready;
+    // Read Address channel
+    axi_addr_t      araddr;
+    axi_prot_t      arprot;
+    logic           arvalid;
+    // Read Data channel
+    logic           rready;
+  } s_axil_mosi_t;
 
   //endpackage
 `endif

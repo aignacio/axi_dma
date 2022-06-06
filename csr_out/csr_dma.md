@@ -45,7 +45,7 @@
 |name|bit_assignments|type|initial_value|reference|comment|
 |:--|:--|:--|:--|:--|:--|
 |error_addr|[31:0]|ro|0x00000000||Error addr|
-|error_type|[32]|ro|0x0||Error type - 0 READ / 1 WRITE|
+|error_type|[32]|ro|0x0||Error type - Operation / Configuration|
 |error_src|[33]|ro|0x0||Error source - 0 READ / 1 WRITE|
 |error_trig|[34]|ro|0x0||Error Trigger, asserted when error happens|
 
