@@ -1,0 +1,3 @@
+[submodule "rggen-sv-rtl"]
+	path = rggen-sv-rtl
+	url = https://github.com/rggen/rggen-sv-rtl
