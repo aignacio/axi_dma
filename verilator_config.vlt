@@ -2,3 +2,4 @@
 lint_off -rule WIDTH    -file "**/rggen_register_common.v"
 lint_off -rule WIDTH    -file "**/rggen_adapter_common.v"
 lint_off -rule UNSIGNED -file "**/rggen_address_decoder.v"
+lint_off -rule WIDTH    -file "**/csr_dma.v"

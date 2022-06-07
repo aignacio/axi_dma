@@ -31,8 +31,8 @@
 
 |name|bit_assignments|type|initial_value|reference|comment|
 |:--|:--|:--|:--|:--|:--|
-|done|[0]|ro|0x0||Asserted when DMA finishes to process all the descriptors|
-|version|[16:1]|rof|0xcafe||DMA version|
+|version|[15:0]|rof|0xcafe||DMA version|
+|done|[16]|ro|0x0||Asserted when DMA finishes to process all the descriptors|
 |error|[17]|ro|0x0|dma_error.error_trig|Error resume|
 
 ### <div id="csr_dma-dma_error"></div>dma_error

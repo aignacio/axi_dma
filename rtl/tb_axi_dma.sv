@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 05.06.2022
- * Last Modified Date: 06.06.2022
+ * Last Modified Date: 07.06.2022
  */
 module tb_axi_dma
   import utils_pkg::*;
@@ -117,7 +117,6 @@ module tb_axi_dma
     dma_s_mosi.awvalid  = dma_s_awvalid;
     dma_s_mosi.wdata    = dma_s_wdata;
     dma_s_mosi.wstrb    = dma_s_wstrb;
-    dma_s_mosi.wlast    = dma_s_wlast;
     dma_s_mosi.wvalid   = dma_s_wvalid;
     dma_s_mosi.bready   = dma_s_bready;
     dma_s_mosi.araddr   = dma_s_araddr;
@@ -132,7 +131,6 @@ module tb_axi_dma
     dma_s_arready  = dma_s_miso.arready;
     dma_s_rdata    = dma_s_miso.rdata;
     dma_s_rresp    = dma_s_miso.rresp;
-    dma_s_rlast    = dma_s_miso.rlast;
     dma_s_rvalid   = dma_s_miso.rvalid;
 
     // AXI4 Master interface

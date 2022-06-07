@@ -1,0 +1,11 @@
+-Wno-UNOPTFLAT
+-Wno-TIMESCALEMOD
+--exe
+--trace
+--trace-depth			10000
+--trace-structs
+--trace-fst
+--trace-max-array	10000
+--trace-max-width 10000
+/axi_dma/verilator_config.vlt
+

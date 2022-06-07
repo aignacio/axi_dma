@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 04.06.2022
-# Last Modified Date: 06.06.2022
+# Last Modified Date: 07.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import cocotb
 import os, errno
@@ -20,14 +20,6 @@ from cocotbext.axi import AxiLiteRam
 from cocotb.result import TestFailure
 
 class Tb:
-    """
-    Base class for RaveNoC testbench
-
-    Args:
-        dut: The Dut object coming from cocotb
-        log_name: Name of the log file inside the run folder, it's append the timestamp only
-        cfg: NoC cfg dict
-    """
     def __init__(self, dut, log_name, cfg):
         self.dut = dut
         self.cfg = cfg
@@ -37,7 +29,7 @@ class Tb:
         self.log.info("Log file: %s",log_name)
         self.csr_axi_if = AxiLiteMaster(AxiLiteBus.from_prefix(self.dut, "dma_s"), self.dut.clk, self.dut.rst)
         # self.dma_axi_if = AxiSlave(AxiBus.from_prefix(self.dut, "dma_m"), self.dut.clk, self.dut.rst)
-        self.axil_ram = AxiLiteRam(AxiLiteBus.from_prefix(dut, "dma_s"), dut.clk, dut.rst, size=2**16)
+        # self.axil_ram = AxiLiteRam(AxiLiteBus.from_prefix(dut, "dma_s"), dut.clk, dut.rst, size=2**16)
 
     def __del__(self):
         # Need to write the last strings in the buffer in the file
@@ -47,52 +39,29 @@ class Tb:
 
     def set_idle_generator(self, generator=None):
         if generator:
-            self.csr_if.write_if.aw_channel.set_pause_generator(generator())
-            self.csr_if.write_if.w_channel.set_pause_generator(generator())
-            self.csr_if.read_if.ar_channel.set_pause_generator(generator())
+            self.csr_axi_if.write_if.aw_channel.set_pause_generator(generator())
+            self.csr_axi_if.write_if.w_channel.set_pause_generator(generator())
+            self.csr_axi_if.read_if.ar_channel.set_pause_generator(generator())
 
     def set_backpressure_generator(self, generator=None):
         if generator:
-            self.csr_if.write_if.b_channel.set_pause_generator(generator())
-            self.csr_if.read_if.r_channel.set_pause_generator(generator())
+            self.csr_axi_if.write_if.b_channel.set_pause_generator(generator())
+            self.csr_axi_if.read_if.r_channel.set_pause_generator(generator())
 
-    """
-    Write AXILite I/F for the CSRs
-
-    Args:
-        kwargs: All aditional args that can be passed to the amba AXI driver
-    """
     async def write(self, address=0x0, data=0x0, **kwargs):
-        self.log.info("[AXI Lite Master - Write] Address = ["+str(hex(address))+"] ")
+        # self.log.info("[AXI Lite Master - Write] Address = ["+str(hex(address))+"] ")
         write = self.csr_axi_if.init_write(address=address, data=data, **kwargs)
         await with_timeout(write.wait(), *cfg_const.TIMEOUT_AXI)
         ret = write.data
         return ret
 
-    """
-    Read AXI method
-
-    Args:
-        kwargs: All aditional args that can be passed to the amba AXI driver
-    Returns:
-        Return the data read from the specified node
-    """
     async def read(self, address=0x0, length=4, **kwargs):
-        self.log.info("[AXI Master - Read] Slave = Address = ["+str(hex(address))+"] / Length = ["+str(length)+" bytes]")
+        # self.log.info("[AXI Lite Master - Read] Slave = Address = ["+str(hex(address))+"] / Length = ["+str(length)+" bytes]")
         read = self.csr_axi_if.init_read(address=address, length=length, **kwargs)
         await with_timeout(read.wait(), *cfg_const.TIMEOUT_AXI)
-        # try:
-        # except SimTimeoutError:
-            # print("[Error] AXI 4 read timeout")
-        resp = read.data # read.data => AxiReadResp
+        resp = read.data
         return resp
 
-    """
-    Setup and launch the clocks on the simulation
-
-    Args:
-        clk_mode: Clock speed to be used to compute the BW
-    """
     async def setup_clks(self, clk_mode="100MHz"):
         self.log.info(f"[Setup] Configuring the clocks: {clk_mode}")
         if clk_mode == "100MHz":
@@ -102,13 +71,6 @@ class Tb:
         else:
             await cocotb.start(Clock(self.dut.clk, *cfg_const.CLK_200MHz).start())
 
-    """
-    Setup and apply the reset on the NoC
-
-    Args:
-        clk_mode: Depending on the input clock mode, we need to wait different
-        clk cycles for the reset, we always hold as long as the slowest clock
-    """
     async def rst(self, clk_mode="100MHz"):
         self.log.info("[Setup] Reset DUT")
         self.dut.rst.setimmediatevalue(1)
@@ -120,9 +82,6 @@ class Tb:
         self.dut.rst.value = 0
         await ClockCycles(self.dut.clk, 1)
 
-    """
-    Creates the tb log obj and start filling with headers
-    """
     def _gen_log(self, log_name):
         timenow = datetime.now().strftime("%d_%b_%Y_%Hh_%Mm_%Ss")
         timenow_wstamp = timenow + str("_") + str(datetime.timestamp(datetime.now()))
@@ -135,9 +94,6 @@ class Tb:
         self.log.addFilter(SimTimeContextFilter())
         return timenow_wstamp
 
-    """
-    Used to create the symlink with the latest log in the run dir folder
-    """
     def _symlink_force(self, target, link_name):
         try:
             os.symlink(target, link_name)
@@ -148,9 +104,6 @@ class Tb:
             else:
                 raise e
 
-    """
-    Returns a random string with the length equal to input argument
-    """
     def _get_random_string(self, length=1):
         # choose from all lowercase letter
         letters = string.ascii_lowercase

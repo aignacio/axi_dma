@@ -141,10 +141,35 @@ module csr_dma
       .register_if  (register_if[1]),
       .bit_field_if (bit_field_if)
     );
+    if (1) begin : g_version
+      localparam bit [15:0] INITIAL_VALUE = 16'hcafe;
+      rggen_bit_field_if #(16) bit_field_sub_if();
+      `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 0, 16)
+      rggen_bit_field #(
+        .WIDTH              (16),
+        .STORAGE            (0),
+        .EXTERNAL_READ_DATA (1)
+      ) u_bit_field (
+        .i_clk              ('0),
+        .i_rst_n            ('0),
+        .bit_field_if       (bit_field_sub_if),
+        .o_write_trigger    (),
+        .o_read_trigger     (),
+        .i_sw_write_enable  ('0),
+        .i_hw_write_enable  ('0),
+        .i_hw_write_data    ('0),
+        .i_hw_set           ('0),
+        .i_hw_clear         ('0),
+        .i_value            (INITIAL_VALUE),
+        .i_mask             ('1),
+        .o_value            (),
+        .o_value_unmasked   ()
+      );
+    end
     if (1) begin : g_done
       localparam bit INITIAL_VALUE = 1'h0;
       rggen_bit_field_if #(1) bit_field_sub_if();
-      `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 0, 1)
+      `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 16, 1)
       rggen_bit_field #(
         .WIDTH              (1),
         .STORAGE            (0),
@@ -162,31 +187,6 @@ module csr_dma
         .i_hw_set           ('0),
         .i_hw_clear         ('0),
         .i_value            (i_dma_status_done),
-        .i_mask             ('1),
-        .o_value            (),
-        .o_value_unmasked   ()
-      );
-    end
-    if (1) begin : g_version
-      localparam bit [15:0] INITIAL_VALUE = 16'hcafe;
-      rggen_bit_field_if #(16) bit_field_sub_if();
-      `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 1, 16)
-      rggen_bit_field #(
-        .WIDTH              (16),
-        .STORAGE            (0),
-        .EXTERNAL_READ_DATA (1)
-      ) u_bit_field (
-        .i_clk              ('0),
-        .i_rst_n            ('0),
-        .bit_field_if       (bit_field_sub_if),
-        .o_write_trigger    (),
-        .o_read_trigger     (),
-        .i_sw_write_enable  ('0),
-        .i_hw_write_enable  ('0),
-        .i_hw_write_data    ('0),
-        .i_hw_set           ('0),
-        .i_hw_clear         ('0),
-        .i_value            (INITIAL_VALUE),
         .i_mask             ('1),
         .o_value            (),
         .o_value_unmasked   ()

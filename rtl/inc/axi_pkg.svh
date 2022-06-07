@@ -39,7 +39,7 @@
   `endif
 
   `ifndef AXI_TXN_ID_WIDTH
-      `define AXI_TXN_ID_WIDTH 1
+      `define AXI_TXN_ID_WIDTH    1
   `endif
 
   typedef logic [`AXI_ADDR_WIDTH-1:0]      axi_addr_t;
@@ -164,7 +164,6 @@
     // Read data channel
     axi_data_t     rdata;
     axi_error_t    rresp;
-    logic          rlast;
     logic          rvalid;
   } s_axil_miso_t;
 
@@ -176,7 +175,6 @@
     // Write Data channel
     axi_data_t      wdata;
     axi_wr_strb_t   wstrb;
-    logic           wlast;
     logic           wvalid;
     // Write Response channel
     logic           bready;

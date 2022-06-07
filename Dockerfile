@@ -7,6 +7,7 @@ RUN apt-get update && apt-get upgrade -y
 RUN apt-get install git file make ruby -y
 RUN gem install rggen
 RUN gem install rggen-verilog
+RUN gem update  rggen-verilog
 
 WORKDIR /
 RUN git clone https://github.com/rggen/rggen-sv-rtl.git

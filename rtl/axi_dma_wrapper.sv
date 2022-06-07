@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 06.06.2022
- * Last Modified Date: 06.06.2022
+ * Last Modified Date: 07.06.2022
  */
 module axi_dma_wrapper
   import utils_pkg::*;
@@ -20,10 +20,16 @@ module axi_dma_wrapper
   output  logic         dma_done_o,
   output  logic         dma_error_o
 );
+  localparam AXI_DATA_WIDTH = `AXI_DATA_WIDTH;
+
   always_comb begin
     dma_m_mosi_o = s_axi_mosi_t'('0);
     dma_done_o  = 1'b0;
     dma_error_o = 1'b0;
+
+    if (AXI_DATA_WIDTH == 64) begin
+      dma_csr_miso_o.rdata[AXI_DATA_WIDTH-1:(AXI_DATA_WIDTH/2)] = '0;
+    end
   end
 
   /* verilator lint_off WIDTH */

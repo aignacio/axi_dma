@@ -15,15 +15,15 @@ package csr_dma_ral_pkg;
     endfunction
   endclass
   class dma_status_reg_model extends rggen_ral_reg;
-    rand rggen_ral_field done;
     rand rggen_ral_field version;
+    rand rggen_ral_field done;
     rand rggen_ral_field error;
     function new(string name);
       super.new(name, 32, 0);
     endfunction
     function void build();
-      `rggen_ral_create_field(done, 0, 1, "RO", 1, 1'h0, 1, -1, "")
-      `rggen_ral_create_field(version, 1, 16, "RO", 0, 16'hcafe, 1, -1, "")
+      `rggen_ral_create_field(version, 0, 16, "RO", 0, 16'hcafe, 1, -1, "")
+      `rggen_ral_create_field(done, 16, 1, "RO", 1, 1'h0, 1, -1, "")
       `rggen_ral_create_field(error, 17, 1, "RO", 1, 1'h0, 1, -1, "dma_error.error_trig")
     endfunction
   endclass
