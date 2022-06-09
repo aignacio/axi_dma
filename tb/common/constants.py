@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 07.06.2022
+# Last Modified Date: 09.06.2022
 import os
 import glob
 import copy
@@ -12,7 +12,7 @@ import math
 
 class cfg_const:
     ################### Configure ####################
-    regression_setup = ['32'] #, '64']
+    regression_setup = ['32', '64']
     RST_CYCLES  = 3
     TIMEOUT_VAL = 100
 
@@ -25,15 +25,22 @@ class cfg_const:
     DMA_CFG_64b['axi_data_width'] = 64
 
     DMA_CSRs = {}
-    #-----------------------------> Addr     Mask       RW
-    DMA_CSRs['DMA_CONTROL']      = (0x0000, 0x3,        1)
-    DMA_CSRs['DMA_STATUS']       = (0x0004, 0xCAFE,     0)
-    DMA_CSRs['DMA_ERROR_1']      = (0x0008, 0x0,        0)
-    DMA_CSRs['DMA_ERROR_2']      = (0x000C, 0x0,        0)
-    DMA_CSRs['DMA_DESCRIPTOR_1'] = (0x0010, 0xFFFFFFFF, 1)
-    DMA_CSRs['DMA_DESCRIPTOR_2'] = (0x0014, 0xFFFFFFFF, 1)
-    DMA_CSRs['DMA_DESCRIPTOR_3'] = (0x0018, 0xFFFFFFFF, 1)
-    DMA_CSRs['DMA_DESCRIPTOR_4'] = (0x001C, 0x7,        1)
+    #-------------------------------> Addr     Mask       RW
+    DMA_CSRs['DMA_CONTROL']        = (0x0000, 0x3,        1)
+    DMA_CSRs['DMA_STATUS']         = (0x0008, 0xCAFE,     0)
+    DMA_CSRs['DMA_ERROR_ADDR']     = (0x0010, 0x0,        0)
+    DMA_CSRs['DMA_ERROR_MISC']     = (0x0018, 0x0,        0)
+    NUM_DESC       = 5
+    PER_DESC_CSRS  = 4
+    CSR_ADDR_ALIG  = 8
+    BASE_ADDR_DESC = 0x20
+    for desc in range(BASE_ADDR_DESC, BASE_ADDR_DESC+NUM_DESC*PER_DESC_CSRS*CSR_ADDR_ALIG, PER_DESC_CSRS*CSR_ADDR_ALIG):
+        DMA_CSRs['DMA_DESC_SRC_ADDR_' +str(desc//BASE_ADDR_DESC)] = (desc,       0xFFFFFFFF, 1)
+        DMA_CSRs['DMA_DESC_DEST_ADDR_'+str(desc//BASE_ADDR_DESC)] = (desc+(1*8), 0xFFFFFFFF, 1)
+        DMA_CSRs['DMA_DESC_NUM_BYTES_'+str(desc//BASE_ADDR_DESC)] = (desc+(2*8), 0xFFFFFFFF, 1)
+        DMA_CSRs['DMA_DESC_WRITE_MOD_'+str(desc//BASE_ADDR_DESC)] = (desc+(3*8), 0x7,        1)
+        DMA_CSRs['DMA_DESC_READ_MOD_' +str(desc//BASE_ADDR_DESC)] = (desc+(3*8), 0x7,        1)
+        DMA_CSRs['DMA_DESC_ENABLE_'   +str(desc//BASE_ADDR_DESC)] = (desc+(3*8), 0x7,        1)
     ################### Configure ####################
 
     CLK_100MHz  = (10, "ns")

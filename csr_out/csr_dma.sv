@@ -14,7 +14,7 @@ module csr_dma
   parameter bit PRE_DECODE = 0,
   parameter bit [ADDRESS_WIDTH-1:0] BASE_ADDRESS = '0,
   parameter bit ERROR_STATUS = 0,
-  parameter bit [31:0] DEFAULT_READ_DATA = '0,
+  parameter bit [63:0] DEFAULT_READ_DATA = '0,
   parameter int ID_WIDTH = 0,
   parameter bit WRITE_FIRST = 1
 )(
@@ -35,12 +35,12 @@ module csr_dma
   output logic [4:0] o_dma_descriptor_read_mode,
   output logic [4:0] o_dma_descriptor_enable
 );
-  rggen_register_if #(8, 32, 128) register_if[8]();
+  rggen_register_if #(8, 64, 256) register_if[8]();
   rggen_axi4lite_adapter #(
     .ID_WIDTH             (ID_WIDTH),
     .ADDRESS_WIDTH        (ADDRESS_WIDTH),
     .LOCAL_ADDRESS_WIDTH  (8),
-    .BUS_WIDTH            (32),
+    .BUS_WIDTH            (64),
     .REGISTERS            (8),
     .PRE_DECODE           (PRE_DECODE),
     .BASE_ADDRESS         (BASE_ADDRESS),
@@ -55,15 +55,15 @@ module csr_dma
     .register_if  (register_if)
   );
   generate if (1) begin : g_dma_control
-    rggen_bit_field_if #(32) bit_field_if();
+    rggen_bit_field_if #(64) bit_field_if();
     rggen_default_register #(
       .READABLE       (1),
       .WRITABLE       (1),
       .ADDRESS_WIDTH  (8),
       .OFFSET_ADDRESS (8'h00),
-      .BUS_WIDTH      (32),
-      .DATA_WIDTH     (32),
-      .VALID_BITS     (32'h00000003),
+      .BUS_WIDTH      (64),
+      .DATA_WIDTH     (64),
+      .VALID_BITS     (64'h0000000000000003),
       .REGISTER_INDEX (0)
     ) u_register (
       .i_clk        (i_clk),
@@ -125,15 +125,15 @@ module csr_dma
     end
   end endgenerate
   generate if (1) begin : g_dma_status
-    rggen_bit_field_if #(32) bit_field_if();
+    rggen_bit_field_if #(64) bit_field_if();
     rggen_default_register #(
       .READABLE       (1),
       .WRITABLE       (0),
       .ADDRESS_WIDTH  (8),
-      .OFFSET_ADDRESS (8'h04),
-      .BUS_WIDTH      (32),
-      .DATA_WIDTH     (32),
-      .VALID_BITS     (32'h0003ffff),
+      .OFFSET_ADDRESS (8'h08),
+      .BUS_WIDTH      (64),
+      .DATA_WIDTH     (64),
+      .VALID_BITS     (64'h000000000003ffff),
       .REGISTER_INDEX (0)
     ) u_register (
       .i_clk        (i_clk),
@@ -212,7 +212,7 @@ module csr_dma
         .i_hw_write_data    ('0),
         .i_hw_set           ('0),
         .i_hw_clear         ('0),
-        .i_value            (register_if[2].value[34+:1]),
+        .i_value            (register_if[2].value[66+:1]),
         .i_mask             ('1),
         .o_value            (),
         .o_value_unmasked   ()
@@ -220,15 +220,15 @@ module csr_dma
     end
   end endgenerate
   generate if (1) begin : g_dma_error
-    rggen_bit_field_if #(64) bit_field_if();
+    rggen_bit_field_if #(128) bit_field_if();
     rggen_default_register #(
       .READABLE       (1),
       .WRITABLE       (0),
       .ADDRESS_WIDTH  (8),
-      .OFFSET_ADDRESS (8'h08),
-      .BUS_WIDTH      (32),
-      .DATA_WIDTH     (64),
-      .VALID_BITS     (64'h00000007ffffffff),
+      .OFFSET_ADDRESS (8'h10),
+      .BUS_WIDTH      (64),
+      .DATA_WIDTH     (128),
+      .VALID_BITS     (128'h000000000000000700000000ffffffff),
       .REGISTER_INDEX (0)
     ) u_register (
       .i_clk        (i_clk),
@@ -265,7 +265,7 @@ module csr_dma
     if (1) begin : g_error_type
       localparam bit INITIAL_VALUE = 1'h0;
       rggen_bit_field_if #(1) bit_field_sub_if();
-      `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 32, 1)
+      `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 64, 1)
       rggen_bit_field #(
         .WIDTH              (1),
         .STORAGE            (0),
@@ -291,7 +291,7 @@ module csr_dma
     if (1) begin : g_error_src
       localparam bit INITIAL_VALUE = 1'h0;
       rggen_bit_field_if #(1) bit_field_sub_if();
-      `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 33, 1)
+      `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 65, 1)
       rggen_bit_field #(
         .WIDTH              (1),
         .STORAGE            (0),
@@ -317,7 +317,7 @@ module csr_dma
     if (1) begin : g_error_trig
       localparam bit INITIAL_VALUE = 1'h0;
       rggen_bit_field_if #(1) bit_field_sub_if();
-      `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 34, 1)
+      `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 66, 1)
       rggen_bit_field #(
         .WIDTH              (1),
         .STORAGE            (0),
@@ -344,15 +344,15 @@ module csr_dma
   generate if (1) begin : g_dma_descriptor
     genvar i;
     for (i = 0;i < 5;++i) begin : g
-      rggen_bit_field_if #(128) bit_field_if();
+      rggen_bit_field_if #(256) bit_field_if();
       rggen_default_register #(
         .READABLE       (1),
         .WRITABLE       (1),
         .ADDRESS_WIDTH  (8),
-        .OFFSET_ADDRESS (8'h10),
-        .BUS_WIDTH      (32),
-        .DATA_WIDTH     (128),
-        .VALID_BITS     (128'h00000007ffffffffffffffffffffffff),
+        .OFFSET_ADDRESS (8'h20),
+        .BUS_WIDTH      (64),
+        .DATA_WIDTH     (256),
+        .VALID_BITS     (256'h000000000000000700000000ffffffff00000000ffffffff00000000ffffffff),
         .REGISTER_INDEX (i)
       ) u_register (
         .i_clk        (i_clk),
@@ -389,7 +389,7 @@ module csr_dma
       if (1) begin : g_dest_addr
         localparam bit [31:0] INITIAL_VALUE = 32'h00000000;
         rggen_bit_field_if #(32) bit_field_sub_if();
-        `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 32, 32)
+        `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 64, 32)
         rggen_bit_field #(
           .WIDTH          (32),
           .INITIAL_VALUE  (INITIAL_VALUE),
@@ -415,7 +415,7 @@ module csr_dma
       if (1) begin : g_num_bytes
         localparam bit [31:0] INITIAL_VALUE = 32'h00000000;
         rggen_bit_field_if #(32) bit_field_sub_if();
-        `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 64, 32)
+        `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 128, 32)
         rggen_bit_field #(
           .WIDTH          (32),
           .INITIAL_VALUE  (INITIAL_VALUE),
@@ -441,7 +441,7 @@ module csr_dma
       if (1) begin : g_write_mode
         localparam bit INITIAL_VALUE = 1'h0;
         rggen_bit_field_if #(1) bit_field_sub_if();
-        `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 96, 1)
+        `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 192, 1)
         rggen_bit_field #(
           .WIDTH          (1),
           .INITIAL_VALUE  (INITIAL_VALUE),
@@ -467,7 +467,7 @@ module csr_dma
       if (1) begin : g_read_mode
         localparam bit INITIAL_VALUE = 1'h0;
         rggen_bit_field_if #(1) bit_field_sub_if();
-        `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 97, 1)
+        `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 193, 1)
         rggen_bit_field #(
           .WIDTH          (1),
           .INITIAL_VALUE  (INITIAL_VALUE),
@@ -493,7 +493,7 @@ module csr_dma
       if (1) begin : g_enable
         localparam bit INITIAL_VALUE = 1'h0;
         rggen_bit_field_if #(1) bit_field_sub_if();
-        `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 98, 1)
+        `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 194, 1)
         rggen_bit_field #(
           .WIDTH          (1),
           .INITIAL_VALUE  (INITIAL_VALUE),
