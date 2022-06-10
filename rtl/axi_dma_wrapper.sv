@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 06.06.2022
- * Last Modified Date: 07.06.2022
+ * Last Modified Date: 10.06.2022
  */
 module axi_dma_wrapper
   import utils_pkg::*;
@@ -22,6 +22,18 @@ module axi_dma_wrapper
 );
   localparam AXI_DATA_WIDTH = `AXI_DATA_WIDTH;
 
+  logic [`DMA_NUM_DESC*$bits(desc_addr_t)-1:0]  dma_desc_src_vec;
+  logic [`DMA_NUM_DESC*$bits(desc_addr_t)-1:0]  dma_desc_dst_vec;
+  logic [`DMA_NUM_DESC*$bits(desc_num_t)-1:0]   dma_desc_byt_vec;
+  logic [`DMA_NUM_DESC-1:0]                     dma_desc_wr_mod;
+  logic [`DMA_NUM_DESC-1:0]                     dma_desc_rd_mod;
+  logic [`DMA_NUM_DESC-1:0]                     dma_desc_en;
+
+  s_dma_desc_t  [`DMA_NUM_DESC-1:0]             dma_desc;
+  s_dma_cmd_in_t                                dma_cmd_in;
+  s_dma_cmd_in_t                                dma_cmd_out;
+  s_dma_error_t                                 dma_error;
+
   always_comb begin
     dma_m_mosi_o = s_axi_mosi_t'('0);
     dma_done_o  = 1'b0;
@@ -29,6 +41,16 @@ module axi_dma_wrapper
 
     if (AXI_DATA_WIDTH == 64) begin
       dma_csr_miso_o.rdata[AXI_DATA_WIDTH-1:(AXI_DATA_WIDTH/2)] = '0;
+    end
+
+    // Hook-up Desc. CSR and DMA logic
+    for (int i=0; i<`DMA_NUM_DESC; i++) begin
+      dma_desc[i].src_addr  = dma_desc_src_vec[i*`DMA_ADDR_WIDTH +: `DMA_ADDR_WIDTH];
+      dma_desc[i].dst_addr  = dma_desc_dst_vec[i*`DMA_ADDR_WIDTH +: `DMA_ADDR_WIDTH];
+      dma_desc[i].num_bytes = dma_desc_byt_vec[i*`DMA_ADDR_WIDTH +: `DMA_ADDR_WIDTH];
+      dma_desc[i].wr_mode   = dma_desc_wr_mod[i];
+      dma_desc[i].rd_mode   = dma_desc_rd_mod[i];
+      dma_desc[i].enable    = dma_desc_en[i];
     end
   end
 
@@ -51,7 +73,7 @@ module axi_dma_wrapper
     .o_bresp                    (dma_csr_miso_o.bresp),
     .i_arvalid                  (dma_csr_mosi_i.arvalid),
     .o_arready                  (dma_csr_miso_o.arready),
-    .i_arid                     (),
+    .i_arid                     ('0),
     .i_araddr                   (dma_csr_mosi_i.araddr),
     .i_arprot                   (dma_csr_mosi_i.arprot),
     .o_rvalid                   (dma_csr_miso_o.rvalid),
@@ -59,19 +81,19 @@ module axi_dma_wrapper
     .o_rid                      (),
     .o_rdata                    (dma_csr_miso_o.rdata),
     .o_rresp                    (dma_csr_miso_o.rresp),
-    .o_dma_control_go           (),
-    .o_dma_control_abort        (),
-    .i_dma_status_done          ('0),
-    .i_dma_error_error_addr     ('0),
-    .i_dma_error_error_type     ('0),
-    .i_dma_error_error_src      ('0),
-    .i_dma_error_error_trig     ('0),
-    .o_dma_descriptor_src_addr  (),
-    .o_dma_descriptor_dest_addr (),
-    .o_dma_descriptor_num_bytes (),
-    .o_dma_descriptor_write_mode(),
-    .o_dma_descriptor_read_mode (),
-    .o_dma_descriptor_enable    ()
+    .o_dma_control_go           (dma_cmd_in.go),
+    .o_dma_control_abort        (dma_cmd_in.abort),
+    .i_dma_status_done          (dma_cmd_out.done),
+    .i_dma_error_error_addr     (dma_error.addr),
+    .i_dma_error_error_type     (dma_error.type_err),
+    .i_dma_error_error_src      (dma_error.src),
+    .i_dma_error_error_trig     (dma_cmd_out.error),
+    .o_dma_descriptor_src_addr  (dma_desc_src_vec),
+    .o_dma_descriptor_dest_addr (dma_desc_dst_vec),
+    .o_dma_descriptor_num_bytes (dma_desc_num_bytes_vec),
+    .o_dma_descriptor_write_mode(dma_desc_wr_mod),
+    .o_dma_descriptor_read_mode (dma_desc_rd_mod),
+    .o_dma_descriptor_enable    (dma_desc_en)
   );
   /* verilator lint_on WIDTH */
 

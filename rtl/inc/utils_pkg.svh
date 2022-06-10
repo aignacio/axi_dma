@@ -3,5 +3,6 @@
   package utils_pkg;
     //export *::*;
     `include "axi_pkg.svh"
+    `include "dma_pkg.svh"
   endpackage
 `endif

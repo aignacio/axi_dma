@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 08.06.2022
+# Last Modified Date: 09.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import random
 import cocotb
@@ -39,7 +39,7 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
 
     #------------ Init test ------------#
     for csr in dma_cfg.DMA_CSRs:
-        tb.log.info("CSR [%s]",csr)
+        tb.log.info("CSR [%s - Addr: %s]", csr, hex(dma_cfg.DMA_CSRs[csr][0]))
         payload = bytearray(tb._get_random_string(length=4),'utf-8')
         payload_sent = int.from_bytes(payload, byteorder='little', signed=False)
         payload_sent = payload_sent & dma_cfg.DMA_CSRs[csr][1]
