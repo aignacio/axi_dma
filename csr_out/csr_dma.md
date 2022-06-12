@@ -21,6 +21,7 @@
 |:--|:--|:--|:--|:--|:--|
 |go|[0]|rw|0x0||Sets the start for the DMA operation|
 |abort|[1]|rw|0x0||Stop DMA operation|
+|max_burst|[9:2]|rw|0xff||Max burst length (ALEN) in the AXI txn|
 
 ### <div id="csr_dma-dma_status"></div>dma_status
 

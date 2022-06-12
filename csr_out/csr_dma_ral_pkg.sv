@@ -6,12 +6,14 @@ package csr_dma_ral_pkg;
   class dma_control_reg_model extends rggen_ral_reg;
     rand rggen_ral_field go;
     rand rggen_ral_field abort;
+    rand rggen_ral_field max_burst;
     function new(string name);
       super.new(name, 64, 0);
     endfunction
     function void build();
       `rggen_ral_create_field(go, 0, 1, "RW", 0, 1'h0, 1, -1, "")
       `rggen_ral_create_field(abort, 1, 1, "RW", 0, 1'h0, 1, -1, "")
+      `rggen_ral_create_field(max_burst, 2, 8, "RW", 0, 8'hff, 1, -1, "")
     endfunction
   endclass
   class dma_status_reg_model extends rggen_ral_reg;

@@ -3,10 +3,10 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 05.06.2022
- * Last Modified Date: 07.06.2022
+ * Last Modified Date: 12.06.2022
  */
 module tb_axi_dma
-  import utils_pkg::*;
+  import dma_utils_pkg::*;
 (
   input                     clk,
   input                     rst,

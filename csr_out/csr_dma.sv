@@ -23,6 +23,7 @@ module csr_dma
   rggen_axi4lite_if.slave axi4lite_if,
   output logic o_dma_control_go,
   output logic o_dma_control_abort,
+  output logic [7:0] o_dma_control_max_burst,
   input logic i_dma_status_done,
   input logic [31:0] i_dma_error_error_addr,
   input logic i_dma_error_error_type,
@@ -63,7 +64,7 @@ module csr_dma
       .OFFSET_ADDRESS (8'h00),
       .BUS_WIDTH      (64),
       .DATA_WIDTH     (64),
-      .VALID_BITS     (64'h0000000000000003),
+      .VALID_BITS     (64'h00000000000003ff),
       .REGISTER_INDEX (0)
     ) u_register (
       .i_clk        (i_clk),
@@ -120,6 +121,32 @@ module csr_dma
         .i_value            ('0),
         .i_mask             ('1),
         .o_value            (o_dma_control_abort),
+        .o_value_unmasked   ()
+      );
+    end
+    if (1) begin : g_max_burst
+      localparam bit [7:0] INITIAL_VALUE = 8'hff;
+      rggen_bit_field_if #(8) bit_field_sub_if();
+      `rggen_connect_bit_field_if(bit_field_if, bit_field_sub_if, 2, 8)
+      rggen_bit_field #(
+        .WIDTH          (8),
+        .INITIAL_VALUE  (INITIAL_VALUE),
+        .SW_WRITE_ONCE  (0),
+        .TRIGGER        (0)
+      ) u_bit_field (
+        .i_clk              (i_clk),
+        .i_rst_n            (i_rst_n),
+        .bit_field_if       (bit_field_sub_if),
+        .o_write_trigger    (),
+        .o_read_trigger     (),
+        .i_sw_write_enable  ('1),
+        .i_hw_write_enable  ('0),
+        .i_hw_write_data    ('0),
+        .i_hw_set           ('0),
+        .i_hw_clear         ('0),
+        .i_value            ('0),
+        .i_mask             ('1),
+        .o_value            (o_dma_control_max_burst),
         .o_value_unmasked   ()
       );
     end

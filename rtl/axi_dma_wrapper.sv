@@ -3,10 +3,10 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 06.06.2022
- * Last Modified Date: 10.06.2022
+ * Last Modified Date: 12.06.2022
  */
 module axi_dma_wrapper
-  import utils_pkg::*;
+  import dma_utils_pkg::*;
 (
   input                 clk,
   input                 rst,
@@ -30,8 +30,8 @@ module axi_dma_wrapper
   logic [`DMA_NUM_DESC-1:0]                     dma_desc_en;
 
   s_dma_desc_t  [`DMA_NUM_DESC-1:0]             dma_desc;
-  s_dma_cmd_in_t                                dma_cmd_in;
-  s_dma_cmd_in_t                                dma_cmd_out;
+  s_dma_control_t                               dma_ctrl;
+  s_dma_status_t                                dma_stats;
   s_dma_error_t                                 dma_error;
 
   always_comb begin
@@ -81,20 +81,29 @@ module axi_dma_wrapper
     .o_rid                      (),
     .o_rdata                    (dma_csr_miso_o.rdata),
     .o_rresp                    (dma_csr_miso_o.rresp),
-    .o_dma_control_go           (dma_cmd_in.go),
-    .o_dma_control_abort        (dma_cmd_in.abort),
-    .i_dma_status_done          (dma_cmd_out.done),
+    .o_dma_control_go           (dma_ctrl.go),
+    .o_dma_control_max_burst    (dma_ctrl.max_burst),
+    .o_dma_control_abort        (dma_ctrl.abort_req),
+    .i_dma_status_done          (dma_stats.done),
+    .i_dma_error_error_trig     (dma_stats.error),
     .i_dma_error_error_addr     (dma_error.addr),
     .i_dma_error_error_type     (dma_error.type_err),
     .i_dma_error_error_src      (dma_error.src),
-    .i_dma_error_error_trig     (dma_cmd_out.error),
     .o_dma_descriptor_src_addr  (dma_desc_src_vec),
     .o_dma_descriptor_dest_addr (dma_desc_dst_vec),
-    .o_dma_descriptor_num_bytes (dma_desc_num_bytes_vec),
+    .o_dma_descriptor_num_bytes (dma_desc_byt_vec),
     .o_dma_descriptor_write_mode(dma_desc_wr_mod),
     .o_dma_descriptor_read_mode (dma_desc_rd_mod),
     .o_dma_descriptor_enable    (dma_desc_en)
   );
   /* verilator lint_on WIDTH */
 
+  dma_func_wrapper u_dma_func_wrapper(
+    .clk        (clk),
+    .rst        (rst),
+    // From/To CSRs
+    .dma_ctrl_i (dma_ctrl),
+    .dma_desc_i (dma_desc),
+    .dma_stats_o(dma_stats)
+  );
 endmodule

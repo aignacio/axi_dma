@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 09.06.2022
+# Last Modified Date: 12.06.2022
 import os
 import glob
 import copy
@@ -26,7 +26,7 @@ class cfg_const:
 
     DMA_CSRs = {}
     #-------------------------------> Addr     Mask       RW
-    DMA_CSRs['DMA_CONTROL']        = (0x0000, 0x3,        1)
+    DMA_CSRs['DMA_CONTROL']        = (0x0000, 0x3FF,      1)
     DMA_CSRs['DMA_STATUS']         = (0x0008, 0xCAFE,     0)
     DMA_CSRs['DMA_ERROR_ADDR']     = (0x0010, 0x0,        0)
     DMA_CSRs['DMA_ERROR_MISC']     = (0x0018, 0x0,        0)

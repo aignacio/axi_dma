@@ -35,6 +35,7 @@ module csr_dma #(
   output [1:0] o_rresp,
   output o_dma_control_go,
   output o_dma_control_abort,
+  output [7:0] o_dma_control_max_burst,
   input i_dma_status_done,
   input [31:0] i_dma_error_error_addr,
   input i_dma_error_error_type,
@@ -112,7 +113,7 @@ module csr_dma #(
     wire [63:0] w_bit_field_write_data;
     wire [63:0] w_bit_field_read_data;
     wire [63:0] w_bit_field_value;
-    `rggen_tie_off_unused_signals(64, 64'h0000000000000003, w_bit_field_read_data, w_bit_field_value)
+    `rggen_tie_off_unused_signals(64, 64'h00000000000003ff, w_bit_field_read_data, w_bit_field_value)
     rggen_default_register #(
       .READABLE       (1),
       .WRITABLE       (1),
@@ -194,6 +195,34 @@ module csr_dma #(
         .i_value            ({1{1'b0}}),
         .i_mask             ({1{1'b1}}),
         .o_value            (o_dma_control_abort),
+        .o_value_unmasked   ()
+      );
+    end
+    if (1) begin : g_max_burst
+      rggen_bit_field #(
+        .WIDTH          (8),
+        .INITIAL_VALUE  (`rggen_slice(8'hff, 8, 0)),
+        .SW_WRITE_ONCE  (0),
+        .TRIGGER        (0)
+      ) u_bit_field (
+        .i_clk              (i_clk),
+        .i_rst_n            (i_rst_n),
+        .i_sw_valid         (w_bit_field_valid),
+        .i_sw_read_mask     (w_bit_field_read_mask[2+:8]),
+        .i_sw_write_enable  (1'b1),
+        .i_sw_write_mask    (w_bit_field_write_mask[2+:8]),
+        .i_sw_write_data    (w_bit_field_write_data[2+:8]),
+        .o_sw_read_data     (w_bit_field_read_data[2+:8]),
+        .o_sw_value         (w_bit_field_value[2+:8]),
+        .o_write_trigger    (),
+        .o_read_trigger     (),
+        .i_hw_write_enable  (1'b0),
+        .i_hw_write_data    ({8{1'b0}}),
+        .i_hw_set           ({8{1'b0}}),
+        .i_hw_clear         ({8{1'b0}}),
+        .i_value            ({8{1'b0}}),
+        .i_mask             ({8{1'b1}}),
+        .o_value            (o_dma_control_max_burst),
         .o_value_unmasked   ()
       );
     end

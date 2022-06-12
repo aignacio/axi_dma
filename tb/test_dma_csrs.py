@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 09.06.2022
+# Last Modified Date: 12.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import random
 import cocotb
@@ -52,7 +52,10 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
         if dma_cfg.DMA_CSRs[csr][2] == 1:
             assert payload_sent == rd_from_csr, "Mismatch on DMA CSR RW"
         else:
-            assert dma_cfg.DMA_CSRs[csr][1] == rd_from_csr, "Mismatch on DMA CSR RO"
+            if csr == 'DMA_STATUS':
+                assert (dma_cfg.DMA_CSRs[csr][1] == rd_from_csr) or (0x1CAFE == rd_from_csr), "Mismatch on DMA CSR RO"
+            else:
+                assert dma_cfg.DMA_CSRs[csr][1] == rd_from_csr, "Mismatch on DMA CSR RO"
 
 def cycle_pause():
     return itertools.cycle([1, 1, 1, 0])
