@@ -9,7 +9,7 @@ module dma_fifo
   import dma_utils_pkg::*;
 #(
   parameter int SLOTS = `DMA_FIFO_DEPTH,
-  parameter int WIDTH = `AXI_DATA_WIDTH
+  parameter int WIDTH = `DMA_DATA_WIDTH
 )(
   input                                       clk,
   input                                       rst,

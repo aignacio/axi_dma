@@ -6,7 +6,11 @@
   `endif
 
   `ifndef DMA_ADDR_WIDTH
-    `define DMA_ADDR_WIDTH  32
+    `define DMA_ADDR_WIDTH  `AXI_ADDR_WIDTH
+  `endif
+
+  `ifndef DMA_DATA_WIDTH
+    `define DMA_DATA_WIDTH  `AXI_DATA_WIDTH
   `endif
 
   `ifndef DMA_BYTES_WIDTH
@@ -24,9 +28,19 @@
   typedef logic [7:0]                       maxb_t;
 
   typedef enum logic {
+    DMA_ERR_CFG,
+    DMA_ERR_OPE
+  } err_type_t;
+
+  typedef enum logic {
     DMA_ERR_RD,
     DMA_ERR_WR
   } err_src_t;
+
+  typedef enum logic {
+    DMA_ST_SM_IDLE,
+    DMA_ST_SM_RUN
+  } dma_sm_t;
 
   typedef enum logic [1:0] {
     DMA_ST_IDLE,
@@ -37,10 +51,10 @@
 
   typedef enum logic {
     DMA_MODE_INCR,
-    DMA_MODE_FIXD
+    DMA_MODE_FIXED
   } dma_mode_t;
 
-  // Interface between DMA FSM and DMA CSR
+  // Interface between DMA FSM / Streamer and DMA CSR
   typedef struct packed {
     desc_addr_t src_addr;
     desc_addr_t dst_addr;
@@ -79,12 +93,15 @@
 
   // Interface between DMA Streamer and DMA AXI
   typedef struct packed {
-    logic       valid;
-    idx_desc_t  idx;
+    axi_addr_t    addr;
+    axi_alen_t    alen;
+    axi_size_t    size;
+    axi_wr_strb_t strb;
+    logic         valid;
   } s_dma_axi_req_t;
 
   typedef struct packed {
-    logic       done;
+    logic         ready;
   } s_dma_axi_resp_t;
 
 `endif
