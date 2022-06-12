@@ -24,7 +24,6 @@ module dma_streamer
   output  s_dma_str_out_t                   dma_stream_o
 );
   localparam bytes_p_burst = (`DMA_DATA_WIDTH/8);
-  localparam max_strb      = (`DMA_DATA_WIDTH == 32) ? 'hF : 'hFF;
   localparam max_txn_width = $clog2(256*(`DMA_DATA_WIDTH/8));
 
   dma_sm_t    cur_st_ff,      next_st;
@@ -45,6 +44,7 @@ module dma_streamer
   function automatic axi_wr_strb_t get_strb(logic [2:0] addr, logic [3:0] bytes);
     axi_wr_strb_t strobe;
     if (`DMA_DATA_WIDTH == 64) begin
+      /* verilator lint_off WIDTH */
       case (bytes)
         'd1:  strobe = 'b0000_0001;
         'd2:  strobe = 'b0000_0011;
@@ -55,6 +55,7 @@ module dma_streamer
         'd7:  strobe = 'b0111_1111;
         default:  strobe = '0;
       endcase
+      /* verilator lint_on WIDTH */
     end
     else begin
       case (bytes)
@@ -66,8 +67,8 @@ module dma_streamer
       endcase
     end
 
-    for (logic [2:0] i=0; i<7; i++) begin
-      if (addr == i) begin
+    for (logic [3:0] i=0; i<8; i++) begin
+      if (addr == i[2:0]) begin
         strobe = strobe << i;
       end
     end
@@ -226,7 +227,7 @@ module dma_streamer
 
           if (is_aligned(desc_addr_ff) && enough_burst(desc_bytes_ff)) begin
             next_dma_req.alen = great_alen(desc_addr_ff, desc_bytes_ff);
-            next_dma_req.strb = max_strb;
+            next_dma_req.strb = '1;
             full_burst = 1'b1;
           end
           else begin
