@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 10.06.2022
- * Last Modified Date: 12.06.2022
+ * Last Modified Date: 13.06.2022
  */
 module dma_fsm
   import dma_utils_pkg::*;
@@ -16,8 +16,10 @@ module dma_fsm
   output  s_dma_status_t                    dma_stats_o,
   // From/To AXI I/F
   input                                     axi_pend_txn_i,
-  input                                     axi_txn_err_i,
+  input   s_dma_error_t                     axi_txn_err_i,
+  output  s_dma_error_t                     dma_error_o,
   output  logic                             clear_dma_o,
+  output  logic                             dma_active_o,
   // To/From streamers
   output  s_dma_str_in_t                    dma_stream_rd_o,
   input   s_dma_str_out_t                   dma_stream_rd_i,
@@ -33,15 +35,16 @@ module dma_fsm
   logic abort_ff;
 
   function automatic logic check_cfg();
-    logic valid_desc;
+    logic [`DMA_NUM_DESC-1:0] valid_desc;
 
-    valid_desc = 0;
+    valid_desc = '0;
+
     for (int i=0; i<`DMA_NUM_DESC; i++) begin
       if (dma_desc_i[i].enable) begin
-        valid_desc = (|dma_desc_i[i].num_bytes);
+        valid_desc[i] = (|dma_desc_i[i].num_bytes);
       end
     end
-    return valid_desc;
+    return |valid_desc;
   endfunction
 
   always_comb begin : fsm_dma_ctrl
@@ -83,6 +86,7 @@ module dma_fsm
     dma_stream_rd_o   = s_dma_str_in_t'('0);
     next_rd_desc_done = rd_desc_done_ff;
     pending_rd_desc   = 1'b0;
+    dma_active_o      = (cur_st_ff == DMA_ST_RUN);
 
     if (cur_st_ff == DMA_ST_RUN) begin
       for (int i=0; i<`DMA_NUM_DESC; i++) begin
@@ -139,7 +143,15 @@ module dma_fsm
   /* verilator lint_on WIDTH */
 
   always_comb begin : dma_status
-    dma_stats_o.error = axi_txn_err_i;
+    dma_error_o = s_dma_error_t'('0);
+
+    if (axi_txn_err_i.valid) begin
+      dma_error_o.addr     = axi_txn_err_i.addr;
+      dma_error_o.type_err = DMA_ERR_OPE;
+      dma_error_o.src      = axi_txn_err_i.src;
+      dma_error_o.valid    = 1'b1;
+    end
+    dma_stats_o.error = axi_txn_err_i.valid;
     dma_stats_o.done  = (cur_st_ff == DMA_ST_DONE);
     clear_dma_o       = (cur_st_ff == DMA_ST_DONE) && (next_st == DMA_ST_IDLE);
   end : dma_status

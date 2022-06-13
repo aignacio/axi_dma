@@ -3,13 +3,16 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 05.06.2022
- * Last Modified Date: 12.06.2022
+ * Last Modified Date: 13.06.2022
  */
 module tb_axi_dma
   import dma_utils_pkg::*;
 (
   input                     clk,
   input                     rst,
+  // DMA IRQs
+  output                    dma_done_o,
+  output                    dma_error_o,
   // Slave AXI Lite - MOSI
   // Write Address channel
   input axi_addr_t          dma_s_awaddr,
@@ -69,7 +72,7 @@ module tb_axi_dma
   // Write Response channel
   output logic              dma_m_bready,
   // Read Address channel
-  output logic              dma_m_arid,
+  output axi_tid_t          dma_m_arid,
   output axi_addr_t         dma_m_araddr,
   output axi_alen_t         dma_m_arlen,
   output axi_size_t         dma_m_arsize,
@@ -188,8 +191,8 @@ module tb_axi_dma
     .dma_csr_miso_o (dma_s_miso),
     .dma_m_mosi_o   (dma_m_mosi),
     .dma_m_miso_i   (dma_m_miso),
-    .dma_done_o     (),
-    .dma_error_o    ()
+    .dma_done_o     (dma_done_o),
+    .dma_error_o    (dma_error_o)
   );
 
 endmodule

@@ -84,35 +84,35 @@
 
   typedef struct packed {
     // Globals
-    logic          aclk;
-    logic          arst;
+    logic           aclk;
+    logic           arst;
   } s_axi_glb_t;
 
   // AXI
   typedef struct packed {
     // Write Addr channel
-    logic          awready;
+    logic           awready;
     // Write Data channel
-    logic          wready;
+    logic           wready;
     // Write Response channel
-    logic          bid;
-    axi_error_t    bresp;
-    axi_user_rsp_t buser;
-    logic          bvalid;
+    axi_tid_t       bid;
+    axi_error_t     bresp;
+    axi_user_rsp_t  buser;
+    logic           bvalid;
     // Read addr channel
-    logic          arready;
+    logic           arready;
     // Read data channel
-    logic          rid;
-    axi_data_t     rdata;
-    axi_error_t    rresp;
-    logic          rlast;
-    axi_user_req_t ruser;
-    logic          rvalid;
+    axi_tid_t       rid;
+    axi_data_t      rdata;
+    axi_error_t     rresp;
+    logic           rlast;
+    axi_user_req_t  ruser;
+    logic           rvalid;
   } s_axi_miso_t;
 
   typedef struct packed {
     // Write Address channel
-    logic           awid;
+    axi_tid_t       awid;
     axi_addr_t      awaddr;
     axi_alen_t      awlen;
     axi_size_t      awsize;
@@ -134,7 +134,7 @@
     // Write Response channel
     logic           bready;
     // Read Address channel
-    logic           arid;
+    axi_tid_t       arid;
     axi_addr_t      araddr;
     axi_alen_t      arlen;
     axi_size_t      arsize;
@@ -153,18 +153,18 @@
   // AXI Lite
   typedef struct packed {
     // Write Addr channel
-    logic          awready;
+    logic           awready;
     // Write Data channel
-    logic          wready;
+    logic           wready;
     // Write Response channel
-    axi_error_t    bresp;
-    logic          bvalid;
+    axi_error_t     bresp;
+    logic           bvalid;
     // Read addr channel
-    logic          arready;
+    logic           arready;
     // Read data channel
-    axi_data_t     rdata;
-    axi_error_t    rresp;
-    logic          rvalid;
+    axi_data_t      rdata;
+    axi_error_t     rresp;
+    logic           rvalid;
   } s_axil_miso_t;
 
   typedef struct packed {

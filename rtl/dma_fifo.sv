@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 10.06.2022
- * Last Modified Date: 12.06.2022
+ * Last Modified Date: 13.06.2022
  */
 module dma_fifo
   import dma_utils_pkg::*;
@@ -24,13 +24,14 @@ module dma_fifo
   output  logic [$clog2(SLOTS>1?SLOTS:2):0]   free_o
 );
   `define MSB_SLOT  $clog2(SLOTS>1?SLOTS:2)
+  typedef logic [$clog2(SLOTS>1?SLOTS:2):0] msb_t;
 
-  logic [SLOTS-1:0] [WIDTH-1:0]     fifo_ff;
-  logic [`MSB_SLOT:0] write_ptr_ff;
-  logic [`MSB_SLOT:0] read_ptr_ff;
-  logic [`MSB_SLOT:0] next_write_ptr;
-  logic [`MSB_SLOT:0] next_read_ptr;
-  logic [`MSB_SLOT:0] fifo_ocup;
+  logic [SLOTS-1:0] [WIDTH-1:0] fifo_ff;
+  msb_t                         write_ptr_ff;
+  msb_t                         read_ptr_ff;
+  msb_t                         next_write_ptr;
+  msb_t                         next_read_ptr;
+  msb_t                         fifo_ocup;
 
   always_comb begin
     next_read_ptr = read_ptr_ff;
@@ -55,7 +56,7 @@ module dma_fifo
 
     error_o = (write_i && full_o) || (read_i && empty_o);
     fifo_ocup = write_ptr_ff - read_ptr_ff;
-    fifo_space = SLOTS - fifo_ocup;
+    free_o = msb_t'(SLOTS) - fifo_ocup;
     ocup_o = fifo_ocup;
   end
 

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.06.2022
- * Last Modified Date: 12.06.2022
+ * Last Modified Date: 13.06.2022
  */
 module dma_streamer
   import dma_utils_pkg::*;
@@ -86,7 +86,7 @@ module dma_streamer
   endfunction
 
   function automatic axi_addr_t aligned_addr(axi_addr_t addr);
-    if (`DMA_ADDR_WIDTH == 32) begin
+    if (`DMA_DATA_WIDTH == 32) begin
       return {addr[`DMA_ADDR_WIDTH-1:2],2'b00};
     end
     else begin
@@ -143,7 +143,7 @@ module dma_streamer
       // Check if we have enough bytes for this alen and that if
       // it is less or equal than the max burst configured in the
       // CSRs and the burst mode
-      if (((i*bytes_p_burst) >= bytes) && (i <= dma_maxb_i) && valid_burst(dma_mode_ff, i[8:0])) begin
+      if (((i*bytes_p_burst) >= bytes) && ((i-'d1) <= dma_maxb_i) && valid_burst(dma_mode_ff, i[8:0])) begin
         // Check if we respect the 4KB boundary per burst
         fut_addr = addr+(i*bytes_p_burst);
         if (burst_r4KB(addr, fut_addr)) begin
@@ -224,6 +224,7 @@ module dma_streamer
           // respecting the 4KB boundary and burst type INCR/FIXED
           next_dma_req.addr = aligned_addr(desc_addr_ff);
           next_dma_req.size = (`DMA_DATA_WIDTH == 32) ? 2 : 3;
+          next_dma_req.mode = dma_mode_ff;
 
           if (is_aligned(desc_addr_ff) && enough_burst(desc_bytes_ff)) begin
             next_dma_req.alen = great_alen(desc_addr_ff, desc_bytes_ff);
@@ -287,6 +288,7 @@ module dma_streamer
       desc_bytes_ff <= next_desc_bytes;
       dma_mode_ff   <= next_dma_mode;
       last_txn_ff   <= next_last_txn;
+      dma_req_ff    <= next_dma_req;
     end
   end
 endmodule

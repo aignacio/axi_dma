@@ -1,6 +1,9 @@
 `ifndef _DMA_PKG_
   `define _DMA_PKG_
 
+  // Remember to also change in the
+  // xls sheet to generate the same
+  // correspondent number of desc
   `ifndef DMA_NUM_DESC
     `define DMA_NUM_DESC    5
   `endif
@@ -17,15 +20,28 @@
     `define DMA_BYTES_WIDTH 32
   `endif
 
+  `ifndef DMA_RD_TXN_BUFF
+    `define DMA_RD_TXN_BUFF 8 // Must be power of 2
+  `endif
+
+  `ifndef DMA_WR_TXN_BUFF
+    `define DMA_WR_TXN_BUFF 8 // Must be power of 2
+  `endif
+
   // FIFO size in bytes = (DMA_FIFO_DEPTH*(AXI_DATA_WIDTH/8))
   `ifndef DMA_FIFO_DEPTH
     `define DMA_FIFO_DEPTH  16 // Must be power of 2
   `endif
 
-  typedef logic [`DMA_ADDR_WIDTH-1:0]       desc_addr_t;
-  typedef logic [`DMA_BYTES_WIDTH-1:0]      desc_num_t;
-  typedef logic [$clog2(`DMA_NUM_DESC)-1:0] idx_desc_t;
-  typedef logic [7:0]                       maxb_t;
+  localparam FIFO_WIDTH = $clog2(`DMA_FIFO_DEPTH>1?`DMA_FIFO_DEPTH:2);
+
+  typedef logic [`DMA_ADDR_WIDTH-1:0]         desc_addr_t;
+  typedef logic [`DMA_BYTES_WIDTH-1:0]        desc_num_t;
+  typedef logic [7:0]                         maxb_t;
+  typedef logic [$clog2(`DMA_NUM_DESC)-1:0]   idx_desc_t;
+  typedef logic [FIFO_WIDTH:0]                fifo_sz_t;
+  typedef logic [$clog2(`DMA_RD_TXN_BUFF):0]  pend_rd_t;
+  typedef logic [$clog2(`DMA_WR_TXN_BUFF):0]  pend_wr_t;
 
   typedef enum logic {
     DMA_ERR_CFG,
@@ -68,6 +84,7 @@
     desc_addr_t addr;
     err_type_t  type_err;
     err_src_t   src;
+    logic       valid;
   } s_dma_error_t;
 
   typedef struct packed {
@@ -97,11 +114,26 @@
     axi_alen_t    alen;
     axi_size_t    size;
     axi_wr_strb_t strb;
+    dma_mode_t    mode;
     logic         valid;
   } s_dma_axi_req_t;
 
   typedef struct packed {
-    logic         ready;
+    logic       ready;
   } s_dma_axi_resp_t;
 
+  // Interface between DMA FIFOs and DMA AXI
+  typedef struct packed {
+    logic       wr;
+    logic       rd;
+    axi_data_t  data_wr;
+  } s_dma_fifo_req_t;
+
+  typedef struct packed {
+    axi_data_t  data_rd;
+    fifo_sz_t   ocup;
+    fifo_sz_t   space;
+    logic       full;
+    logic       empty;
+  } s_dma_fifo_resp_t;
 `endif

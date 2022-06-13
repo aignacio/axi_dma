@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 04.06.2022
-# Last Modified Date: 07.06.2022
+# Last Modified Date: 13.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import cocotb
 import os, errno
@@ -15,14 +15,15 @@ from common.constants import cfg_const
 from cocotb.clock import Clock
 from datetime import datetime
 from cocotb.triggers import ClockCycles, RisingEdge, with_timeout, ReadOnly, Event
-from cocotbext.axi import AxiBus, AxiLiteBus, AxiMaster, AxiRam, AxiResp, AxiLiteMaster, AxiSlave
+from cocotbext.axi import AxiBus, AxiLiteBus, AxiRam, AxiResp, AxiLiteMaster, AxiSlave
 from cocotbext.axi import AxiLiteRam
 from cocotb.result import TestFailure
 
 class Tb:
-    def __init__(self, dut, log_name, cfg):
+    def __init__(self, dut, log_name, cfg, flavor):
         self.dut = dut
         self.cfg = cfg
+        self.flavor = flavor
         timenow_wstamp = self._gen_log(log_name)
         self.log.info("------------[LOG - %s]------------",timenow_wstamp)
         self.log.info("SEED: %s",str(cocotb.RANDOM_SEED))
@@ -47,6 +48,25 @@ class Tb:
         if generator:
             self.csr_axi_if.write_if.b_channel.set_pause_generator(generator())
             self.csr_axi_if.read_if.r_channel.set_pause_generator(generator())
+
+    async def prg_desc(self, descriptors, **kwargs):
+        for desc in descriptors:
+            addr  = self.cfg.DMA_CSRs[desc][0]
+            dataW = descriptors[desc]
+            dataW = dataW.to_bytes(4 if self.flavor == '32' else 8,'little')
+            write = self.csr_axi_if.init_write(address=addr, data=dataW, **kwargs)
+            await with_timeout(write.wait(), *cfg_const.TIMEOUT_AXI)
+        ret = write.data
+        return ret
+
+    async def start_dma(self, **kwargs):
+        addr  = self.cfg.DMA_CSRs['DMA_CONTROL'][0]
+        dataW = 0x3FD # MAX_BURST[7:0] ABORT[0] GO[0]
+        dataW = dataW.to_bytes(4 if self.flavor == '32' else 8,'little')
+        write = self.csr_axi_if.init_write(address=addr, data=dataW, **kwargs)
+        await with_timeout(write.wait(), *cfg_const.TIMEOUT_AXI)
+        ret = write.data
+        return ret
 
     async def write(self, address=0x0, data=0x0, **kwargs):
         # self.log.info("[AXI Lite Master - Write] Address = ["+str(hex(address))+"] ")
