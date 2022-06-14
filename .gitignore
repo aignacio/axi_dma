@@ -33,3 +33,5 @@ riscof_work/
 riscv-arch-test/
 ~$*
 docs/.**
+coverage.*
+output_lcov

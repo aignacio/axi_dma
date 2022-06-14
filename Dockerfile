@@ -19,7 +19,7 @@ RUN export RGGEN_SV_RAL_ROOT=`pwd`/rggen-sv-ral
 #RUN apt install python3.9 -y
 RUN apt-get install python3 make g++ perl autoconf flex bison libfl2  \
                     libfl-dev zlibc zlib1g zlib1g-dev git file gcc    \
-                    make time wget zip python3-pip -y
+                    make time wget zip python3-pip lcov -y
 # [Verilator]
 RUN git clone https://github.com/verilator/verilator
 WORKDIR /verilator

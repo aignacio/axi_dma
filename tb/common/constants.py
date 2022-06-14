@@ -4,14 +4,14 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 13.06.2022
+# Last Modified Date: 14.06.2022
 import os
 import glob
 import copy
 import math
 
 class cfg_const:
-    ################### Configure ####################
+    ################### Start Configure ####################
     regression_setup = ['32', '64']
     RST_CYCLES  = 3
     TIMEOUT_VAL = 100
@@ -42,14 +42,7 @@ class cfg_const:
         DMA_CSRs['DMA_DESC_READ_MODE_' +str(i)] = (BASE_ADDR_DESC+(3*(NUM_DESC*8))+(i*CSR_ADDR_ALIG), 0x7,        1)
         DMA_CSRs['DMA_DESC_ENABLE_'    +str(i)] = (BASE_ADDR_DESC+(3*(NUM_DESC*8))+(i*CSR_ADDR_ALIG), 0x7,        1)
 
-    # for desc in range(BASE_ADDR_DESC, BASE_ADDR_DESC+NUM_DESC*PER_DESC_CSRS*CSR_ADDR_ALIG, PER_DESC_CSRS*CSR_ADDR_ALIG):
-        # DMA_CSRs['DMA_DESC_SRC_ADDR_'  +str(desc//BASE_ADDR_DESC)] = (desc,       0xFFFFFFFF, 1)
-        # DMA_CSRs['DMA_DESC_DEST_ADDR_' +str(desc//BASE_ADDR_DESC)] = (desc+(1*8), 0xFFFFFFFF, 1)
-        # DMA_CSRs['DMA_DESC_NUM_BYTES_' +str(desc//BASE_ADDR_DESC)] = (desc+(2*8), 0xFFFFFFFF, 1)
-        # DMA_CSRs['DMA_DESC_WRITE_MODE_'+str(desc//BASE_ADDR_DESC)] = (desc+(3*8), 0x7,        1)
-        # DMA_CSRs['DMA_DESC_READ_MODE_' +str(desc//BASE_ADDR_DESC)] = (desc+(3*8), 0x7,        1)
-        # DMA_CSRs['DMA_DESC_ENABLE_'    +str(desc//BASE_ADDR_DESC)] = (desc+(3*8), 0x7,        1)
-    ################### Configure ####################
+    ################### End Configure ####################
 
     CLK_100MHz  = (10, "ns")
     CLK_200MHz  = (5, "ns")
@@ -73,9 +66,9 @@ class cfg_const:
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}**/*.sv',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{CSR_RGGEN_DIR}**/*.v',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RGGEN_V_DIR}**/*.v',recursive=True)
-    COMPILE_ARGS = ["-f","/axi_dma/verilator.flags"]
+    COMPILE_ARGS = ["-f","/axi_dma/verilator.flags","--coverage","--coverage-line","--coverage-toggle"]
     if SIMULATOR == "verilator":
-        EXTRA_ARGS = ["--trace-fst","--coverage","--trace-structs","--Wno-UNOPTFLAT","--Wno-REDEFMACRO"]
+        EXTRA_ARGS = ["--trace-fst","--trace-structs","--Wno-UNOPTFLAT","--Wno-REDEFMACRO"]
     else:
         EXTRA_ARGS = []
 
