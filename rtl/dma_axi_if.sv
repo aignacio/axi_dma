@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 13.06.2022
- * Last Modified Date: 13.06.2022
+ * Last Modified Date: 14.06.2022
  */
 module dma_axi_if
   import dma_utils_pkg::*;
@@ -30,6 +30,7 @@ module dma_axi_if
 );
   pend_rd_t     rd_counter_ff, next_rd_counter;
   pend_wr_t     wr_counter_ff, next_wr_counter;
+  axi_wr_strb_t rd_txn_last_strb;
   logic         rd_txn_hpn;
   logic         wr_txn_hpn;
   logic         rd_resp_hpn;
@@ -39,30 +40,75 @@ module dma_axi_if
   axi_addr_t    rd_txn_addr;
   axi_addr_t    wr_txn_addr;
   logic         err_lock_ff, next_err_lock;
+  logic         wr_data_txn_hpn;
+  logic         wr_new_ff, next_wr_new;
+  logic         wr_new_txn;
+  logic         wr_beat_hpn;
+  logic         wr_data_req_empty;
+
+  s_wr_req_t    wr_data_req_in, wr_data_req_out;
+  axi_alen_t    beat_counter_ff, next_beat_count;
 
   s_dma_error_t dma_error_ff, next_dma_error;
 
-  //logic [$bits(s_dma_axi_req_t)-1:0] in_flat_rd_req;
-  //logic [$bits(s_dma_axi_req_t)-1:0] out_flat_rd_req;
-  //s_dma_axi_req_t rd_req_int;
+  function automatic axi_data_t apply_strb(axi_data_t data, axi_wr_strb_t mask);
+    axi_data_t out_data;
+    for (int i=0; i<$bits(axi_wr_strb_t); i++) begin
+      if (mask[i] == 1'b1) begin
+        out_data[(8*i)+:8] = data[(8*i)+:8];
+      end
+      else begin
+        out_data[(8*i)+:8] = 8'd0;
+      end
+    end
+  endfunction
 
-  //dma_fifo #(
-    //.SLOTS  (`DMA_RD_TXN_BUFF),
-    //.WIDTH  ($bits(s_dma_axi_req_t))
-  //) u_rd_buf (
-    //.clk    (clk),
-    //.rst    (rst),
-    //.write_i(),
-    //.read_i (),
-    //.data_i (in_flat_rd_req),
-    //.data_o (out_flat_rd_req),
-    //.error_o(),
-    //.full_o (),
-    //.empty_o(),
-    //.ocup_o (),
-    //.free_o ()
-  //);
+  //***************************************************
+  // Queue the txn from the wr streamer to send in the
+  // data channel
+  //***************************************************
+  dma_fifo #(
+    .SLOTS  (`DMA_WR_TXN_BUFF),
+    .WIDTH  ($bits(s_wr_req_t))
+  ) u_fifo_wr_data (
+    .clk    (clk),
+    .rst    (rst),
+    .write_i(wr_new_txn),
+    .read_i (wr_data_txn_hpn),
+    .data_i (wr_data_req_in),
+    .data_o (wr_data_req_out),
+    .error_o(),
+    .full_o (),
+    .empty_o(wr_data_req_empty),
+    .ocup_o (),
+    .free_o ()
+  );
 
+  //***************************************************
+  // Stores the strb mask used in case of unaligned
+  // start/end addresses for reads
+  //***************************************************
+  dma_fifo #(
+    .SLOTS  (`DMA_RD_TXN_BUFF),
+    .WIDTH  ($bits(axi_wr_strb_t))
+  ) u_fifo_rd_strb (
+    .clk    (clk),
+    .rst    (rst),
+    .write_i(rd_txn_hpn),
+    .read_i (rd_resp_hpn),
+    .data_i (dma_axi_rd_req_i.strb),
+    .data_o (rd_txn_last_strb),
+    .error_o(),
+    .full_o (),
+    .empty_o(),
+    .ocup_o (),
+    .free_o ()
+  );
+
+  //***************************************************
+  // Stores the address of the txn that were dispatched
+  // for further logging in case of error
+  //***************************************************
   dma_fifo #(
     .SLOTS  (`DMA_RD_TXN_BUFF),
     .WIDTH  (`DMA_ADDR_WIDTH)
@@ -98,13 +144,6 @@ module dma_axi_if
   );
 
   always_comb begin
-    //in_flat_rd_req  = {dma_axi_rd_req_i.addr,
-                       //dma_axi_rd_req_i.alen,
-                       //dma_axi_rd_req_i.size,
-                       //dma_axi_rd_req_i.strb,
-                       //1'b0};
-    //rd_req_int = s_dma_axi_req_t'(out_flat_rd_req);
-
     axi_pend_txn_o  = (|rd_counter_ff) || (|wr_counter_ff);
     axi_dma_err_o   = dma_error_ff;
     next_dma_error  = dma_error_ff;
@@ -133,8 +172,14 @@ module dma_axi_if
       end
     end
 
+    if (clear_dma_i) begin
+      next_dma_error = s_dma_error_t'('0);
+    end
+
     rd_txn_hpn  = dma_mosi_o.arvalid && dma_miso_i.arready;
-    rd_resp_hpn = dma_miso_i.rvalid && dma_miso_i.rlast && dma_mosi_o.rready;
+    rd_resp_hpn = dma_miso_i.rvalid &&
+                  dma_miso_i.rlast  &&
+                  dma_mosi_o.rready;
     wr_txn_hpn  = dma_mosi_o.awvalid && dma_miso_i.awready;
     wr_resp_hpn = dma_miso_i.bvalid && dma_mosi_o.bready;
 
@@ -144,6 +189,45 @@ module dma_axi_if
 
     if (wr_txn_hpn) begin
       next_wr_counter = wr_counter_ff + 'd1;
+    end
+
+    // Write Data Txn finished
+    wr_data_txn_hpn = dma_mosi_o.wvalid &&
+                      dma_mosi_o.wlast  &&
+                      dma_miso_i.wready;
+
+    // Every time we have a new req. coming from the wr streamer,
+    // we store in the queue to push through the wr data channel
+    // in the next CC. However, we don't send multiple wr data txn
+    // without handshake in the wr address channel first. Having
+    // both AWVALID + WVALID asserted is intended to break deadlock
+    // depency in the AXI4 (A3.3 Relationships between the channels
+    // page 44 - AXI4 Spec)
+    wr_new_txn  = 1'b0;
+    next_wr_new = wr_new_ff;
+    wr_data_req_in = s_wr_req_t'('0);
+    if (dma_axi_wr_req_i.valid && ~wr_new_ff) begin
+      next_wr_new = 1'b1;
+      wr_new_txn  = 1'b1;
+      wr_data_req_in.alen  = dma_axi_wr_req_i.alen;
+      wr_data_req_in.wstrb = dma_axi_wr_req_i.strb;
+    end
+    else if (wr_txn_hpn) begin
+      next_wr_new = 1'b0;
+    end
+
+    wr_beat_hpn = dma_mosi_o.wvalid && dma_miso_i.wready;
+    next_beat_count = beat_counter_ff;
+
+    // Increment each beat of the burst
+    if (wr_beat_hpn) begin
+      next_beat_count = beat_counter_ff + 'd1;
+    end
+
+    // If the last beat of the burst happens,
+    // lets clear the beat counter
+    if (wr_data_txn_hpn) begin
+      next_beat_count = axi_alen_t'('0);
     end
   end
 
@@ -166,17 +250,17 @@ module dma_axi_if
         dma_mosi_o.arburst = (dma_axi_rd_req_i.mode == DMA_MODE_INCR) ? AXI_INCR : AXI_FIXED;
       end
       // Read Data Channel - R*
-      dma_mosi_o.rready = ~dma_fifo_resp_i.full;
-      if (dma_miso_i.rvalid) begin
-        dma_fifo_req_o.rd      = 1'b1;
-        dma_fifo_req_o.data_wr = dma_miso_i.rdata;
-        if (dma_miso_i.rlast) begin
+      dma_mosi_o.rready = (~dma_fifo_resp_i.full || dma_abort_i); // Available to recv if we're not full or there's an abort in progress
+      if (dma_miso_i.rvalid && (~dma_fifo_resp_i.full || dma_abort_i)) begin
+        dma_fifo_req_o.wr      = dma_abort_i ? 1'b0 : 1'b1; // Ignore incoming data in case of abort
+        dma_fifo_req_o.data_wr = apply_strb(dma_miso_i.rdata, rd_txn_last_strb);
+        if (dma_miso_i.rlast && dma_mosi_o.rready) begin
           rd_err_hpn = (dma_miso_i.rresp == AXI_SLVERR) ||
                        (dma_miso_i.rresp == AXI_DECERR);
         end
       end
       // Address Write Channel - AW*
-      dma_mosi_o.awvalid = (wr_counter_ff <= `DMA_WR_TXN_BUFF) ? dma_axi_wr_req_i.valid : 1'b0;
+      dma_mosi_o.awvalid = (wr_counter_ff <= `DMA_WR_TXN_BUFF) ? (dma_axi_wr_req_i.valid && ~dma_fifo_resp_i.empty): 1'b0;
       dma_axi_wr_resp_o.ready = dma_miso_i.awready;
       if (dma_mosi_o.awvalid) begin
         dma_mosi_o.awaddr  = dma_axi_wr_req_i.addr;
@@ -185,7 +269,13 @@ module dma_axi_if
         dma_mosi_o.awburst = (dma_axi_wr_req_i.mode == DMA_MODE_INCR) ? AXI_INCR : AXI_FIXED;
       end
       // Write Data Channel - W*
-      // TODO
+      if (~wr_data_req_empty && (~dma_fifo_resp_i.empty || dma_abort_i)) begin
+        dma_fifo_req_o.rd = dma_abort_i ? 1'b0 : dma_miso_i.wready; // Ignore fifo content in case of abort
+        dma_mosi_o.wdata  = dma_fifo_resp_i.data_rd;
+        dma_mosi_o.wstrb  = wr_data_req_out.wstrb;
+        dma_mosi_o.wlast  = (beat_counter_ff == wr_data_req_out.alen);
+        dma_mosi_o.wvalid = 1'b1;
+      end
       // Write Response Channel - B*
       dma_mosi_o.bready = 1'b1;
       if (dma_miso_i.bvalid) begin
@@ -197,16 +287,20 @@ module dma_axi_if
 
   always_ff @ (posedge clk) begin
     if (rst) begin
-      rd_counter_ff <= pend_rd_t'('0);
-      wr_counter_ff <= pend_rd_t'('0);
-      dma_error_ff  <= s_dma_error_t'('0);
-      err_lock_ff   <= 1'b0;
+      rd_counter_ff   <= pend_rd_t'('0);
+      wr_counter_ff   <= pend_rd_t'('0);
+      dma_error_ff    <= s_dma_error_t'('0);
+      err_lock_ff     <= 1'b0;
+      beat_counter_ff <= next_beat_count;
+      wr_new_ff       <= 1'b0;
     end
     else begin
-      rd_counter_ff <= next_rd_counter;
-      wr_counter_ff <= next_wr_counter;
-      dma_error_ff  <= next_dma_error;
-      err_lock_ff   <= next_err_lock;
+      rd_counter_ff   <= next_rd_counter;
+      wr_counter_ff   <= next_wr_counter;
+      dma_error_ff    <= next_dma_error;
+      err_lock_ff     <= next_err_lock;
+      beat_counter_ff <= next_beat_count;
+      wr_new_ff       <= next_wr_new;
     end
   end
 endmodule

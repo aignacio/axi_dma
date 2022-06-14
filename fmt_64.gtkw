@@ -1,22 +1,22 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Thu Jun  9 19:32:41 2022
+[*] Tue Jun 14 10:22:37 2022
 [*]
-[dumpfile] "/Users/aignacio/projects/axi_dma/run_dir/run_verilator_test_dma_csrs_64/dump.fst"
-[dumpfile_mtime] "Thu Jun  9 16:42:12 2022"
-[dumpfile_size] 44974
+[dumpfile] "/Users/aignacio/projects/axi_dma/run_dir/run_verilator_test_dma_single_desc_64/dump.fst"
+[dumpfile_mtime] "Tue Jun 14 10:17:47 2022"
+[dumpfile_size] 16661
 [savefile] "/Users/aignacio/projects/axi_dma/fmt_64.gtkw"
 [timestart] 0
 [size] 2316 1373
-[pos] 750 759
-*-16.063692 84900 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[pos] 303 502
+*-16.100908 210000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] .
 [treeopen] .tb_axi_dma.
 [treeopen] .tb_axi_dma.u_axi_dma.
 [sst_width] 310
 [signals_width] 332
 [sst_expanded] 1
-[sst_vpaned_height] 784
+[sst_vpaned_height] 504
 @28
 tb_axi_dma.clk
 tb_axi_dma.rst
@@ -47,7 +47,7 @@ tb_axi_dma.u_axi_dma.dma_csr_miso_o.bvalid
 tb_axi_dma.u_axi_dma.dma_csr_mosi_i.bready
 tb_axi_dma.u_axi_dma.dma_csr_mosi_i.arvalid
 tb_axi_dma.u_axi_dma.dma_csr_miso_o.arready
-@23
+@22
 tb_axi_dma.u_axi_dma.dma_csr_mosi_i.araddr[31:0]
 @c00022
 tb_axi_dma.dma_s_miso.rdata[63:0]
@@ -125,5 +125,60 @@ tb_axi_dma.u_axi_dma.dma_csr_mosi_i.rready
 tb_axi_dma.u_axi_dma.dma_csr_miso_o.rresp[1:0]
 @1000200
 -csr_axi_if
+@800200
+-dma_master_mosi
+@22
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.araddr[31:0]
+@100000028
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.arburst[1:0]
+@22
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.arlen[7:0]
+@100000028
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.arsize[2:0]
+@28
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.arvalid
+@22
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.awaddr[31:0]
+@100000028
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.awburst[1:0]
+@22
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.awlen[7:0]
+@100000028
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.awsize[2:0]
+@29
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.awvalid
+@28
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.bready
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.rready
+@22
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.wdata[63:0]
+@28
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.wlast
+@22
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.wstrb[7:0]
+@28
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.wvalid
+@1000200
+-dma_master_mosi
+@800200
+-dma_master_miso
+@28
+tb_axi_dma.u_axi_dma.dma_m_miso_i.arready
+tb_axi_dma.u_axi_dma.dma_m_miso_i.awready
+@100000028
+tb_axi_dma.u_axi_dma.dma_m_miso_i.bresp[1:0]
+@28
+tb_axi_dma.u_axi_dma.dma_m_miso_i.bvalid
+@22
+tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[63:0]
+@28
+tb_axi_dma.u_axi_dma.dma_m_miso_i.rlast
+@100000028
+tb_axi_dma.u_axi_dma.dma_m_miso_i.rresp[1:0]
+@28
+tb_axi_dma.u_axi_dma.dma_m_miso_i.rvalid
+tb_axi_dma.u_axi_dma.dma_m_miso_i.wready
+@1000200
+-dma_master_miso
 [pattern_trace] 1
 [pattern_trace] 0

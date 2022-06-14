@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.06.2022
- * Last Modified Date: 13.06.2022
+ * Last Modified Date: 14.06.2022
  */
 module dma_streamer
   import dma_utils_pkg::*;
@@ -184,9 +184,15 @@ module dma_streamer
     endcase
   end : streamer_dma_ctrl
 
-  always_comb begin : init_stream
-    dma_stream_o = s_dma_str_out_t'('0);
-    next_dma_mode = dma_mode_ff;
+  always_comb begin : burst_calc
+    dma_stream_o    = s_dma_str_out_t'('0);
+    next_dma_mode   = dma_mode_ff;
+    next_dma_req    = dma_req_ff;
+    next_desc_addr  = desc_addr_ff;
+    next_desc_bytes = desc_bytes_ff;
+    dma_axi_req_o   = dma_req_ff;
+    last_txn_proc   = 1'b0;
+    full_burst      = 1'b0;
 
     // Initialize Stream operation
     if ((cur_st_ff == DMA_ST_SM_IDLE) && (next_st == DMA_ST_SM_RUN)) begin
@@ -202,17 +208,7 @@ module dma_streamer
       end
     end
 
-    dma_stream_o.done = ((cur_st_ff == DMA_ST_SM_RUN) && (next_st == DMA_ST_SM_IDLE));
-  end : init_stream
-
-  always_comb begin : burst_calc
-    next_dma_req    = dma_req_ff;
-    next_desc_addr  = desc_addr_ff;
-    next_desc_bytes = desc_bytes_ff;
-    dma_axi_req_o   = dma_req_ff;
-    last_txn_proc   = 1'b0;
-    full_burst      = 1'b0;
-
+    // Burst computation
     if (cur_st_ff == DMA_ST_SM_RUN) begin
       if (~dma_abort_i) begin
         // Send the request when:
@@ -272,6 +268,8 @@ module dma_streamer
         end
       end
     end
+
+    dma_stream_o.done = ((cur_st_ff == DMA_ST_SM_RUN) && (next_st == DMA_ST_SM_IDLE));
   end : burst_calc
 
   always_ff @ (posedge clk) begin

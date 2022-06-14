@@ -136,4 +136,11 @@
     logic       full;
     logic       empty;
   } s_dma_fifo_resp_t;
+
+  // Used in the DMA AXI I/F for buffering
+  // write txns
+  typedef struct packed {
+    axi_alen_t    alen;
+    axi_wr_strb_t wstrb;
+  } s_wr_req_t;
 `endif
