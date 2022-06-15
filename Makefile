@@ -2,7 +2,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 07.06.2022
-# Last Modified Date: 14.06.2022
+# Last Modified Date: 15.06.2022
 SPEC_TEST	?=	-k test_dma_single_desc['32']
 RUN_CMD		:=	docker run --rm --name axi_dma	\
 							-v $(abspath .):/axi_dma -w			\

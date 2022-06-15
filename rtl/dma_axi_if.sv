@@ -45,6 +45,7 @@ module dma_axi_if
   logic         wr_new_txn;
   logic         wr_beat_hpn;
   logic         wr_data_req_empty;
+  logic         aw_txn_started_ff, next_aw_txn;
 
   s_wr_req_t    wr_data_req_in, wr_data_req_out;
   axi_alen_t    beat_counter_ff, next_beat_count;
@@ -248,6 +249,7 @@ module dma_axi_if
     if (dma_active_i) begin
       // Address Read Channel - AR*
       dma_mosi_o.arprot = AXI_NONSECURE;
+
       dma_mosi_o.arvalid = (rd_counter_ff < `DMA_RD_TXN_BUFF) ? dma_axi_rd_req_i.valid : 1'b0;
       if (dma_mosi_o.arvalid) begin
         dma_axi_rd_resp_o.ready = dma_miso_i.arready;
@@ -268,13 +270,23 @@ module dma_axi_if
       end
       // Address Write Channel - AW*
       dma_mosi_o.awprot = AXI_NONSECURE;
-      dma_mosi_o.awvalid = (wr_counter_ff < `DMA_WR_TXN_BUFF) ? (dma_axi_wr_req_i.valid && ~dma_fifo_resp_i.empty): 1'b0;
+      // Send a write txn based on the following conditions:
+      // 1- if (we have enough buffer space - `DMA_WR_TXN_BUFF)
+      // 2- We have a request coming from the streamer - ...valid
+      // 3- ...and we have something to send in the data phase ...~empty
+      // 3 (OR)- we have an abort request, so we can ignore the DMA_FIFO
+      // 4- Or we have started a txn and we need to respect valid/ready handshake.
+      //    We could potentially put awvalid back to low if dma_fifo gets empty
+      //    while we are waiting for awready from the slave
+      dma_mosi_o.awvalid = (wr_counter_ff < `DMA_WR_TXN_BUFF) ? ((dma_axi_wr_req_i.valid &&
+                           (~dma_fifo_resp_i.empty || dma_abort_i)) || aw_txn_started_ff) : 1'b0;
       if (dma_mosi_o.awvalid) begin
         dma_axi_wr_resp_o.ready = dma_miso_i.awready;
         dma_mosi_o.awaddr  = dma_axi_wr_req_i.addr;
         dma_mosi_o.awlen   = dma_axi_wr_req_i.alen;
         dma_mosi_o.awsize  = dma_axi_wr_req_i.size;
         dma_mosi_o.awburst = (dma_axi_wr_req_i.mode == DMA_MODE_INCR) ? AXI_INCR : AXI_FIXED;
+        next_aw_txn        = ~dma_miso_i.awready; // Ensures we respect valid / ready AMBA protocol
       end
       // Write Data Channel - W*
       if (~wr_data_req_empty && (~dma_fifo_resp_i.empty || dma_abort_i)) begin
@@ -295,20 +307,31 @@ module dma_axi_if
 
   always_ff @ (posedge clk) begin
     if (rst) begin
-      rd_counter_ff   <= pend_rd_t'('0);
-      wr_counter_ff   <= pend_rd_t'('0);
-      dma_error_ff    <= s_dma_error_t'('0);
-      err_lock_ff     <= 1'b0;
-      beat_counter_ff <= next_beat_count;
-      wr_lock_ff      <= 1'b0;
+      rd_counter_ff     <= pend_rd_t'('0);
+      wr_counter_ff     <= pend_rd_t'('0);
+      dma_error_ff      <= s_dma_error_t'('0);
+      err_lock_ff       <= 1'b0;
+      beat_counter_ff   <= next_beat_count;
+      wr_lock_ff        <= 1'b0;
+      aw_txn_started_ff <= 1'b0;
     end
     else begin
-      rd_counter_ff   <= next_rd_counter;
-      wr_counter_ff   <= next_wr_counter;
-      dma_error_ff    <= next_dma_error;
-      err_lock_ff     <= next_err_lock;
-      beat_counter_ff <= next_beat_count;
-      wr_lock_ff      <= next_wr_lock;
+      rd_counter_ff     <= next_rd_counter;
+      wr_counter_ff     <= next_wr_counter;
+      dma_error_ff      <= next_dma_error;
+      err_lock_ff       <= next_err_lock;
+      beat_counter_ff   <= next_beat_count;
+      wr_lock_ff        <= next_wr_lock;
+      aw_txn_started_ff <= next_aw_txn;
     end
   end
+
+`ifndef NO_ASSERTIONS
+  `ifndef VERILATOR
+    axi4_arvalid_arready : assert property(@(posedge clk) $rose(dma_mosi_o.arvalid) |-> dma_mosi_o.arvalid throughout dma_miso_i.arready[->1]);
+    axi4_awvalid_awready : assert property(@(posedge clk) $rose(dma_mosi_o.awvalid) |-> dma_mosi_o.awvalid throughout dma_miso_i.awready[->1]);
+    axi4_wvalid_wready   : assert property(@(posedge clk) $rose(dma_mosi_o.wvalid)  |-> dma_mosi_o.wvalid  throughout dma_miso_i.wready[->1]);
+    axi4_rvalid_rready   : assert property(@(posedge clk) $rose(dma_miso_i.rvalid)  |-> dma_miso_i.rvalid  throughout dma_mosi_o.rready[->1]);
+  `endif
+`endif
 endmodule

@@ -26,14 +26,15 @@ class Tb:
         self.cfg = cfg
         self.flavor = flavor
         self.bb = 4 if flavor == '32' else 8 # Number of bytes per data bus lane
+        self.max_data = ((2**32)-1) if flavor == '32' else ((2**64)-1)
         timenow_wstamp = self._gen_log(log_name)
         self.log.info("------------[LOG - %s]------------",timenow_wstamp)
         self.log.info("SEED: %s",str(cocotb.RANDOM_SEED))
         self.log.info("Log file: %s",log_name)
         self.csr_axi_if = AxiLiteMaster(AxiLiteBus.from_prefix(self.dut, "dma_s"), self.dut.clk, self.dut.rst)
-        self.dma_master_axi_if = AxiRam(AxiBus.from_prefix(self.dut, "dma_m"), self.dut.clk, self.dut.rst, size=ram_size)
-        self.dma_master_axi_if.write_if.log.setLevel(logging.DEBUG)
-        self.dma_master_axi_if.read_if.log.setLevel(logging.DEBUG)
+        self.axi_ram = AxiRam(AxiBus.from_prefix(self.dut, "dma_m"), self.dut.clk, self.dut.rst, size=ram_size)
+        self.axi_ram.write_if.log.setLevel(logging.DEBUG)
+        self.axi_ram.read_if.log.setLevel(logging.DEBUG)
 
     def __del__(self):
         # Need to write the last strings in the buffer in the file
@@ -46,26 +47,32 @@ class Tb:
             self.csr_axi_if.write_if.aw_channel.set_pause_generator(generator())
             self.csr_axi_if.write_if.w_channel.set_pause_generator(generator())
             self.csr_axi_if.read_if.ar_channel.set_pause_generator(generator())
+            self.axi_ram.write_if.b_channel.set_pause_generator(generator())
+            self.axi_ram.read_if.r_channel.set_pause_generator(generator())
 
     def set_backpressure_generator(self, generator=None):
         if generator:
             self.csr_axi_if.write_if.b_channel.set_pause_generator(generator())
             self.csr_axi_if.read_if.r_channel.set_pause_generator(generator())
+            self.axi_ram.write_if.aw_channel.set_pause_generator(generator())
+            self.axi_ram.write_if.w_channel.set_pause_generator(generator())
+            self.axi_ram.read_if.ar_channel.set_pause_generator(generator())
 
-    # def get_flavor(self):
-        # run_settings = {}
-        # run_settings['bb'] = self.bb
-        # run_settings['bb'] = self.bb
-        # return self.bb
+    def get_settings(self):
+        run_settings = {}
+        run_settings['bb'] = self.bb
+        run_settings['max_data'] = self.max_data
+        return run_settings
 
-    def fill_ram(self, mem):
+    def fill_ram(self, mem, log=None):
         for i in mem:
             addr   = i[0]
             data   = i[1].to_bytes(self.bb,'little')
             data_p = i[1].to_bytes(self.bb,'big') # We revert to print
             addr_h = hex(addr)
-            self.log.info(f"[AXI RAM] Loading: {addr_h} - {data_p.hex()}")
-            self.dma_master_axi_if.write(addr, data)
+            if log != None:
+                self.log.info(f"[AXI RAM] Loading: {addr_h} - {data_p.hex()}")
+            self.axi_ram.write(addr, data)
 
     async def wait_done(self):
         timeout_cnt = 0
