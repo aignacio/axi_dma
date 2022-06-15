@@ -1,11 +1,11 @@
 /**
- * File              : axi_dma_wrapper.sv
+ * File              : dma_axi_wrapper.sv
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 06.06.2022
- * Last Modified Date: 13.06.2022
+ * Last Modified Date: 15.06.2022
  */
-module axi_dma_wrapper
+module dma_axi_wrapper
   import dma_utils_pkg::*;
 (
   input                 clk,
@@ -43,14 +43,14 @@ module axi_dma_wrapper
     end
 
     // Hook-up Desc. CSR and DMA logic
-    for (int i=0; i<`DMA_NUM_DESC; i++) begin
+    for (int i=0; i<`DMA_NUM_DESC; i++) begin : connecting_structs_with_csr
       dma_desc[i].src_addr  = dma_desc_src_vec[i*`DMA_ADDR_WIDTH +: `DMA_ADDR_WIDTH];
       dma_desc[i].dst_addr  = dma_desc_dst_vec[i*`DMA_ADDR_WIDTH +: `DMA_ADDR_WIDTH];
       dma_desc[i].num_bytes = dma_desc_byt_vec[i*`DMA_ADDR_WIDTH +: `DMA_ADDR_WIDTH];
       dma_desc[i].wr_mode   = dma_desc_wr_mod[i];
       dma_desc[i].rd_mode   = dma_desc_rd_mod[i];
       dma_desc[i].enable    = dma_desc_en[i];
-    end
+    end : connecting_structs_with_csr
   end
 
   /* verilator lint_off WIDTH */

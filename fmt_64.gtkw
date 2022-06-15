@@ -12,9 +12,9 @@
 *-16.128910 213600 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] .
 [treeopen] .tb_axi_dma.
-[treeopen] .tb_axi_dma.u_axi_dma.
-[treeopen] .tb_axi_dma.u_axi_dma.u_dma_func_wrapper.
-[treeopen] .tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.
+[treeopen] .tb_axi_dma.u_dma_axi_wrapper.
+[treeopen] .tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.
+[treeopen] .tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_rd_streamer.
 [sst_width] 310
 [signals_width] 332
 [sst_expanded] 1
@@ -26,31 +26,31 @@ tb_axi_dma.rst
 -csr_axi_if
 @28
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.awvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.awvalid
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.awready
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.awready
 @22
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.awaddr[31:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.awaddr[31:0]
 [color] 2
 tb_axi_dma.dma_s_mosi.wdata[63:0]
 @28
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wvalid
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.wready
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.wready
 @100000028
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.bresp[1:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.bresp[1:0]
 @28
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.bvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.bvalid
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.bready
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.arvalid
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.arready
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.bready
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.arvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.arready
 @22
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.araddr[31:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.araddr[31:0]
 @c00022
 tb_axi_dma.dma_s_miso.rdata[63:0]
 @28
@@ -121,72 +121,72 @@ tb_axi_dma.dma_s_miso.rdata[63:0]
 @1401200
 -group_end
 @28
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.rvalid
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.rready
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.rvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.rready
 @100000028
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.rresp[1:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.rresp[1:0]
 @1000200
 -csr_axi_if
 @800200
 -dma_master_mosi
 @22
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.araddr[31:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.araddr[31:0]
 @100000028
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.arburst[1:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.arburst[1:0]
 @24
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.arlen[7:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.arlen[7:0]
 @100000028
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.arsize[2:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.arsize[2:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.arvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.arvalid
 @22
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.awaddr[31:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awaddr[31:0]
 @100000028
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.awburst[1:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awburst[1:0]
 @25
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.awlen[7:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awlen[7:0]
 @100000028
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.awsize[2:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awsize[2:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.awvalid
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.bready
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.rready
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.bready
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.rready
 @22
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.wdata[63:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.wdata[63:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.wlast
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.wlast
 @22
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.wstrb[7:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.wstrb[7:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.wvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.wvalid
 @1000200
 -dma_master_mosi
 @800200
 -dma_master_miso
 @28
-tb_axi_dma.u_axi_dma.dma_m_miso_i.arready
-tb_axi_dma.u_axi_dma.dma_m_miso_i.awready
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.arready
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.awready
 @100000028
-tb_axi_dma.u_axi_dma.dma_m_miso_i.bresp[1:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.bresp[1:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_miso_i.bvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.bvalid
 @22
-tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[63:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[63:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_miso_i.rlast
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rlast
 @100000028
-tb_axi_dma.u_axi_dma.dma_m_miso_i.rresp[1:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rresp[1:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_miso_i.rvalid
-tb_axi_dma.u_axi_dma.dma_m_miso_i.wready
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.wready
 @1000200
 -dma_master_miso
 @24
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.dma_maxb_i[7:0]
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.desc_bytes_ff[31:0]
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_rd_streamer.dma_maxb_i[7:0]
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_rd_streamer.desc_bytes_ff[31:0]
 @22
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.desc_addr_ff[31:0]
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_rd_streamer.desc_addr_ff[31:0]
 @28
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.full_burst
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_rd_streamer.full_burst
 [pattern_trace] 1
 [pattern_trace] 0

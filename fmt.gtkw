@@ -1,266 +1,266 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Wed Jun 15 16:11:24 2022
+[*] Wed Jun 15 22:13:28 2022
 [*]
-[dumpfile] "/Users/aignacio/projects/axi_dma/run_dir/run_verilator_test_dma_single_desc_32/dump.fst"
-[dumpfile_mtime] "Wed Jun 15 16:07:28 2022"
-[dumpfile_size] 38822
+[dumpfile] "(null)"
 [savefile] "/Users/aignacio/projects/axi_dma/fmt.gtkw"
 [timestart] 0
-[size] 3840 2018
-[pos] -1 0
-*-19.664600 240000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 3707 1678
+[pos] 39 38
+*-24.322304 26600000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] .
 [treeopen] .tb_axi_dma.
-[treeopen] .tb_axi_dma.u_axi_dma.
-[treeopen] .tb_axi_dma.u_axi_dma.u_dma_func_wrapper.
-[treeopen] .tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.
-[treeopen] .tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_wr_streamer.
+[treeopen] .tb_axi_dma.u_dma_axi_wrapper.
+[treeopen] .tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.
 [sst_width] 310
 [signals_width] 332
 [sst_expanded] 1
-[sst_vpaned_height] 1399
+[sst_vpaned_height] 1145
 @28
 tb_axi_dma.clk
 tb_axi_dma.rst
-@29
-tb_axi_dma.u_axi_dma.u_csr_dma.o_dma_control_go
-@28
+tb_axi_dma.u_dma_axi_wrapper.u_csr_dma.o_dma_control_go
 tb_axi_dma.dma_done_o
 tb_axi_dma.dma_error_o
 @c00200
 -csr_axi_if
 @28
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.awvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.awvalid
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.awready
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.awready
 @22
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.awaddr[31:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.awaddr[31:0]
 @c00022
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 @28
 [color] 2
-(0)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(0)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(1)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(1)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(2)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(2)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(3)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(3)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(4)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(4)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(5)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(5)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(6)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(6)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(7)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(7)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(8)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(8)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(9)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(9)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(10)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(10)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(11)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(11)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(12)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(12)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(13)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(13)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(14)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(14)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(15)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(15)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(16)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(16)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(17)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(17)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(18)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(18)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(19)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(19)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(20)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(20)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(21)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(21)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(22)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(22)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(23)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(23)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(24)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(24)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(25)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(25)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(26)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(26)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(27)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(27)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(28)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(28)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(29)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(29)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(30)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(30)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 [color] 2
-(31)tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wdata[31:0]
+(31)tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wdata[31:0]
 @1401200
 -group_end
 @28
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wvalid
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.wready
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.wready
 @22
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.wstrb[3:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.wstrb[3:0]
 @100000028
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.bresp[1:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.bresp[1:0]
 @28
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.bvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.bvalid
 [color] 2
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.bready
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.arvalid
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.arready
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.bready
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.arvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.arready
 @22
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.araddr[31:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.araddr[31:0]
 @28
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.rvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.rvalid
 @22
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.rdata[31:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.rdata[31:0]
 @28
-tb_axi_dma.u_axi_dma.dma_csr_mosi_i.rready
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_mosi_i.rready
 @100000028
-tb_axi_dma.u_axi_dma.dma_csr_miso_o.rresp[1:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_csr_miso_o.rresp[1:0]
 @1401200
 -csr_axi_if
 @800200
 -dma_master_mosi
 @22
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.araddr[31:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.araddr[31:0]
 @100000028
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.arburst[1:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.arburst[1:0]
 @24
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.arlen[7:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.arlen[7:0]
 @100000028
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.arsize[2:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.arsize[2:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.arvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.arvalid
 @22
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.awaddr[31:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awaddr[31:0]
 @100000028
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.awburst[1:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awburst[1:0]
 @24
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.awlen[7:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awlen[7:0]
 @100000028
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.awsize[2:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awsize[2:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.awvalid
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.bready
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.rready
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.bready
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.rready
 @22
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.wdata[31:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.wdata[31:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.wlast
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.wlast
 @22
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.wstrb[3:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.wstrb[3:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.wvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.wvalid
 @1000200
 -dma_master_mosi
 @800200
 -dma_master_miso
 @28
-tb_axi_dma.u_axi_dma.dma_m_miso_i.arready
-tb_axi_dma.u_axi_dma.dma_m_miso_i.awready
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.arready
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.awready
 @100000028
-tb_axi_dma.u_axi_dma.dma_m_miso_i.bresp[1:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.bresp[1:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_miso_i.bvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.bvalid
 @c00022
-tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
 @28
-(0)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(1)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(2)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(3)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(4)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(5)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(6)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(7)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(8)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(9)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(10)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(11)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(12)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(13)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(14)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(15)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(16)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(17)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(18)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(19)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(20)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(21)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(22)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(23)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(24)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(25)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(26)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(27)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(28)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(29)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(30)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
-(31)tb_axi_dma.u_axi_dma.dma_m_miso_i.rdata[31:0]
+(0)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(1)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(2)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(3)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(4)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(5)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(6)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(7)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(8)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(9)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(10)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(11)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(12)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(13)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(14)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(15)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(16)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(17)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(18)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(19)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(20)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(21)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(22)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(23)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(24)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(25)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(26)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(27)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(28)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(29)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(30)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
+(31)tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
 @1401200
 -group_end
 @28
-tb_axi_dma.u_axi_dma.dma_m_miso_i.rlast
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rlast
 @100000028
-tb_axi_dma.u_axi_dma.dma_m_miso_i.rresp[1:0]
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rresp[1:0]
 @28
-tb_axi_dma.u_axi_dma.dma_m_miso_i.rvalid
-tb_axi_dma.u_axi_dma.dma_m_miso_i.wready
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rvalid
+tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.wready
 @1000200
 -dma_master_miso
 @22
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_axi_if.rd_counter_ff[3:0]
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_axi_if.wr_counter_ff[3:0]
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.rd_counter_ff[3:0]
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.wr_counter_ff[3:0]
 @800200
 -read_streamer
 @22
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.desc_addr_ff[31:0]
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_rd_streamer.desc_addr_ff[31:0]
 @24
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.desc_bytes_ff[31:0]
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_rd_streamer.desc_bytes_ff[31:0]
 @100000028
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.dma_mode_ff
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_rd_streamer.dma_mode_ff
 @28
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.full_burst
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.dma_axi_req_o.valid
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.dma_axi_resp_i.ready
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.last_txn_ff
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_rd_streamer.full_burst
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_rd_streamer.dma_axi_req_o.valid
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_rd_streamer.dma_axi_resp_i.ready
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_rd_streamer.last_txn_ff
 @1000200
 -read_streamer
 @800200
 -write_streamer
 @22
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_wr_streamer.desc_addr_ff[31:0]
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_wr_streamer.desc_addr_ff[31:0]
 @24
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_wr_streamer.desc_bytes_ff[31:0]
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_wr_streamer.desc_bytes_ff[31:0]
 @100000028
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_wr_streamer.dma_mode_ff
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_wr_streamer.dma_mode_ff
 @28
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_wr_streamer.full_burst
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_wr_streamer.dma_axi_req_o.valid
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_wr_streamer.dma_axi_resp_i.ready
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_wr_streamer.last_txn_ff
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_wr_streamer.full_burst
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_wr_streamer.dma_axi_req_o.valid
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_wr_streamer.dma_axi_resp_i.ready
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_wr_streamer.last_txn_ff
 @1000200
 -write_streamer
 @24
-tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_axi_if.beat_counter_ff[7:0]
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.beat_counter_ff[7:0]
+@8022
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.beat_counter_ff[7:0]
+@420
+tb_axi_dma.u_dma_axi_wrapper.unnamedblk1.i
+@29
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.axi_pend_txn_o
 [pattern_trace] 1
 [pattern_trace] 0

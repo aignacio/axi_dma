@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 05.06.2022
- * Last Modified Date: 13.06.2022
+ * Last Modified Date: 15.06.2022
  */
 module tb_axi_dma
   import dma_utils_pkg::*;
@@ -184,7 +184,7 @@ module tb_axi_dma
     dma_m_miso.rvalid  = dma_m_rvalid;
   end
 
-  axi_dma_wrapper u_axi_dma(
+  dma_axi_wrapper u_dma_axi_wrapper(
     .clk            (clk),
     .rst            (rst),
     .dma_csr_mosi_i (dma_s_mosi),
