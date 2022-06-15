@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 13.06.2022
+# Last Modified Date: 15.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import random
 import cocotb
@@ -23,39 +23,43 @@ from random import randrange, randint
 from cocotbext.axi import AxiBus, AxiLiteBus, AxiMaster, AxiRam, AxiResp, AxiLiteMaster, AxiSlave
 import itertools
 
-@cocotb.test()
 async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_inserter=None):
     dma_flavor = os.getenv("FLAVOR")
     dma_cfg = cfg_const
+    bb = 4 if dma_flavor == '32' else 8
+    max_data = ((2**32)-1) if dma_flavor == '32' else ((2**64)-1)
+    mem_size = 8*1024 #8KB
 
     # Setup testbench
     idle = "no_idle" if idle_inserter == None else "w_idle"
     backp = "no_backpressure" if backpressure_inserter == None else "w_backpressure"
-    tb = Tb(dut, f"sim_{config_clk}_{idle}_{backp}", dma_cfg, dma_flavor)
+    tb = Tb(dut=dut, log_name=f"sim_{config_clk}_{idle}_{backp}", cfg=dma_cfg, flavor=dma_flavor, ram_size=mem_size)
     tb.set_idle_generator(idle_inserter)
     tb.set_backpressure_generator(backpressure_inserter)
     await tb.setup_clks(config_clk)
     await tb.rst(config_clk)
 
     #------------ Init test ------------#
-    max_size_desc = 9*1024
-    src_addr  = randint(0,pow(2,32)-1) #int(dma_flavor))-1)
-    dest_addr = randint(0,pow(2,32)-1) #int(dma_flavor))-1)
-    num_bytes = randint(1,max_size_desc)
-    wr_mode   = randint(0,1)
-    rd_mode   = randint(0,1)
-    tb.log.info("Programing single descriptor:")
-    tb.log.info("Start address [%s] - End address [%s] - Number of bytes [%s]", hex(src_addr), hex(dest_addr), num_bytes)
+    size_desc = 4*1024 # 4KB
+    src_addr  = 0         #randint(0,pow(2,32)-1)
+    dest_addr = 4*1024    #randint(0,pow(2,32)-1)
+    num_bytes = size_desc #randint(1,max_size_desc)
+    wr_mode   = 0         #randint(0,1)
+    rd_mode   = 0         #randint(0,1)
+    desc_sel  = randint(0,dma_cfg.NUM_DESC-1)
+    tb.log.info("Programing descriptor {desc_sel}:")
+    tb.log.info("Start addr  = [%s]", hex(src_addr))
+    tb.log.info("End address = [%s]", hex(dest_addr))
+    tb.log.info("Size bytes  = [%s]", num_bytes)
+    tb.fill_ram([(i*bb, randint(0, max_data)) for i in range(size_desc//bb)])
     dma_desc = {}
-    desc_sel = randint(0,dma_cfg.NUM_DESC-1)
     dma_desc['DMA_DESC_SRC_ADDR_'+str(desc_sel)]   = src_addr
     dma_desc['DMA_DESC_DST_ADDR_'+str(desc_sel)]   = dest_addr
     dma_desc['DMA_DESC_NUM_BYTES_'+str(desc_sel)]  = num_bytes
     dma_desc['DMA_DESC_ENABLE_'+str(desc_sel)]     = (1<<2|rd_mode<<1|wr_mode)
     await tb.prg_desc(dma_desc)
     await tb.start_dma()
-    for i in range(10):
-        await RisingEdge(dut.clk)
+    await tb.wait_done()
 
 def cycle_pause():
     return itertools.cycle([1, 1, 1, 0])

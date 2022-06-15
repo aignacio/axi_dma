@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 13.06.2022
- * Last Modified Date: 14.06.2022
+ * Last Modified Date: 15.06.2022
  */
 module dma_axi_if
   import dma_utils_pkg::*;
@@ -41,7 +41,7 @@ module dma_axi_if
   axi_addr_t    wr_txn_addr;
   logic         err_lock_ff, next_err_lock;
   logic         wr_data_txn_hpn;
-  logic         wr_new_ff, next_wr_new;
+  logic         wr_lock_ff, next_wr_lock;
   logic         wr_new_txn;
   logic         wr_beat_hpn;
   logic         wr_data_req_empty;
@@ -61,6 +61,7 @@ module dma_axi_if
         out_data[(8*i)+:8] = 8'd0;
       end
     end
+    return out_data;
   endfunction
 
   //***************************************************
@@ -153,8 +154,6 @@ module dma_axi_if
 
     if (~dma_active_i) begin
       next_err_lock   = 1'b0;
-      next_rd_counter = 'd0;
-      next_wr_counter = 'd0;
     end
 
     if (~err_lock_ff) begin
@@ -174,6 +173,7 @@ module dma_axi_if
 
     if (clear_dma_i) begin
       next_dma_error = s_dma_error_t'('0);
+      next_wr_lock   = 1'b0;
     end
 
     rd_txn_hpn  = dma_mosi_o.arvalid && dma_miso_i.arready;
@@ -183,14 +183,19 @@ module dma_axi_if
     wr_txn_hpn  = dma_mosi_o.awvalid && dma_miso_i.awready;
     wr_resp_hpn = dma_miso_i.bvalid && dma_mosi_o.bready;
 
-    if (rd_txn_hpn) begin
-      next_rd_counter = rd_counter_ff + 'd1;
-    end
+    if (dma_active_i) begin
+      if (rd_txn_hpn || rd_resp_hpn) begin
+        next_rd_counter = rd_counter_ff + (rd_txn_hpn ? 'd1 : 'd0) - (rd_resp_hpn ? 'd1 : 'd0);
+      end
 
-    if (wr_txn_hpn) begin
-      next_wr_counter = wr_counter_ff + 'd1;
+      if (wr_txn_hpn || wr_resp_hpn) begin
+        next_wr_counter = wr_counter_ff + (wr_txn_hpn ? 'd1 : 'd0) - (wr_resp_hpn ? 'd1 : 'd0);
+      end
     end
-
+    else begin
+      next_rd_counter = 'd0;
+      next_wr_counter = 'd0;
+    end
     // Write Data Txn finished
     wr_data_txn_hpn = dma_mosi_o.wvalid &&
                       dma_mosi_o.wlast  &&
@@ -204,16 +209,17 @@ module dma_axi_if
     // depency in the AXI4 (A3.3 Relationships between the channels
     // page 44 - AXI4 Spec)
     wr_new_txn  = 1'b0;
-    next_wr_new = wr_new_ff;
+    next_wr_lock = wr_lock_ff;
     wr_data_req_in = s_wr_req_t'('0);
-    if (dma_axi_wr_req_i.valid && ~wr_new_ff) begin
-      next_wr_new = 1'b1;
-      wr_new_txn  = 1'b1;
+    if (dma_axi_wr_req_i.valid) begin
+      next_wr_lock = ~dma_axi_wr_resp_o.ready;
+      wr_new_txn   = ~wr_lock_ff;
       wr_data_req_in.alen  = dma_axi_wr_req_i.alen;
       wr_data_req_in.wstrb = dma_axi_wr_req_i.strb;
     end
-    else if (wr_txn_hpn) begin
-      next_wr_new = 1'b0;
+
+    if (wr_txn_hpn) begin
+      next_wr_lock = 1'b0;
     end
 
     wr_beat_hpn = dma_mosi_o.wvalid && dma_miso_i.wready;
@@ -241,9 +247,10 @@ module dma_axi_if
 
     if (dma_active_i) begin
       // Address Read Channel - AR*
-      dma_mosi_o.arvalid = (rd_counter_ff <= `DMA_RD_TXN_BUFF) ? dma_axi_rd_req_i.valid : 1'b0;
-      dma_axi_rd_resp_o.ready = dma_miso_i.arready;
+      dma_mosi_o.arprot = AXI_NONSECURE;
+      dma_mosi_o.arvalid = (rd_counter_ff < `DMA_RD_TXN_BUFF) ? dma_axi_rd_req_i.valid : 1'b0;
       if (dma_mosi_o.arvalid) begin
+        dma_axi_rd_resp_o.ready = dma_miso_i.arready;
         dma_mosi_o.araddr  = dma_axi_rd_req_i.addr;
         dma_mosi_o.arlen   = dma_axi_rd_req_i.alen;
         dma_mosi_o.arsize  = dma_axi_rd_req_i.size;
@@ -260,9 +267,10 @@ module dma_axi_if
         end
       end
       // Address Write Channel - AW*
-      dma_mosi_o.awvalid = (wr_counter_ff <= `DMA_WR_TXN_BUFF) ? (dma_axi_wr_req_i.valid && ~dma_fifo_resp_i.empty): 1'b0;
-      dma_axi_wr_resp_o.ready = dma_miso_i.awready;
+      dma_mosi_o.awprot = AXI_NONSECURE;
+      dma_mosi_o.awvalid = (wr_counter_ff < `DMA_WR_TXN_BUFF) ? (dma_axi_wr_req_i.valid && ~dma_fifo_resp_i.empty): 1'b0;
       if (dma_mosi_o.awvalid) begin
+        dma_axi_wr_resp_o.ready = dma_miso_i.awready;
         dma_mosi_o.awaddr  = dma_axi_wr_req_i.addr;
         dma_mosi_o.awlen   = dma_axi_wr_req_i.alen;
         dma_mosi_o.awsize  = dma_axi_wr_req_i.size;
@@ -292,7 +300,7 @@ module dma_axi_if
       dma_error_ff    <= s_dma_error_t'('0);
       err_lock_ff     <= 1'b0;
       beat_counter_ff <= next_beat_count;
-      wr_new_ff       <= 1'b0;
+      wr_lock_ff      <= 1'b0;
     end
     else begin
       rd_counter_ff   <= next_rd_counter;
@@ -300,7 +308,7 @@ module dma_axi_if
       dma_error_ff    <= next_dma_error;
       err_lock_ff     <= next_err_lock;
       beat_counter_ff <= next_beat_count;
-      wr_new_ff       <= next_wr_new;
+      wr_lock_ff      <= next_wr_lock;
     end
   end
 endmodule

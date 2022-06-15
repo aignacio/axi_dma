@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 14.06.2022
+# Last Modified Date: 15.06.2022
 import os
 import glob
 import copy
@@ -14,7 +14,7 @@ class cfg_const:
     ################### Start Configure ####################
     regression_setup = ['32', '64']
     RST_CYCLES  = 3
-    TIMEOUT_VAL = 100
+    TIMEOUT_VAL = 20000
 
     DMA_CFG_32b = {}
     DMA_CFG_32b['axi_addr_width'] = 32
@@ -41,7 +41,6 @@ class cfg_const:
         DMA_CSRs['DMA_DESC_WRITE_MODE_'+str(i)] = (BASE_ADDR_DESC+(3*(NUM_DESC*8))+(i*CSR_ADDR_ALIG), 0x7,        1)
         DMA_CSRs['DMA_DESC_READ_MODE_' +str(i)] = (BASE_ADDR_DESC+(3*(NUM_DESC*8))+(i*CSR_ADDR_ALIG), 0x7,        1)
         DMA_CSRs['DMA_DESC_ENABLE_'    +str(i)] = (BASE_ADDR_DESC+(3*(NUM_DESC*8))+(i*CSR_ADDR_ALIG), 0x7,        1)
-
     ################### End Configure ####################
 
     CLK_100MHz  = (10, "ns")

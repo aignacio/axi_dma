@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.06.2022
- * Last Modified Date: 14.06.2022
+ * Last Modified Date: 15.06.2022
  */
 module dma_streamer
   import dma_utils_pkg::*;
@@ -31,7 +31,7 @@ module dma_streamer
   desc_num_t  desc_bytes_ff,  next_desc_bytes;
   dma_mode_t  dma_mode_ff,    next_dma_mode;
 
-  typedef logic [max_txn_width-1:0] max_bytes_t;
+  typedef logic [max_txn_width:0] max_bytes_t;
 
   s_dma_axi_req_t dma_req_ff, next_dma_req;
   max_bytes_t     txn_bytes;
@@ -112,7 +112,7 @@ module dma_streamer
     end
   endfunction
 
-  function automatic logic enough_burst(desc_num_t bytes);
+  function automatic logic enough_for_burst(desc_num_t bytes);
     if (`DMA_DATA_WIDTH == 32) begin
       return (bytes >= 'd4);
     end
@@ -126,11 +126,11 @@ module dma_streamer
       return 0; // Boundary hit
     end
     else begin
-      if (base[`DMA_ADDR_WIDTH-1:12] != fut[`DMA_ADDR_WIDTH-1:12]) begin
-        return (base[11:0] == '0); // Base + burst fits exactly 4KB boundary, np
+      if (fut[`DMA_ADDR_WIDTH-1:12] > base[`DMA_ADDR_WIDTH-1:12]) begin
+        return (fut[11:0] == '0); // Base + burst fits exactly 4KB boundary, np
       end
       else begin
-        return 0; // 4KB burst leakage
+        return 1; //No leakage
       end
     end
   endfunction
@@ -138,14 +138,16 @@ module dma_streamer
   function automatic axi_alen_t great_alen(axi_addr_t addr, desc_num_t bytes);
     axi_addr_t fut_addr;
     axi_alen_t alen = 0; // Single beat-burst
+    desc_num_t txn_sz;
 
     for (int i=256; i>0; i--) begin
       // Check if we have enough bytes for this alen and that if
       // it is less or equal than the max burst configured in the
       // CSRs and the burst mode
-      if (((i*bytes_p_burst) >= bytes) && ((i-'d1) <= dma_maxb_i) && valid_burst(dma_mode_ff, i[8:0])) begin
+      fut_addr = addr+(i*bytes_p_burst);
+      txn_sz = (i*bytes_p_burst);
+      if ((bytes >= txn_sz) && ((i-'d1) <= dma_maxb_i) && valid_burst(dma_mode_ff, i[8:0])) begin
         // Check if we respect the 4KB boundary per burst
-        fut_addr = addr+(i*bytes_p_burst);
         if (burst_r4KB(addr, fut_addr)) begin
           alen = axi_alen_t'(i-1);
           return alen;
@@ -176,8 +178,8 @@ module dma_streamer
           if (desc_bytes_ff > 0) begin
             next_st = DMA_ST_SM_RUN;
           end
-          else if (last_txn_ff && dma_axi_resp_i.ready) begin
-            next_st = DMA_ST_SM_IDLE;
+          else if (last_txn_ff && ~dma_axi_resp_i.ready) begin
+            next_st = DMA_ST_SM_RUN;
           end
         end
       end
@@ -191,6 +193,7 @@ module dma_streamer
     next_desc_addr  = desc_addr_ff;
     next_desc_bytes = desc_bytes_ff;
     dma_axi_req_o   = dma_req_ff;
+    next_last_txn   = last_txn_ff;
     last_txn_proc   = 1'b0;
     full_burst      = 1'b0;
 
@@ -222,7 +225,7 @@ module dma_streamer
           next_dma_req.size = (`DMA_DATA_WIDTH == 32) ? 2 : 3;
           next_dma_req.mode = dma_mode_ff;
 
-          if (is_aligned(desc_addr_ff) && enough_burst(desc_bytes_ff)) begin
+          if (is_aligned(desc_addr_ff) && enough_for_burst(desc_bytes_ff)) begin
             next_dma_req.alen = great_alen(desc_addr_ff, desc_bytes_ff);
             next_dma_req.strb = '1;
             full_burst = 1'b1;
@@ -230,7 +233,7 @@ module dma_streamer
           else begin
             next_dma_req.alen = axi_alen_t'('0);
             // Three possible cases here, beginning, end of processing or small descriptor
-            if (enough_burst(desc_bytes_ff)) begin // Beginning unaligned
+            if (enough_for_burst(desc_bytes_ff)) begin // Beginning unaligned
               num_unalign_bytes = bytes_to_align(desc_addr_ff);
               next_dma_req.strb = get_strb(desc_addr_ff[2:0], num_unalign_bytes);
             end
@@ -257,6 +260,10 @@ module dma_streamer
           end
 
           next_dma_req.valid = 1'b1;
+        end
+        else if (last_txn_ff && dma_axi_resp_i.ready) begin
+          next_dma_req = s_dma_axi_req_t'('0);
+          next_last_txn = 1'b0;
         end
       end
       else begin

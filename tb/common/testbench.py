@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 04.06.2022
-# Last Modified Date: 13.06.2022
+# Last Modified Date: 15.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import cocotb
 import os, errno
@@ -15,22 +15,25 @@ from common.constants import cfg_const
 from cocotb.clock import Clock
 from datetime import datetime
 from cocotb.triggers import ClockCycles, RisingEdge, with_timeout, ReadOnly, Event
-from cocotbext.axi import AxiBus, AxiLiteBus, AxiRam, AxiResp, AxiLiteMaster, AxiSlave
-from cocotbext.axi import AxiLiteRam
+from cocotbext.axi import AxiBus, AxiLiteBus
+from cocotbext.axi import AxiLiteRam, AxiRam
+from cocotbext.axi import AxiResp, AxiLiteMaster, AxiSlave
 from cocotb.result import TestFailure
 
 class Tb:
-    def __init__(self, dut, log_name, cfg, flavor):
+    def __init__(self, dut, log_name, cfg, flavor, ram_size=(2**12)):
         self.dut = dut
         self.cfg = cfg
         self.flavor = flavor
+        self.bb = 4 if flavor == '32' else 8 # Number of bytes per data bus lane
         timenow_wstamp = self._gen_log(log_name)
         self.log.info("------------[LOG - %s]------------",timenow_wstamp)
         self.log.info("SEED: %s",str(cocotb.RANDOM_SEED))
         self.log.info("Log file: %s",log_name)
         self.csr_axi_if = AxiLiteMaster(AxiLiteBus.from_prefix(self.dut, "dma_s"), self.dut.clk, self.dut.rst)
-        # self.dma_axi_if = AxiSlave(AxiBus.from_prefix(self.dut, "dma_m"), self.dut.clk, self.dut.rst)
-        # self.axil_ram = AxiLiteRam(AxiLiteBus.from_prefix(dut, "dma_s"), dut.clk, dut.rst, size=2**16)
+        self.dma_master_axi_if = AxiRam(AxiBus.from_prefix(self.dut, "dma_m"), self.dut.clk, self.dut.rst, size=ram_size)
+        self.dma_master_axi_if.write_if.log.setLevel(logging.DEBUG)
+        self.dma_master_axi_if.read_if.log.setLevel(logging.DEBUG)
 
     def __del__(self):
         # Need to write the last strings in the buffer in the file
@@ -48,6 +51,31 @@ class Tb:
         if generator:
             self.csr_axi_if.write_if.b_channel.set_pause_generator(generator())
             self.csr_axi_if.read_if.r_channel.set_pause_generator(generator())
+
+    # def get_flavor(self):
+        # run_settings = {}
+        # run_settings['bb'] = self.bb
+        # run_settings['bb'] = self.bb
+        # return self.bb
+
+    def fill_ram(self, mem):
+        for i in mem:
+            addr   = i[0]
+            data   = i[1].to_bytes(self.bb,'little')
+            data_p = i[1].to_bytes(self.bb,'big') # We revert to print
+            addr_h = hex(addr)
+            self.log.info(f"[AXI RAM] Loading: {addr_h} - {data_p.hex()}")
+            self.dma_master_axi_if.write(addr, data)
+
+    async def wait_done(self):
+        timeout_cnt = 0
+        while int(self.dut.dma_done_o == 0):
+            await RisingEdge(self.dut.clk)
+            if timeout_cnt == self.cfg.TIMEOUT_VAL:
+                self.log.error("Timeout on waiting for DMA DONE")
+                raise TestFailure("Timeout on waiting for DMA DONE")
+            else:
+                timeout_cnt += 1
 
     async def prg_desc(self, descriptors, **kwargs):
         for desc in descriptors:

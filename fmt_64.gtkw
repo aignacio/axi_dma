@@ -1,22 +1,24 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Tue Jun 14 10:22:37 2022
+[*] Tue Jun 14 19:22:04 2022
 [*]
 [dumpfile] "/Users/aignacio/projects/axi_dma/run_dir/run_verilator_test_dma_single_desc_64/dump.fst"
-[dumpfile_mtime] "Tue Jun 14 10:17:47 2022"
-[dumpfile_size] 16661
+[dumpfile_mtime] "Tue Jun 14 19:20:18 2022"
+[dumpfile_size] 19330
 [savefile] "/Users/aignacio/projects/axi_dma/fmt_64.gtkw"
 [timestart] 0
-[size] 2316 1373
-[pos] 303 502
-*-16.100908 210000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 2847 1812
+[pos] -1 -1
+*-16.128910 213600 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] .
 [treeopen] .tb_axi_dma.
 [treeopen] .tb_axi_dma.u_axi_dma.
+[treeopen] .tb_axi_dma.u_axi_dma.u_dma_func_wrapper.
+[treeopen] .tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.
 [sst_width] 310
 [signals_width] 332
 [sst_expanded] 1
-[sst_vpaned_height] 504
+[sst_vpaned_height] 1246
 @28
 tb_axi_dma.clk
 tb_axi_dma.rst
@@ -131,7 +133,7 @@ tb_axi_dma.u_axi_dma.dma_csr_miso_o.rresp[1:0]
 tb_axi_dma.u_axi_dma.dma_m_mosi_o.araddr[31:0]
 @100000028
 tb_axi_dma.u_axi_dma.dma_m_mosi_o.arburst[1:0]
-@22
+@24
 tb_axi_dma.u_axi_dma.dma_m_mosi_o.arlen[7:0]
 @100000028
 tb_axi_dma.u_axi_dma.dma_m_mosi_o.arsize[2:0]
@@ -141,13 +143,12 @@ tb_axi_dma.u_axi_dma.dma_m_mosi_o.arvalid
 tb_axi_dma.u_axi_dma.dma_m_mosi_o.awaddr[31:0]
 @100000028
 tb_axi_dma.u_axi_dma.dma_m_mosi_o.awburst[1:0]
-@22
+@25
 tb_axi_dma.u_axi_dma.dma_m_mosi_o.awlen[7:0]
 @100000028
 tb_axi_dma.u_axi_dma.dma_m_mosi_o.awsize[2:0]
-@29
-tb_axi_dma.u_axi_dma.dma_m_mosi_o.awvalid
 @28
+tb_axi_dma.u_axi_dma.dma_m_mosi_o.awvalid
 tb_axi_dma.u_axi_dma.dma_m_mosi_o.bready
 tb_axi_dma.u_axi_dma.dma_m_mosi_o.rready
 @22
@@ -180,5 +181,12 @@ tb_axi_dma.u_axi_dma.dma_m_miso_i.rvalid
 tb_axi_dma.u_axi_dma.dma_m_miso_i.wready
 @1000200
 -dma_master_miso
+@24
+tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.dma_maxb_i[7:0]
+tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.desc_bytes_ff[31:0]
+@22
+tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.desc_addr_ff[31:0]
+@28
+tb_axi_dma.u_axi_dma.u_dma_func_wrapper.u_dma_rd_streamer.full_burst
 [pattern_trace] 1
 [pattern_trace] 0
