@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 13.06.2022
- * Last Modified Date: 15.06.2022
+ * Last Modified Date: 17.06.2022
  */
 module dma_axi_if
   import dma_utils_pkg::*;
@@ -249,6 +249,7 @@ module dma_axi_if
     if (dma_active_i) begin
       // Address Read Channel - AR*
       dma_mosi_o.arprot = AXI_NONSECURE;
+      dma_mosi_o.arid   = `DMA_ID_VAL;
 
       dma_mosi_o.arvalid = (rd_counter_ff < `DMA_RD_TXN_BUFF) ? dma_axi_rd_req_i.valid : 1'b0;
       if (dma_mosi_o.arvalid) begin
@@ -270,6 +271,7 @@ module dma_axi_if
       end
       // Address Write Channel - AW*
       dma_mosi_o.awprot = AXI_NONSECURE;
+      dma_mosi_o.awid   = `DMA_ID_VAL;
       // Send a write txn based on the following conditions:
       // 1- if (we have enough buffer space - `DMA_WR_TXN_BUFF)
       // 2- We have a request coming from the streamer - ...valid
@@ -328,10 +330,26 @@ module dma_axi_if
 
 `ifndef NO_ASSERTIONS
   `ifndef VERILATOR
-    axi4_arvalid_arready : assert property(@(posedge clk) $rose(dma_mosi_o.arvalid) |-> dma_mosi_o.arvalid throughout dma_miso_i.arready[->1]);
-    axi4_awvalid_awready : assert property(@(posedge clk) $rose(dma_mosi_o.awvalid) |-> dma_mosi_o.awvalid throughout dma_miso_i.awready[->1]);
+    axi4_arvalid_arready : assert property(@(posedge clk) $rose(dma_mosi_o.arvalid) |-> dma_mosi_o.arvalid          throughout dma_miso_i.arready[->1]);
+    axi4_arvalid_araddr  : assert property(@(posedge clk) $rose(dma_mosi_o.arvalid) |-> $stable(dma_mosi_o.araddr)  throughout dma_miso_i.arready[->1]);
+    axi4_arvalid_arlen   : assert property(@(posedge clk) $rose(dma_mosi_o.arvalid) |-> $stable(dma_mosi_o.arlen)   throughout dma_miso_i.arready[->1]);
+    axi4_arvalid_arsize  : assert property(@(posedge clk) $rose(dma_mosi_o.arvalid) |-> $stable(dma_mosi_o.arsize)  throughout dma_miso_i.arready[->1]);
+    axi4_arvalid_arburst : assert property(@(posedge clk) $rose(dma_mosi_o.arvalid) |-> $stable(dma_mosi_o.arburst) throughout dma_miso_i.arready[->1]);
+
+    axi4_awvalid_awready : assert property(@(posedge clk) $rose(dma_mosi_o.awvalid) |-> dma_mosi_o.awvalid          throughout dma_miso_i.awready[->1]);
+    axi4_awvalid_awaddr  : assert property(@(posedge clk) $rose(dma_mosi_o.awvalid) |-> $stable(dma_mosi_o.awaddr)  throughout dma_miso_i.awready[->1]);
+    axi4_awvalid_awlen   : assert property(@(posedge clk) $rose(dma_mosi_o.awvalid) |-> $stable(dma_mosi_o.awlen)   throughout dma_miso_i.awready[->1]);
+    axi4_awvalid_awsize  : assert property(@(posedge clk) $rose(dma_mosi_o.awvalid) |-> $stable(dma_mosi_o.awsize)  throughout dma_miso_i.awready[->1]);
+    axi4_awvalid_awburst : assert property(@(posedge clk) $rose(dma_mosi_o.awvalid) |-> $stable(dma_mosi_o.awburst) throughout dma_miso_i.awready[->1]);
+
     axi4_wvalid_wready   : assert property(@(posedge clk) $rose(dma_mosi_o.wvalid)  |-> dma_mosi_o.wvalid  throughout dma_miso_i.wready[->1]);
+    axi4_wvalid_wdata    : assert property(@(posedge clk) $rose(dma_mosi_o.wvalid)  |-> dma_mosi_o.wdata   throughout dma_miso_i.wready[->1]);
+    axi4_wvalid_wstrb    : assert property(@(posedge clk) $rose(dma_mosi_o.wvalid)  |-> dma_mosi_o.wstrb   throughout dma_miso_i.wready[->1]);
+    axi4_wvalid_wlast    : assert property(@(posedge clk) $rose(dma_mosi_o.wvalid)  |-> dma_mosi_o.wlast   throughout dma_miso_i.wready[->1]);
+
     axi4_rvalid_rready   : assert property(@(posedge clk) $rose(dma_miso_i.rvalid)  |-> dma_miso_i.rvalid  throughout dma_mosi_o.rready[->1]);
+    axi4_rvalid_rdata    : assert property(@(posedge clk) $rose(dma_miso_i.rvalid) |-> $stable(dma_miso_i.rdata) throughout dma_mosi_o.rready[->1]);
+    axi4_rvalid_rlast    : assert property(@(posedge clk) $rose(dma_miso_i.rvalid) |-> $stable(dma_miso_i.rlast) throughout dma_mosi_o.rready[->1]);
   `endif
 `endif
 endmodule

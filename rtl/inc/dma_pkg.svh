@@ -33,6 +33,14 @@
     `define DMA_FIFO_DEPTH  16 // Must be power of 2
   `endif
 
+  `ifndef DMA_ID_WIDTH
+      `define DMA_ID_WIDTH  `AXI_TXN_ID_WIDTH
+  `endif
+
+  `ifndef DMA_ID_VAL
+      `define DMA_ID_VAL    0
+  `endif
+
   localparam FIFO_WIDTH = $clog2(`DMA_FIFO_DEPTH>1?`DMA_FIFO_DEPTH:2);
 
   typedef logic [`DMA_ADDR_WIDTH-1:0]         desc_addr_t;

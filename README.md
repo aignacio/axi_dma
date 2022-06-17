@@ -13,7 +13,7 @@ AXI DMA is a general purpose direct memory access IP using [AXI4 AMBA](https://d
 
 - AXI4-Lite `Slave` interface to program the CSRs (Control and Status registers)
 - AXI4 `Master` interface to fetch/read and write data
-- Support for unaligned xfers*
+- Support for unaligned xfers (see below)
 - Configurable number of descriptors (default to 5)
 - Abort processing available
 - Transfers up to 4GB of data per descriptor

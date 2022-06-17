@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 13.06.2022
+# Last Modified Date: 17.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import random
 import cocotb
@@ -70,12 +70,9 @@ if cocotb.SIM_NAME:
 @pytest.mark.parametrize("flavor",cfg_const.regression_setup)
 def test_dma_csrs(flavor):
     """
-    Basic test that sends a packet over the NoC and checks it
-
     Test ID: 1
-
     Description:
-    The simplest test to send a pkt over the NoC and checks it by reading back the correspondent destination router.
+    Run some simple write/read in the RW CSRs.
     """
     module = os.path.splitext(os.path.basename(__file__))[0]
     SIM_BUILD = os.path.join(cfg_const.TESTS_DIR,

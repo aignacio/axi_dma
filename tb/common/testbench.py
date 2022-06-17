@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 04.06.2022
-# Last Modified Date: 15.06.2022
+# Last Modified Date: 17.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import cocotb
 import os, errno
@@ -12,6 +12,7 @@ import logging, string, random
 from logging.handlers import RotatingFileHandler
 from cocotb.log import SimLogFormatter, SimColourLogFormatter, SimLog, SimTimeContextFilter
 from common.constants import cfg_const
+from common.dma import dma_desc, dma_mode, dma_addr, dma_ctrl, dma_error_stats
 from cocotb.clock import Clock
 from datetime import datetime
 from cocotb.triggers import ClockCycles, RisingEdge, with_timeout, ReadOnly, Event
@@ -26,6 +27,7 @@ class Tb:
         self.cfg = cfg
         self.flavor = flavor
         self.bb = 4 if flavor == '32' else 8 # Number of bytes per data bus lane
+        self.max_addr = ((2**32)-1)
         self.max_data = ((2**32)-1) if flavor == '32' else ((2**64)-1)
         timenow_wstamp = self._gen_log(log_name)
         self.log.info("------------[LOG - %s]------------",timenow_wstamp)
@@ -61,6 +63,7 @@ class Tb:
     def get_settings(self):
         run_settings = {}
         run_settings['bb'] = self.bb
+        run_settings['max_addr'] = self.max_addr
         run_settings['max_data'] = self.max_data
         return run_settings
 
@@ -86,11 +89,30 @@ class Tb:
 
     async def prg_desc(self, descriptors, **kwargs):
         for desc in descriptors:
-            addr  = self.cfg.DMA_CSRs[desc][0]
-            dataW = descriptors[desc]
-            dataW = dataW.to_bytes(4 if self.flavor == '32' else 8,'little')
-            write = self.csr_axi_if.init_write(address=addr, data=dataW, **kwargs)
+            addr = desc.get_addr(dma_addr.SRC)
+            data = desc.src.to_bytes(self.bb,'little')
+            write = self.csr_axi_if.init_write(addr, data, **kwargs)
             await with_timeout(write.wait(), *cfg_const.TIMEOUT_AXI)
+            addr = desc.get_addr(dma_addr.DST)
+            data = desc.dst.to_bytes(self.bb, 'little')
+            write = self.csr_axi_if.init_write(addr, data, **kwargs)
+            await with_timeout(write.wait(), *cfg_const.TIMEOUT_AXI)
+            addr = desc.get_addr(dma_addr.BYT)
+            data = desc.nbytes.to_bytes(self.bb, 'little')
+            write = self.csr_axi_if.init_write(addr, data, **kwargs)
+            await with_timeout(write.wait(), *cfg_const.TIMEOUT_AXI)
+            addr = desc.get_addr(dma_addr.CFG)
+            data = desc.cfg.to_bytes(self.bb, 'little')
+            write = self.csr_axi_if.init_write(addr, data, **kwargs)
+            await with_timeout(write.wait(), *cfg_const.TIMEOUT_AXI)
+        ret = write.data
+        return ret
+
+    async def prg_ctrl(self, dma_ctrl, **kwargs):
+        addr  = dma_ctrl.addr
+        data  = dma_ctrl.value.to_bytes(4 if self.flavor == '32' else 8,'little')
+        write = self.csr_axi_if.init_write(addr, data, **kwargs)
+        await with_timeout(write.wait(), *cfg_const.TIMEOUT_AXI)
         ret = write.data
         return ret
 
