@@ -1,4 +1,4 @@
-![logo_dma](docs/logo_dma.drawio)
+![logo_dma](docs/logo_dma.svg)
 # AXI DMA (Direct Memory Access)
 
 ## Table of Contents
