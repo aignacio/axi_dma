@@ -1,3 +1,5 @@
+[![Regression Tests](https://github.com/aignacio/axi_dma/actions/workflows/regression.yaml/badge.svg)](https://github.com/aignacio/axi_dma/actions/workflows/regression.yaml)
+
 ![logo_dma](docs/logo_dma.svg)
 # AXI DMA (Direct Memory Access)
 

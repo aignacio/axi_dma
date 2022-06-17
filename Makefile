@@ -9,7 +9,7 @@ RUN_CMD		:=	docker run --rm --name axi_dma	\
 							-v $(abspath .):/axi_dma -w			\
 							/axi_dma aignacio/axi_dma
 
-.PHONY: run_test csr_dma.sv clean
+.PHONY: run cov clean
 
 all: run
 	say ">Test run finished, please check the terminal"
