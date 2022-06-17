@@ -8,8 +8,8 @@ jobs:
 
     strategy:
       matrix:
-        python-version: [3.9]
-        group: [1, 2, 3, 4, 5]
+        python-version: [3.8]
+        group: [1]
 
     steps:
     - uses: actions/checkout@v2
@@ -40,7 +40,7 @@ jobs:
         SIM: verilator
         CXX: 'g++'
         CC:  'gcc'
-        PYTHON_VERSION: 3.9
+        PYTHON_VERSION: 3.8
         FULL_REGRESSION: 1
         TOX_TESTENV_PASSENV: GITHUB_ACTIONS
       run: tox
