@@ -21,6 +21,8 @@ from cocotb.triggers import ClockCycles, RisingEdge
 from cocotb.result import SimTimeoutError
 from random import randrange, randint
 from cocotbext.axi import AxiBus, AxiLiteBus, AxiMaster, AxiRam, AxiResp, AxiLiteMaster, AxiSlave
+from common.dma import dma_desc, dma_mode, dma_addr, dma_ctrl
+from common.dma import dma_error_stats, dma_err_type, dma_err_src
 import itertools
 
 async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_inserter=None):
@@ -49,20 +51,22 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
     wr_mode    = 0
     rd_mode    = 0
     desc_sel   = randint(0,dma_cfg.NUM_DESC-1)
-    tb.log.info("Filling up data to be transfered - (0B -> {h_mem_size}B)")
+    tb.log.info("Filling up data to be transfered - (0B -> %dB)",h_mem_size)
     tb.fill_ram([(i*bb, randint(0, max_data)) for i in range(size_desc//bb)])
-    tb.log.info("Filling up data to be overwritten - ({h_mem_size}B -> {mem_size}B)")
+    tb.log.info("Filling up data to be overwritten - (%dB -> %dB)", h_mem_size, mem_size)
     tb.fill_ram([(h_mem_size+i*bb, randint(0, max_data)) for i in range(size_desc//bb)])
-    tb.log.info("Programing descriptor {desc_sel}:")
-    tb.log.info("Start addr  = [%s]", hex(src_addr))
-    tb.log.info("End address = [%s]", hex(dest_addr))
-    tb.log.info("Size bytes  = [%s]", num_bytes)
-    dma_desc = {}
-    dma_desc['DMA_DESC_SRC_ADDR_'+str(desc_sel)]  = src_addr
-    dma_desc['DMA_DESC_DST_ADDR_'+str(desc_sel)]  = dest_addr
-    dma_desc['DMA_DESC_NUM_BYTES_'+str(desc_sel)] = num_bytes
-    dma_desc['DMA_DESC_ENABLE_'+str(desc_sel)]    = (1<<2|rd_mode<<1|wr_mode)
-    await tb.prg_desc(dma_desc)
+    # tb.log.info("Programing descriptor {desc_sel}:")
+    # tb.log.info("Start addr  = [%s]", hex(src_addr))
+    # tb.log.info("End address = [%s]", hex(dest_addr))
+    # tb.log.info("Size bytes  = [%s]", num_bytes)
+    # dma_desc = {}
+    # dma_desc['DMA_DESC_SRC_ADDR_'+str(desc_sel)]  = src_addr
+    # dma_desc['DMA_DESC_DST_ADDR_'+str(desc_sel)]  = dest_addr
+    # dma_desc['DMA_DESC_NUM_BYTES_'+str(desc_sel)] = num_bytes
+    # dma_desc['DMA_DESC_ENABLE_'+str(desc_sel)]    = (1<<2|rd_mode<<1|wr_mode)
+    desc = []
+    desc.append(dma_desc(desc_sel, src_addr, dest_addr, num_bytes, dma_mode.INCR, dma_mode.INCR, 1))
+    await tb.prg_desc(desc)
     tb.log.info("Checking data mismatch prior to the DMA run")
     for i in range(0,h_mem_size,bb):
         tb.log.debug("%s", tb.axi_ram.hexdump_str(h_mem_size+i,bb))
