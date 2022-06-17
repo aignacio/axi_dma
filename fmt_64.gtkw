@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Tue Jun 14 19:22:04 2022
+[*] Thu Jun 16 08:06:31 2022
 [*]
 [dumpfile] "/Users/aignacio/projects/axi_dma/run_dir/run_verilator_test_dma_single_desc_64/dump.fst"
-[dumpfile_mtime] "Tue Jun 14 19:20:18 2022"
-[dumpfile_size] 19330
+[dumpfile_mtime] "Wed Jun 15 22:42:58 2022"
+[dumpfile_size] 102569
 [savefile] "/Users/aignacio/projects/axi_dma/fmt_64.gtkw"
 [timestart] 0
-[size] 2847 1812
-[pos] -1 -1
-*-16.128910 213600 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 2794 1707
+[pos] 180 125
+*-20.030003 5400001 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] .
 [treeopen] .tb_axi_dma.
 [treeopen] .tb_axi_dma.u_dma_axi_wrapper.
@@ -18,10 +18,13 @@
 [sst_width] 310
 [signals_width] 332
 [sst_expanded] 1
-[sst_vpaned_height] 1246
+[sst_vpaned_height] 1167
 @28
 tb_axi_dma.clk
 tb_axi_dma.rst
+tb_axi_dma.u_dma_axi_wrapper.u_csr_dma.o_dma_control_go
+@29
+tb_axi_dma.u_dma_axi_wrapper.u_csr_dma.i_dma_status_done
 @800200
 -csr_axi_if
 @28
@@ -143,7 +146,7 @@ tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.arvalid
 tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awaddr[31:0]
 @100000028
 tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awburst[1:0]
-@25
+@24
 tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awlen[7:0]
 @100000028
 tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.awsize[2:0]

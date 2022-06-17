@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 15.06.2022
+# Last Modified Date: 16.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import random
 import cocotb
@@ -58,19 +58,21 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
     tb.log.info("End address = [%s]", hex(dest_addr))
     tb.log.info("Size bytes  = [%s]", num_bytes)
     dma_desc = {}
-    dma_desc['DMA_DESC_SRC_ADDR_'+str(desc_sel)]   = src_addr
-    dma_desc['DMA_DESC_DST_ADDR_'+str(desc_sel)]   = dest_addr
-    dma_desc['DMA_DESC_NUM_BYTES_'+str(desc_sel)]  = num_bytes
-    dma_desc['DMA_DESC_ENABLE_'+str(desc_sel)]     = (1<<2|rd_mode<<1|wr_mode)
+    dma_desc['DMA_DESC_SRC_ADDR_'+str(desc_sel)]  = src_addr
+    dma_desc['DMA_DESC_DST_ADDR_'+str(desc_sel)]  = dest_addr
+    dma_desc['DMA_DESC_NUM_BYTES_'+str(desc_sel)] = num_bytes
+    dma_desc['DMA_DESC_ENABLE_'+str(desc_sel)]    = (1<<2|rd_mode<<1|wr_mode)
     await tb.prg_desc(dma_desc)
     tb.log.info("Checking data mismatch prior to the DMA run")
     for i in range(0,h_mem_size,bb):
+        tb.log.debug("%s", tb.axi_ram.hexdump_str(h_mem_size+i,bb))
         assert tb.axi_ram.read(i, bb) != tb.axi_ram.read(h_mem_size+i, bb)
     tb.log.info("Start DMA GO")
     await tb.start_dma()
     await tb.wait_done()
     tb.log.info("Checking data was transfered after DMA run")
     for i in range(0,h_mem_size,bb):
+        tb.log.debug("%s", tb.axi_ram.hexdump_str(h_mem_size+i,bb))
         assert tb.axi_ram.read(i, bb) == tb.axi_ram.read(h_mem_size+i, bb)
 
 def cycle_pause():
