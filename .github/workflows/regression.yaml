@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: Tox (pytest) - ${{ matrix.os }}/${{ matrix.python-version }}
+    name: Tox (pytest) - ${{ matrix.os }} / ${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -34,5 +34,4 @@ jobs:
         python -m pip install --upgrade pip
         pip install tox tox-gh-actions
     - name: Test with tox
-      env:
       run: tox
