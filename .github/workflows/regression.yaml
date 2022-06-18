@@ -3,7 +3,7 @@ on: [push, pull_request]
 
 jobs:
   test:
-    name: Tox (pytest) - ${{ matrix.os }} / ${{ matrix.python-version }}
+    name: Tox (pytest) - ${{ matrix.os }}/${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
 
     strategy:
