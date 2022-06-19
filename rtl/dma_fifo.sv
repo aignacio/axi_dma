@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 10.06.2022
- * Last Modified Date: 13.06.2022
+ * Last Modified Date: 19.06.2022
  */
 module dma_fifo
   import dma_utils_pkg::*;
@@ -13,6 +13,7 @@ module dma_fifo
 )(
   input                                       clk,
   input                                       rst,
+  input                                       clear_i,
   input                                       write_i,
   input                                       read_i,
   input         [WIDTH-1:0]                   data_i,
@@ -66,15 +67,22 @@ module dma_fifo
       read_ptr_ff  <= '0;
     end
     else begin
-      write_ptr_ff <= next_write_ptr;
-      read_ptr_ff <= next_read_ptr;
-      if (write_i && ~full_o)
-        if (SLOTS == 1) begin
-          fifo_ff[0] <= data_i;
+      if (clear_i) begin
+        write_ptr_ff <= '0;
+        read_ptr_ff  <= '0;
+      end
+      else begin
+        write_ptr_ff <= next_write_ptr;
+        read_ptr_ff <= next_read_ptr;
+        if (write_i && ~full_o) begin
+          if (SLOTS == 1) begin
+            fifo_ff[0] <= data_i;
+          end
+          else begin
+            fifo_ff[write_ptr_ff[`MSB_SLOT-1:0]] <= data_i;
+          end
         end
-        else begin
-          fifo_ff[write_ptr_ff[`MSB_SLOT-1:0]] <= data_i;
-        end
+      end
     end
   end
 

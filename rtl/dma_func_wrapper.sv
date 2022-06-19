@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.06.2022
- * Last Modified Date: 13.06.2022
+ * Last Modified Date: 19.06.2022
  */
 module dma_func_wrapper
   import dma_utils_pkg::*;
@@ -91,6 +91,7 @@ module dma_func_wrapper
   dma_fifo u_dma_fifo(
     .clk              (clk),
     .rst              (rst),
+    .clear_i          (clear_dma),
     .write_i          (dma_fifo_req.wr),
     .read_i           (dma_fifo_req.rd),
     .data_i           (dma_fifo_req.data_wr),

@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Fri Jun 17 17:57:55 2022
+[*] Sun Jun 19 19:59:27 2022
 [*]
-[dumpfile] "/Users/aignacio/projects/axi_dma/run_dir/run_verilator_test_dma_full_desc_32/dump.fst"
-[dumpfile_mtime] "Fri Jun 17 17:54:05 2022"
-[dumpfile_size] 90217
+[dumpfile] "/Users/aignacio/projects/axi_dma/run_dir/run_verilator_test_dma_abort_32/dump.fst"
+[dumpfile_mtime] "Sun Jun 19 19:43:25 2022"
+[dumpfile_size] 202282
 [savefile] "/Users/aignacio/projects/axi_dma/fmt.gtkw"
-[timestart] 0
-[size] 3707 1678
-[pos] 39 38
-*-22.149372 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[timestart] 9691000
+[size] 1928 1441
+[pos] -1 -1
+*-20.037813 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] .
 [treeopen] .tb_axi_dma.
 [treeopen] .tb_axi_dma.u_dma_axi_wrapper.
@@ -17,12 +17,13 @@
 [sst_width] 310
 [signals_width] 332
 [sst_expanded] 1
-[sst_vpaned_height] 1195
+[sst_vpaned_height] 690
 @28
 tb_axi_dma.clk
 tb_axi_dma.rst
 tb_axi_dma.u_dma_axi_wrapper.u_csr_dma.o_dma_control_go
 tb_axi_dma.dma_done_o
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.dma_ctrl_i.abort_req
 tb_axi_dma.dma_error_o
 @c00200
 -csr_axi_if
@@ -256,7 +257,7 @@ tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_wr_streamer.dma_axi_resp_i
 tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_wr_streamer.last_txn_ff
 @1401200
 -write_streamer
-@25
+@24
 tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.beat_counter_ff[7:0]
 @8022
 tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.beat_counter_ff[7:0]
@@ -342,5 +343,12 @@ tb_axi_dma.u_dma_axi_wrapper.dma_desc(4).src_addr[31:0]
 tb_axi_dma.u_dma_axi_wrapper.dma_desc(4).wr_mode
 @1000200
 -desc_4
+@28
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.u_fifo_rd_error.empty_o
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.u_fifo_rd_strb.empty_o
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.u_fifo_wr_data.empty_o
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.u_fifo_wr_error.empty_o
+@29
+tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_fifo.empty_o
 [pattern_trace] 1
 [pattern_trace] 0

@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 13.06.2022
- * Last Modified Date: 17.06.2022
+ * Last Modified Date: 19.06.2022
  */
 module dma_axi_if
   import dma_utils_pkg::*;
@@ -83,6 +83,7 @@ module dma_axi_if
     .full_o (),
     .empty_o(wr_data_req_empty),
     .ocup_o (),
+    .clear_i(1'b0),
     .free_o ()
   );
 
@@ -104,6 +105,7 @@ module dma_axi_if
     .full_o (),
     .empty_o(),
     .ocup_o (),
+    .clear_i(1'b0),
     .free_o ()
   );
 
@@ -125,6 +127,7 @@ module dma_axi_if
     .full_o (),
     .empty_o(),
     .ocup_o (),
+    .clear_i(1'b0),
     .free_o ()
   );
 
@@ -142,6 +145,7 @@ module dma_axi_if
     .full_o (),
     .empty_o(),
     .ocup_o (),
+    .clear_i(1'b0),
     .free_o ()
   );
 

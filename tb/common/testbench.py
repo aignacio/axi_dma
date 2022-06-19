@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 04.06.2022
-# Last Modified Date: 17.06.2022
+# Last Modified Date: 19.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import cocotb
 import os, errno
@@ -30,6 +30,7 @@ class Tb:
         self.max_addr = ((2**32)-1)
         self.max_data = ((2**32)-1) if flavor == '32' else ((2**64)-1)
         timenow_wstamp = self._gen_log(log_name)
+        self.maxb = 255
         self.log.info("------------[LOG - %s]------------",timenow_wstamp)
         self.log.info("SEED: %s",str(cocotb.RANDOM_SEED))
         self.log.info("Log file: %s",log_name)
@@ -116,10 +117,31 @@ class Tb:
         ret = write.data
         return ret
 
+    async def set_max_burst(self, max_burst, **kwargs):
+        self.maxb = max_burst
+
     async def start_dma(self, **kwargs):
         addr  = self.cfg.DMA_CSRs['DMA_CONTROL'][0]
-        dataW = 0x3FD # MAX_BURST[7:0] ABORT[0] GO[0]
-        dataW = dataW.to_bytes(4 if self.flavor == '32' else 8,'little')
+        dataW = ((self.maxb<<2)|(0<<1)|1) # MAX_BURST[7:0] ABORT[1] GO[0]
+        dataW = dataW.to_bytes(self.bb,'little')
+        write = self.csr_axi_if.init_write(address=addr, data=dataW, **kwargs)
+        await with_timeout(write.wait(), *cfg_const.TIMEOUT_AXI)
+        ret = write.data
+        return ret
+
+    async def stop_dma(self, **kwargs):
+        addr  = self.cfg.DMA_CSRs['DMA_CONTROL'][0]
+        dataW = ((self.maxb<<2)|(0<<1)|0) # MAX_BURST[7:0] ABORT[1] GO[0]
+        dataW = dataW.to_bytes(self.bb,'little')
+        write = self.csr_axi_if.init_write(address=addr, data=dataW, **kwargs)
+        await with_timeout(write.wait(), *cfg_const.TIMEOUT_AXI)
+        ret = write.data
+        return ret
+
+    async def abort_dma(self, **kwargs):
+        addr  = self.cfg.DMA_CSRs['DMA_CONTROL'][0]
+        dataW = 0x3FF # MAX_BURST[7:0] ABORT[1] GO[0]
+        dataW = dataW.to_bytes(self.bb,'little')
         write = self.csr_axi_if.init_write(address=addr, data=dataW, **kwargs)
         await with_timeout(write.wait(), *cfg_const.TIMEOUT_AXI)
         ret = write.data
