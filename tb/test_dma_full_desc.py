@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 17.06.2022
+# Last Modified Date: 19.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import random
 import cocotb
@@ -85,8 +85,8 @@ def cycle_pause():
 
 if cocotb.SIM_NAME:
     factory = TestFactory(test_function=run_test)
-    #factory.add_option("idle_inserter", [None, cycle_pause])
-    #factory.add_option("backpressure_inserter", [None, cycle_pause])
+    factory.add_option("idle_inserter", [None, cycle_pause])
+    factory.add_option("backpressure_inserter", [None, cycle_pause])
     factory.generate_tests()
 
 @pytest.mark.parametrize("flavor",cfg_const.regression_setup)
