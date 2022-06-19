@@ -4,7 +4,7 @@
 # Date              : 07.06.2022
 # Last Modified Date: 19.06.2022
 COV_REP	  :=	$(shell find run_dir -name 'coverage.dat')
-SPEC_TEST	?=	-k test_dma_abort['32']
+SPEC_TEST	?=	-k test_dma_max_burst['32']
 RUN_CMD		:=	docker run --rm --name axi_dma	\
 							-v $(abspath .):/axi_dma -w			\
 							/axi_dma aignacio/axi_dma

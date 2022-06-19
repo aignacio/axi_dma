@@ -117,7 +117,7 @@ class Tb:
         ret = write.data
         return ret
 
-    async def set_max_burst(self, max_burst, **kwargs):
+    def set_max_burst(self, max_burst, **kwargs):
         self.maxb = max_burst
 
     async def start_dma(self, **kwargs):

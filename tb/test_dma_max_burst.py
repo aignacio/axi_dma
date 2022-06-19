@@ -28,7 +28,7 @@ import itertools
 async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_inserter=None):
     dma_flavor = os.getenv("FLAVOR")
     dma_cfg = cfg_const
-    mem_size = 20*1024 #20KB
+    mem_size = 4*1024 #4KB
 
     # Setup testbench
     idle = "no_idle" if idle_inserter == None else "w_idle"
@@ -41,33 +41,36 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
     await tb.rst(config_clk)
 
     #------------ Init test ------------#
-    # for i in range(0,255):
-    # bb         = sim_settings['bb']
-    # max_data   = sim_settings['max_data']
-    # h_mem_size = mem_size//2
-    # size_desc  = h_mem_size
-    # src_addr   = 0
-    # dest_addr  = h_mem_size
-    # num_bytes  = size_desc
-    # wr_mode    = 0
-    # rd_mode    = 0
-    # desc_sel   = randint(0,dma_cfg.NUM_DESC-1)
-    # tb.fill_ram([(i*bb, randint(0, max_data)) for i in range(size_desc//bb)])
-    # tb.fill_ram([(h_mem_size+i*bb, randint(0, max_data)) for i in range(size_desc//bb)])
-    # desc = []
-    # desc.append(dma_desc(desc_sel, src_addr, dest_addr, num_bytes, dma_mode.INCR, dma_mode.INCR, 1))
-    # await tb.prg_desc(desc)
-    # tb.log.info("Checking data mismatch prior to the DMA run")
-    # for i in range(0,h_mem_size,bb):
-        # tb.log.debug("%s", tb.axi_ram.hexdump_str(h_mem_size+i,bb))
-        # assert tb.axi_ram.read(i, bb) != tb.axi_ram.read(h_mem_size+i, bb)
-    # tb.log.info("Start DMA GO")
-    # await tb.start_dma()
-    # stop_dma = randint(50,350)
-    # tb.log.info("Stop DMA transfer at: %d", stop_dma)
-    # await ClockCycles(tb.dut.clk, stop_dma)
-    # await tb.abort_dma()
-    # await tb.wait_done()
+    for burst_sz in range(256):
+        bb         = sim_settings['bb']
+        max_data   = sim_settings['max_data']
+        h_mem_size = mem_size//2
+        size_desc  = h_mem_size
+        src_addr   = 0
+        dest_addr  = h_mem_size
+        num_bytes  = size_desc
+        wr_mode    = 0
+        rd_mode    = 0
+        desc_sel   = randint(0,dma_cfg.NUM_DESC-1)
+        tb.fill_ram([(i*bb, randint(0, max_data)) for i in range(size_desc//bb)])
+        tb.fill_ram([(h_mem_size+i*bb, randint(0, max_data)) for i in range(size_desc//bb)])
+        desc = []
+        desc.append(dma_desc(desc_sel, src_addr, dest_addr, num_bytes, dma_mode.INCR, dma_mode.INCR, 1))
+        await tb.prg_desc(desc)
+        tb.log.info("Checking data mismatch prior to the DMA run")
+        for i in range(0,h_mem_size,bb):
+            # tb.log.debug("%s", tb.axi_ram.hexdump_str(h_mem_size+i,bb))
+            assert tb.axi_ram.read(i, bb) != tb.axi_ram.read(h_mem_size+i, bb)
+        tb.log.info("Start DMA GO")
+        tb.set_max_burst(burst_sz)
+        tb.log.info("Max burst cfg: %d", burst_sz)
+        await tb.start_dma()
+        await tb.wait_done()
+        await tb.stop_dma()
+        tb.log.info("Checking data was transfered after DMA run")
+        for i in range(0,h_mem_size,bb):
+            # tb.log.debug("%s", tb.axi_ram.hexdump_str(h_mem_size+i,bb))
+            assert tb.axi_ram.read(i, bb) == tb.axi_ram.read(h_mem_size+i, bb)
 
 def cycle_pause():
     return itertools.cycle([1, 1, 1, 0])
