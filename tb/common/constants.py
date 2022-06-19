@@ -60,6 +60,7 @@ class cfg_const:
     CSR_RGGEN_DIR = os.path.join(TESTS_DIR,"../../csr_out/")
     INC_DIR   = [f'{RTL_DIR}inc',f'{RGGEN_V_DIR}']
     VERILOG_SOURCES = [] # The sequence below is important...
+    VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RGGEN_V_DIR}/rggen_rtl_macros.vh',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}inc/*.sv',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}inc/*.svh',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}**/*.sv',recursive=True)
