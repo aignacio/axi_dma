@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 15.06.2022
+# Last Modified Date: 19.06.2022
 import os
 import glob
 import copy
@@ -65,7 +65,8 @@ class cfg_const:
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}**/*.sv',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{CSR_RGGEN_DIR}**/*.v',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RGGEN_V_DIR}**/*.v',recursive=True)
-    COMPILE_ARGS = ["-f","/axi_dma/verilator.flags","--coverage","--coverage-line","--coverage-toggle"]
+    PATH_RUN     = str(os.getenv("PATH_RUN"))
+    COMPILE_ARGS = ["-f",os.path.join(PATH_RUN,"verilator.flags"),"--coverage","--coverage-line","--coverage-toggle"]
     if SIMULATOR == "verilator":
         EXTRA_ARGS = ["--trace-fst","--trace-structs","--Wno-UNOPTFLAT","--Wno-REDEFMACRO"]
     else:
