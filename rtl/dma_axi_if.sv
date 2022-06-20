@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 13.06.2022
- * Last Modified Date: 19.06.2022
+ * Last Modified Date: 20.06.2022
  */
 module dma_axi_if
   import dma_utils_pkg::*;
@@ -159,6 +159,9 @@ module dma_axi_if
 
     if (~dma_active_i) begin
       next_err_lock   = 1'b0;
+    end
+    else begin
+      next_err_lock = rd_err_hpn || wr_err_hpn;
     end
 
     if (~err_lock_ff) begin
@@ -351,9 +354,12 @@ module dma_axi_if
     axi4_wvalid_wstrb    : assert property(@(posedge clk) $rose(dma_mosi_o.wvalid)  |-> dma_mosi_o.wstrb   throughout dma_miso_i.wready[->1]);
     axi4_wvalid_wlast    : assert property(@(posedge clk) $rose(dma_mosi_o.wvalid)  |-> dma_mosi_o.wlast   throughout dma_miso_i.wready[->1]);
 
+    axi4_bvalid_bready   : assert property(@(posedge clk) $rose(dma_miso_i.bvalid)  |-> dma_miso_i.bvalid  throughout dma_mosi_o.bready[->1]);
+    axi4_bvalid_bresp    : assert property(@(posedge clk) $rose(dma_miso_i.bvalid)  |-> $stable(dma_miso_i.bresp) throughout dma_mosi_o.bready[->1]);
+
     axi4_rvalid_rready   : assert property(@(posedge clk) $rose(dma_miso_i.rvalid)  |-> dma_miso_i.rvalid  throughout dma_mosi_o.rready[->1]);
-    axi4_rvalid_rdata    : assert property(@(posedge clk) $rose(dma_miso_i.rvalid) |-> $stable(dma_miso_i.rdata) throughout dma_mosi_o.rready[->1]);
-    axi4_rvalid_rlast    : assert property(@(posedge clk) $rose(dma_miso_i.rvalid) |-> $stable(dma_miso_i.rlast) throughout dma_mosi_o.rready[->1]);
+    axi4_rvalid_rdata    : assert property(@(posedge clk) $rose(dma_miso_i.rvalid)  |-> $stable(dma_miso_i.rdata) throughout dma_mosi_o.rready[->1]);
+    axi4_rvalid_rlast    : assert property(@(posedge clk) $rose(dma_miso_i.rvalid)  |-> $stable(dma_miso_i.rlast) throughout dma_mosi_o.rready[->1]);
   `endif
 `endif
 endmodule

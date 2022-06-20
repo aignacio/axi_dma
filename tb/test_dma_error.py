@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# File              : test_dma_single_desc.py
+# File              : test_dma_error.py
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
@@ -14,15 +14,16 @@ import pytest
 
 from common.testbench import Tb
 from common.constants import cfg_const
+from common.dma import dma_desc, dma_mode, dma_addr, dma_ctrl
+from common.dma import dma_error_stats, dma_err_type, dma_err_src
 from cocotb.regression import TestFactory
+from cocotb.handle import Force, Release, Freeze, Deposit
 from cocotb_test.simulator import run
 from cocotb.result import TestFailure
 from cocotb.triggers import ClockCycles, RisingEdge
 from cocotb.result import SimTimeoutError
 from random import randrange, randint
 from cocotbext.axi import AxiBus, AxiLiteBus, AxiMaster, AxiRam, AxiResp, AxiLiteMaster, AxiSlave
-from common.dma import dma_desc, dma_mode, dma_addr, dma_ctrl
-from common.dma import dma_error_stats, dma_err_type, dma_err_src
 import itertools
 
 async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_inserter=None):
@@ -49,40 +50,53 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
     dest_addr  = h_mem_size
     num_bytes  = size_desc
     desc_sel   = randint(0,dma_cfg.NUM_DESC-1)
-    tb.log.info("Filling up data to be transfered - (0B -> %dB)",h_mem_size)
-    tb.fill_ram([(i*bb, randint(0, max_data)) for i in range(size_desc//bb)])
-    tb.log.info("Filling up data to be overwritten - (%dB -> %dB)", h_mem_size, mem_size)
-    tb.fill_ram([(h_mem_size+i*bb, randint(0, max_data)) for i in range(size_desc//bb)])
     desc = []
     desc.append(dma_desc(desc_sel, src_addr, dest_addr, num_bytes, dma_mode.INCR, dma_mode.INCR, 1))
     await tb.prg_desc(desc)
-    tb.log.info("Checking data mismatch prior to the DMA run")
-    for i in range(0,h_mem_size,bb):
-        tb.log.debug("%s", tb.axi_ram.hexdump_str(h_mem_size+i,bb))
-        assert tb.axi_ram.read(i, bb) != tb.axi_ram.read(h_mem_size+i, bb)
     tb.log.info("Start DMA GO")
     await tb.start_dma()
-    await tb.wait_done()
-    tb.log.info("Checking data was transfered after DMA run")
-    for i in range(0,h_mem_size,bb):
-        tb.log.debug("%s", tb.axi_ram.hexdump_str(h_mem_size+i,bb))
-        assert tb.axi_ram.read(i, bb) == tb.axi_ram.read(h_mem_size+i, bb)
+    error_read = randint(50,350)
+    await ClockCycles(tb.dut.clk, error_read)
+    tb.log.info("Error on DMA transfer at: %d clk cycles", error_read)
+    while int(tb.dut.dma_done_o == 0):
+        tb.dut.dma_m_rresp.value = Force(2) # AXI_SLVERR
+        await RisingEdge(tb.dut.clk)
+    assert tb.dut.dma_error_o == 1, "Error not asserted"
+    assert tb.dut.u_dma_axi_wrapper.u_csr_dma.i_dma_error_stats_error_src.value == 0, "Error is not read type"
+    assert tb.dut.u_dma_axi_wrapper.u_csr_dma.i_dma_error_stats_error_type.value == 1, "Error type is CFG"
+    await tb.stop_dma()
+
+    desc = []
+    desc.append(dma_desc(desc_sel, src_addr, dest_addr, num_bytes, dma_mode.INCR, dma_mode.INCR, 1))
+    await tb.prg_desc(desc)
+    tb.log.info("Start DMA GO")
+    await tb.start_dma()
+    error_write = randint(50,350)
+    await ClockCycles(tb.dut.clk, error_write)
+    tb.log.info("Error on DMA transfer at: %d clk cycles", error_write)
+    while int(tb.dut.dma_done_o == 0):
+        tb.dut.dma_m_bresp.value = Force(2) # AXI_SLVERR
+        await RisingEdge(tb.dut.clk)
+    assert tb.dut.dma_error_o == 1, "Error not asserted"
+    assert tb.dut.u_dma_axi_wrapper.u_csr_dma.i_dma_error_stats_error_src.value == 1, "Error is not read type"
+    assert tb.dut.u_dma_axi_wrapper.u_csr_dma.i_dma_error_stats_error_type.value == 1, "Error type is CFG"
+    await tb.stop_dma()
 
 def cycle_pause():
     return itertools.cycle([1, 1, 1, 0])
 
 if cocotb.SIM_NAME:
     factory = TestFactory(test_function=run_test)
-    factory.add_option("idle_inserter", [None, cycle_pause])
-    factory.add_option("backpressure_inserter", [None, cycle_pause])
+    # factory.add_option("idle_inserter", [None, cycle_pause])
+    # factory.add_option("backpressure_inserter", [None, cycle_pause])
     factory.generate_tests()
 
 @pytest.mark.parametrize("flavor",cfg_const.regression_setup)
-def test_dma_single_desc(flavor):
+def test_dma_error(flavor):
     """
-    Test ID: 2
+    Test ID: 6
     Description:
-    Move 4KB of data using a single descriptor.
+    Checks if AXI error was captured correctly.
     """
     module = os.path.splitext(os.path.basename(__file__))[0]
     SIM_BUILD = os.path.join(cfg_const.TESTS_DIR,

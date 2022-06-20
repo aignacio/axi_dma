@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 19.06.2022
+# Last Modified Date: 20.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import random
 import cocotb
@@ -28,7 +28,7 @@ import itertools
 async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_inserter=None):
     dma_flavor = os.getenv("FLAVOR")
     dma_cfg = cfg_const
-    mem_size = 4*1024 #4KB
+    mem_size = 8*1024 #8KB
 
     # Setup testbench
     idle = "no_idle" if idle_inserter == None else "w_idle"
@@ -41,6 +41,8 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
     await tb.rst(config_clk)
 
     #------------ Init test ------------#
+    desc_sel = randint(0,dma_cfg.NUM_DESC-1)
+
     for burst_sz in range(256):
         bb         = sim_settings['bb']
         max_data   = sim_settings['max_data']
@@ -49,9 +51,6 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
         src_addr   = 0
         dest_addr  = h_mem_size
         num_bytes  = size_desc
-        wr_mode    = 0
-        rd_mode    = 0
-        desc_sel   = randint(0,dma_cfg.NUM_DESC-1)
         tb.fill_ram([(i*bb, randint(0, max_data)) for i in range(size_desc//bb)])
         tb.fill_ram([(h_mem_size+i*bb, randint(0, max_data)) for i in range(size_desc//bb)])
         desc = []

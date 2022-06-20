@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 19.06.2022
+# Last Modified Date: 20.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import random
 import cocotb
@@ -48,8 +48,6 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
     src_addr   = 0
     dest_addr  = h_mem_size
     num_bytes  = size_desc
-    wr_mode    = 0
-    rd_mode    = 0
     desc_sel   = randint(0,dma_cfg.NUM_DESC-1)
     tb.log.info("Filling up data to be transfered - (0B -> %dB)",h_mem_size)
     tb.fill_ram([(i*bb, randint(0, max_data)) for i in range(size_desc//bb)])
@@ -80,8 +78,6 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
     src_addr   = 0
     dest_addr  = h_mem_size
     num_bytes  = size_desc
-    wr_mode    = 0
-    rd_mode    = 0
     desc_sel   = randint(0,dma_cfg.NUM_DESC-1)
     tb.log.info("Filling up data to be transfered - (0B -> %dB)",h_mem_size)
     tb.fill_ram([(i*bb, randint(0, max_data)) for i in range(size_desc//bb)])

@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 17.06.2022
-# Last Modified Date: 17.06.2022
+# Last Modified Date: 20.06.2022
 import enum
 import logging
 from common.constants import cfg_const
@@ -112,7 +112,7 @@ class dma_desc:
         self._rd_m   = rd_m
         self._en     = en
         self._nbytes = nbytes
-        self._cfg    = (en<<2) | (wr_m.value<<1) | (rd_m.value)
+        self._cfg    = (en<<2) | (rd_m.value<<1) | (wr_m.value)
         self.log     = logging.getLogger(f"cocotb.dma_desc.{self._did}")
         self.log.info(f'DMA Descriptor {self._did}:')
         self.log.info(f'Src    = [{hex(self._src)}]')

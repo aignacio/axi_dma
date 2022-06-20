@@ -1,15 +1,15 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Sun Jun 19 20:43:15 2022
+[*] Mon Jun 20 14:46:29 2022
 [*]
-[dumpfile] "/Users/aignacio/projects/axi_dma/run_dir/run_verilator_test_dma_max_burst_32/dump.fst"
-[dumpfile_mtime] "Sun Jun 19 20:39:52 2022"
-[dumpfile_size] 28436
+[dumpfile] "/Users/aignacio/projects/axi_dma/run_dir/run_verilator_test_dma_error_32/dump.fst"
+[dumpfile_mtime] "Mon Jun 20 14:45:32 2022"
+[dumpfile_size] 39082
 [savefile] "/Users/aignacio/projects/axi_dma/fmt.gtkw"
 [timestart] 0
-[size] 2180 1551
+[size] 2464 1771
 [pos] -1 -1
-*-16.921803 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-20.691988 533800 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] .
 [treeopen] .tb_axi_dma.
 [treeopen] .tb_axi_dma.u_dma_axi_wrapper.
@@ -17,7 +17,7 @@
 [sst_width] 310
 [signals_width] 332
 [sst_expanded] 1
-[sst_vpaned_height] 1050
+[sst_vpaned_height] 1215
 @28
 tb_axi_dma.clk
 tb_axi_dma.rst
@@ -25,7 +25,7 @@ tb_axi_dma.u_dma_axi_wrapper.u_csr_dma.o_dma_control_go
 tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.dma_ctrl_i.abort_req
 tb_axi_dma.dma_done_o
 tb_axi_dma.dma_error_o
-@23
+@22
 tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.dma_ctrl_i.max_burst[7:0]
 @c00200
 -csr_axi_if
@@ -171,7 +171,7 @@ tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.wstrb[3:0]
 tb_axi_dma.u_dma_axi_wrapper.dma_m_mosi_o.wvalid
 @1000200
 -dma_master_mosi
-@c00200
+@800200
 -dma_master_miso
 @28
 tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.arready
@@ -219,12 +219,12 @@ tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rdata[31:0]
 -group_end
 @28
 tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rlast
-@100000028
+@100000029
 tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rresp[1:0]
 @28
 tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.rvalid
 tb_axi_dma.u_dma_axi_wrapper.dma_m_miso_i.wready
-@1401200
+@1000200
 -dma_master_miso
 @22
 tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.rd_counter_ff[3:0]
@@ -263,10 +263,10 @@ tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_wr_streamer.last_txn_ff
 tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.beat_counter_ff[7:0]
 @8024
 tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.beat_counter_ff[7:0]
-@c00200
--desc_0
 @28
 tb_axi_dma.u_dma_axi_wrapper.u_dma_func_wrapper.u_dma_axi_if.axi_pend_txn_o
+@c00200
+-desc_0
 @22
 tb_axi_dma.u_dma_axi_wrapper.dma_desc(0).dst_addr[31:0]
 @28

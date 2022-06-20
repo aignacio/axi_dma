@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 04.06.2022
-# Last Modified Date: 19.06.2022
+# Last Modified Date: 20.06.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import cocotb
 import os, errno
@@ -111,7 +111,7 @@ class Tb:
 
     async def prg_ctrl(self, dma_ctrl, **kwargs):
         addr  = dma_ctrl.addr
-        data  = dma_ctrl.value.to_bytes(4 if self.flavor == '32' else 8,'little')
+        data  = dma_ctrl.value.to_bytes(self.bb, 'little')
         write = self.csr_axi_if.init_write(addr, data, **kwargs)
         await with_timeout(write.wait(), *cfg_const.TIMEOUT_AXI)
         ret = write.data
@@ -119,6 +119,13 @@ class Tb:
 
     def set_max_burst(self, max_burst, **kwargs):
         self.maxb = max_burst
+
+    async def read_error_stats(self, **kwargs):
+        addr  = self.cfg.DMA_CSRs['DMA_ERROR_MISC'][0]
+        read = self.csr_axi_if.init_read(address=address, length=length, **kwargs)
+        await with_timeout(read.wait(), *cfg_const.TIMEOUT_AXI)
+        resp = read.data
+        return resp
 
     async def start_dma(self, **kwargs):
         addr  = self.cfg.DMA_CSRs['DMA_CONTROL'][0]
