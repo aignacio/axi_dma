@@ -1,5 +1,6 @@
 [![Regression Tests](https://github.com/aignacio/axi_dma/actions/workflows/regression.yaml/badge.svg)](https://github.com/aignacio/axi_dma/actions/workflows/regression.yaml)
 [![codecov](https://codecov.io/gh/aignacio/axi_dma/branch/master/graph/badge.svg?token=411TECEJ56)](https://codecov.io/gh/aignacio/axi_dma)
+
 ![logo_dma](docs/logo_dma.svg)
 # AXI DMA (Direct Memory Access)
 
