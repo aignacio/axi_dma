@@ -35,3 +35,14 @@ jobs:
         pip install tox tox-gh-actions
     - name: Test with tox
       run: tox
+
+    - name: Generate coverage
+      run: make cov RUN_CMD=
+
+    - name: Upload coverage
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV }} # not required for public repos
+        files: ./coverage.info
+        fail_ci_if_error: true
+        verbose: true
