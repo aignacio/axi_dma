@@ -2,7 +2,7 @@
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
 [*] Mon Jun 20 14:46:29 2022
 [*]
-[dumpfile] "/Users/aignacio/projects/axi_dma/run_dir/run_verilator_test_dma_error_32/dump.fst"
+[dumpfile] "/Users/aignacio/projects/axi_dma/run_dir/run_verilator_test_dma_unaligned_32/dump.fst"
 [dumpfile_mtime] "Mon Jun 20 14:45:32 2022"
 [dumpfile_size] 39082
 [savefile] "/Users/aignacio/projects/axi_dma/fmt.gtkw"

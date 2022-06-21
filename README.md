@@ -38,15 +38,16 @@ Once finished, you should be able to open the logs and the generated waveforms a
 
 Here is listed all the tests that were implemented to check the DMA features. Although it does not check all possible combinations, it covers most of the basic usage and possible options. The `variants` are the additional runs of the same tests but with different scenarios like idle cycles and backpressure on the bus. For the `Flavors`, there are two types which 32b maps to `AXI_ADDR/DATA_WIDTH == 32 bits` and 64b to `AXI_ADDR_WIDTH == 32 bits` / `AXI_DATA_WIDTH == 64 bits`
 
-| **No** |     **Test name**    |                **Quick description**               |             **Variants**            | **Flavors** |
-|:------:|:--------------------:|:--------------------------------------------------:|:-----------------------------------:|:----------:|
-|    1   |     test_dma_csrs    |      Run some simple write/read in the RW CSRs     | idle_inserter/backpressure_inserter |   32b/64b  |
-|    2   | test_dma_single_desc |     Move 4KB of data using a single descriptor     | idle_inserter/backpressure_inserter |   32b/64b  |
-|    3   |  test_dma_full_desc  |  Programs all descriptors with different addresses | idle_inserter/backpressure_inserter |   32b/64b  |
-|    4   |    test_dma_abort    |      Assert the abort CSR during DMA operation     |                  --                 |   32b/64b  |
-|    5   |  test_dma_max_burst  |   Configures all possible bursts through the DMA   |                  --                 |   32b/64b  |
-|    6   |    test_dma_error    |     Checks if AXI error was captured correctly     |                  --                 |   32b/64b  |
-|    7   |    test_dma_modes    | Check for the different running modes / INCR/FIXED |                  --                 |   32b/64b  |
+| **No** |     **Test name**    |                  **Quick description**                 |             **Variants**            | **Flavor** |
+|:------:|:--------------------:|:------------------------------------------------------:|:-----------------------------------:|:----------:|
+|    1   |     test_dma_csrs    |        Run some simple write/read in the RW CSRs       | idle_inserter/backpressure_inserter |   32b/64b  |
+|    2   | test_dma_single_desc |       Move 4KB of data using a single descriptor       | idle_inserter/backpressure_inserter |   32b/64b  |
+|    3   |  test_dma_full_desc  |    Programs all descriptors with different addresses   | idle_inserter/backpressure_inserter |   32b/64b  |
+|    4   |    test_dma_abort    |        Assert the abort CSR during DMA operation       |                  --                 |   32b/64b  |
+|    5   |  test_dma_max_burst  |     Configures all possible bursts through the DMA     |                  --                 |   32b/64b  |
+|    6   |    test_dma_error    |       Checks if AXI error was captured correctly       |                  --                 |   32b/64b  |
+|    7   |    test_dma_modes    |   Check for the different running modes / INCR/FIXED   |                  --                 |   32b/64b  |
+|    8   |  test_dma_unaligned  | Test different unaligned addresses in the descriptors. |                  --                 |   32b/64b  |
 
 ## <a name="uarch"></a> Microarchitecture
 The `AXI DMA` microarchitecture is quite simple without anything complex to understand, the design is divided in two main flows, read and write data path. The block in violet is auto-generated using [Rggen](https://github.com/rggen/rggen) and it contains all the CSRs used and the other modules are original designs.

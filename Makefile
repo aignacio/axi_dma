@@ -2,9 +2,9 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 07.06.2022
-# Last Modified Date: 20.06.2022
+# Last Modified Date: 21.06.2022
 COV_REP	  :=	$(shell find run_dir -name 'coverage.dat')
-SPEC_TEST	?=	-k test_dma_error['32']
+SPEC_TEST	?=	-k test_dma_unaligned['32']
 RUN_CMD		:=	docker run --rm --name axi_dma	\
 							-v $(abspath .):/axi_dma -w			\
 							/axi_dma aignacio/axi_dma
