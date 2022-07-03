@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 06.06.2022
- * Last Modified Date: 15.06.2022
+ * Last Modified Date: 03.07.2022
  */
 module dma_axi_wrapper
   import dma_utils_pkg::*;
@@ -54,7 +54,9 @@ module dma_axi_wrapper
   end
 
   /* verilator lint_off WIDTH */
-  csr_dma u_csr_dma(
+  csr_dma #(
+    .ID_WIDTH                       (`AXI_TXN_ID_WIDTH)
+  ) u_csr_dma (
     .i_clk                          (clk),
     .i_rst_n                        (~rst),
     .i_awvalid                      (dma_csr_mosi_i.awvalid),
