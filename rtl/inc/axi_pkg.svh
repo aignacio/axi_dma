@@ -39,7 +39,7 @@
   `endif
 
   `ifndef AXI_TXN_ID_WIDTH
-      `define AXI_TXN_ID_WIDTH    1
+      `define AXI_TXN_ID_WIDTH    8
   `endif
 
   typedef logic [`AXI_ADDR_WIDTH-1:0]      axi_addr_t;
@@ -157,11 +157,13 @@
     // Write Data channel
     logic           wready;
     // Write Response channel
+    axi_tid_t       bid;
     axi_error_t     bresp;
     logic           bvalid;
     // Read addr channel
     logic           arready;
     // Read data channel
+    axi_tid_t       rid;
     axi_data_t      rdata;
     axi_error_t     rresp;
     logic           rvalid;
@@ -169,6 +171,7 @@
 
   typedef struct packed {
     // Write Address channel
+    axi_tid_t       awid;
     axi_addr_t      awaddr;
     axi_prot_t      awprot;
     logic           awvalid;
@@ -179,6 +182,7 @@
     // Write Response channel
     logic           bready;
     // Read Address channel
+    axi_tid_t       arid;
     axi_addr_t      araddr;
     axi_prot_t      arprot;
     logic           arvalid;
