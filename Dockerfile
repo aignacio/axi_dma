@@ -1,4 +1,4 @@
-FROM ubuntu:latest
+FROM ubuntu:20.04
 LABEL author="Anderson Ignacio da Silva"
 LABEL maintainer="anderson@aignacio.com"
 ENV TZ=Europe/Dublin
