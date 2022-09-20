@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 06.09.2022
+# Last Modified Date: 20.09.2022
 import os
 import glob
 import copy
@@ -81,6 +81,9 @@ class cfg_const:
         EXTRA_ARGS_32b.append("-D"+param[0].upper()+"="+str(param[1]))
     for param in DMA_CFG_64b.items():
         EXTRA_ARGS_64b.append("-D"+param[0].upper()+"="+str(param[1]))
+
+    EXTRA_ARGS_32b.append("-DRGGEN_NAIVE_MUX_IMPLEMENTATION")
+    EXTRA_ARGS_64b.append("-DRGGEN_NAIVE_MUX_IMPLEMENTATION")
 
     def _get_cfg_args(flavor):
         if flavor == "32":
