@@ -27,4 +27,4 @@ cov: coverage.info
 	$(RUN_CMD) genhtml $< -o output_lcov
 
 clean:
-	@rm -rf run_dir csr_out
+	$(RUN_CMD) rm -rf run_dir csr_out
