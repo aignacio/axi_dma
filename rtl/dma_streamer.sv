@@ -6,6 +6,7 @@
  * Last Modified Date: 15.06.2022
  */
 module dma_streamer
+  import amba_axi_pkg::*;
   import dma_utils_pkg::*;
 #(
   parameter bit STREAM_TYPE = 0 // 0 - Read, 1 - Write
@@ -187,15 +188,16 @@ module dma_streamer
   end : streamer_dma_ctrl
 
   always_comb begin : burst_calc
-    dma_stream_o    = s_dma_str_out_t'('0);
-    next_dma_mode   = dma_mode_ff;
-    next_dma_req    = dma_req_ff;
-    next_desc_addr  = desc_addr_ff;
-    next_desc_bytes = desc_bytes_ff;
-    dma_axi_req_o   = dma_req_ff;
-    next_last_txn   = last_txn_ff;
-    last_txn_proc   = 1'b0;
-    full_burst      = 1'b0;
+    dma_stream_o      = s_dma_str_out_t'('0);
+    next_dma_mode     = dma_mode_ff;
+    next_dma_req      = dma_req_ff;
+    next_desc_addr    = desc_addr_ff;
+    next_desc_bytes   = desc_bytes_ff;
+    dma_axi_req_o     = dma_req_ff;
+    next_last_txn     = last_txn_ff;
+    last_txn_proc     = 1'b0;
+    full_burst        = 1'b0;
+    num_unalign_bytes = '0;
 
     // Initialize Stream operation
     if ((cur_st_ff == DMA_ST_SM_IDLE) && (next_st == DMA_ST_SM_RUN)) begin
@@ -210,6 +212,8 @@ module dma_streamer
         next_dma_mode = dma_desc_i[dma_stream_i.idx].rd_mode;
       end
     end
+
+    txn_bytes = max_bytes_t'('0);
 
     // Burst computation
     if (cur_st_ff == DMA_ST_SM_RUN) begin

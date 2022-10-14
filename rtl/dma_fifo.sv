@@ -6,6 +6,7 @@
  * Last Modified Date: 19.06.2022
  */
 module dma_fifo
+  import amba_axi_pkg::*;
   import dma_utils_pkg::*;
 #(
   parameter int SLOTS = `DMA_FIFO_DEPTH,

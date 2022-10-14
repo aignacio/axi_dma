@@ -6,6 +6,7 @@
  * Last Modified Date: 13.06.2022
  */
 module dma_fsm
+  import amba_axi_pkg::*;
   import dma_utils_pkg::*;
 (
   input                                     clk,

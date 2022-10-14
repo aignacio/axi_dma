@@ -1,5 +1,6 @@
 `ifndef _DMA_PKG_
   `define _DMA_PKG_
+  import amba_axi_pkg::*;
 
   // Remember to also change in the
   // xls sheet to generate the same

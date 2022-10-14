@@ -6,6 +6,7 @@
  * Last Modified Date: 30.06.2022
  */
 module dma_axi_if
+  import amba_axi_pkg::*;
   import dma_utils_pkg::*;
 (
   input                     clk,
@@ -252,6 +253,7 @@ module dma_axi_if
     wr_err_hpn = 1'b0;
     dma_axi_rd_resp_o = s_dma_axi_resp_t'('0);
     dma_axi_wr_resp_o = s_dma_axi_resp_t'('0);
+    next_aw_txn = aw_txn_started_ff;
 
     if (dma_active_i) begin
       // Address Read Channel - AR*

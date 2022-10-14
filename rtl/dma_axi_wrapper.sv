@@ -6,6 +6,7 @@
  * Last Modified Date: 03.07.2022
  */
 module dma_axi_wrapper
+  import amba_axi_pkg::*;
   import dma_utils_pkg::*;
 (
   input                 clk,
