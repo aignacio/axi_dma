@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 12.06.2022
- * Last Modified Date: 15.06.2022
+ * Last Modified Date: 15.10.2022
  */
 module dma_streamer
   import amba_axi_pkg::*;
@@ -226,8 +226,8 @@ module dma_streamer
           // Best case, send as much as possible through a single txn
           // respecting the 4KB boundary and burst type INCR/FIXED
           next_dma_req.addr = aligned_addr(desc_addr_ff);
-          next_dma_req.size = (`DMA_DATA_WIDTH == 32) ? 2 : 3;
-          next_dma_req.mode = dma_mode_ff;
+          next_dma_req.size = (`DMA_DATA_WIDTH == 32) ? axi_size_t'(2) : axi_size_t'(3);
+          next_dma_req.mode = dma_mode_t'(dma_mode_ff);
 
           if (is_aligned(desc_addr_ff) && enough_for_burst(desc_bytes_ff)) begin
             next_dma_req.alen = great_alen(desc_addr_ff, desc_bytes_ff);
