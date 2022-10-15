@@ -48,8 +48,8 @@ module dma_axi_wrapper
       dma_desc[i].src_addr  = dma_desc_src_vec[i*`DMA_ADDR_WIDTH +: `DMA_ADDR_WIDTH];
       dma_desc[i].dst_addr  = dma_desc_dst_vec[i*`DMA_ADDR_WIDTH +: `DMA_ADDR_WIDTH];
       dma_desc[i].num_bytes = dma_desc_byt_vec[i*`DMA_ADDR_WIDTH +: `DMA_ADDR_WIDTH];
-      dma_desc[i].wr_mode   = dma_desc_wr_mod[i];
-      dma_desc[i].rd_mode   = dma_desc_rd_mod[i];
+      dma_desc[i].wr_mode   = dma_mode_t'(dma_desc_wr_mod[i]);
+      dma_desc[i].rd_mode   = dma_mode_t'(dma_desc_rd_mod[i]);
       dma_desc[i].enable    = dma_desc_en[i];
     end : connecting_structs_with_csr
   end
