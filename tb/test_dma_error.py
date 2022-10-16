@@ -41,8 +41,8 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
     await tb.setup_clks(config_clk)
     await tb.rst(config_clk)
 
-    if (dma_flavor == "small"):
-        return True
+    # if (dma_flavor == "small"):
+        # return True
     #------------ Init test ------------#
     bb         = sim_settings['bb']
     max_data   = sim_settings['max_data']

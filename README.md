@@ -17,7 +17,7 @@ AXI DMA is a general purpose direct memory access IP using [AXI4 AMBA](https://d
 - AXI4-Lite `Slave` interface to program the CSRs (Control and Status registers)
 - AXI4 `Master` interface to fetch/read and write data
 - Support for unaligned xfers (see below)
-- Configurable number of descriptors (default to 5)
+- Configurable number of descriptors (default to 2)
 - Abort processing available
 - Transfers up to 4GB of data per descriptor
 - Two modes of data access, **Fixed** [FIFO] and **Incremental**
@@ -36,7 +36,7 @@ Once finished, you should be able to open the logs and the generated waveforms a
 
 ### <a name="testlist"></a> Test list
 
-Here is listed all the tests that were implemented to check the DMA features. Although it does not check all possible combinations, it covers most of the basic usage and possible options. The `variants` are the additional runs of the same tests but with different scenarios like idle cycles and backpressure on the bus. For the `Flavors`, there are two types which 32b maps to `AXI_ADDR/DATA_WIDTH == 32 bits` and 64b to `AXI_ADDR_WIDTH == 32 bits` / `AXI_DATA_WIDTH == 64 bits`
+Here is listed all the tests that were implemented to check the DMA features. Although it does not check all possible combinations, it covers most of the basic usage and possible options. The `variants` are the additional runs of the same tests but with different scenarios like idle cycles and backpressure on the bus. For the `Flavors`, there are three types which 32b maps to `AXI_ADDR/DATA_WIDTH == 32 bits` and 64b to `AXI_ADDR_WIDTH == 32 bits` / `AXI_DATA_WIDTH == 64 bits`, the `small` flavor stands for a reduced dma 32b version with 8x beats burst, non-support for unaligned txns and no max burst control.
 
 | **No** |     **Test name**    |                  **Quick description**                 |             **Variants**            | **Flavor** |
 |:------:|:--------------------:|:------------------------------------------------------:|:-----------------------------------:|:----------:|
@@ -48,6 +48,7 @@ Here is listed all the tests that were implemented to check the DMA features. Al
 |    6   |    test_dma_error    |       Checks if AXI error was captured correctly       |                  --                 |   32b/64b  |
 |    7   |    test_dma_modes    |   Check for the different running modes / INCR/FIXED   |                  --                 |   32b/64b  |
 |    8   |  test_dma_unaligned  | Test different unaligned addresses in the descriptors. |                  --                 |   32b/64b  |
+
 
 ## <a name="uarch"></a> Microarchitecture
 The `AXI DMA` microarchitecture is quite simple without anything complex to understand, the design is divided in two main flows, read and write data path. The block in violet is auto-generated using [Rggen](https://github.com/rggen/rggen) and it contains all the CSRs used and the other modules are original designs.

@@ -227,7 +227,7 @@ module dma_streamer
           // Best case, send as much as possible through a single txn
           // respecting the 4KB boundary and burst type INCR/FIXED
           next_dma_req.addr = aligned_addr(desc_addr_ff);
-          next_dma_req.size = (`DMA_DATA_WIDTH == 32) ? 2 : 3;
+          next_dma_req.size = (`DMA_DATA_WIDTH == 32) ? axi_size_t'(2) : axi_size_t'(3);
           next_dma_req.mode = dma_mode_ff;
 
           if (is_aligned(desc_addr_ff) && enough_for_burst(desc_bytes_ff)) begin
