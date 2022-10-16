@@ -93,16 +93,13 @@ module dma_fsm
       for (int i=0; i<`DMA_NUM_DESC; i++) begin
         if (dma_desc_i[i].enable && (|dma_desc_i[i].num_bytes) && (~rd_desc_done_ff[i])) begin
           dma_stream_rd_o.idx   = i;
-          dma_stream_rd_o.valid = 1'b1;
+          dma_stream_rd_o.valid = ~abort_ff;
           break;
         end
       end
 
       if (dma_stream_rd_i.done) begin
         next_rd_desc_done[dma_stream_rd_o.idx] = 1'b1;
-        if (abort_ff) begin
-          dma_stream_rd_o.valid = 1'b0; // Clear next request due to abort
-        end
       end
 
       pending_rd_desc = dma_stream_rd_o.valid;
@@ -122,16 +119,13 @@ module dma_fsm
       for (int i=0; i<`DMA_NUM_DESC; i++) begin
         if (dma_desc_i[i].enable && (|dma_desc_i[i].num_bytes) && (~wr_desc_done_ff[i])) begin
           dma_stream_wr_o.idx   = i;
-          dma_stream_wr_o.valid = 1'b1;
+          dma_stream_wr_o.valid = ~abort_ff;
           break;
         end
       end
 
       if (dma_stream_wr_i.done) begin
         next_wr_desc_done[dma_stream_wr_o.idx] = 1'b1;
-        if (abort_ff) begin
-          dma_stream_wr_o.valid = 1'b0; // Clear next request due to abort
-        end
       end
 
       pending_wr_desc = dma_stream_wr_o.valid;
