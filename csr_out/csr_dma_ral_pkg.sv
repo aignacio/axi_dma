@@ -96,10 +96,10 @@ package csr_dma_ral_pkg;
     rand dma_status_reg_model dma_status;
     rand dma_error_addr_reg_model dma_error_addr;
     rand dma_error_stats_reg_model dma_error_stats;
-    rand dma_desc_src_addr_reg_model dma_desc_src_addr[5];
-    rand dma_desc_dst_addr_reg_model dma_desc_dst_addr[5];
-    rand dma_desc_num_bytes_reg_model dma_desc_num_bytes[5];
-    rand dma_desc_cfg_reg_model dma_desc_cfg[5];
+    rand dma_desc_src_addr_reg_model dma_desc_src_addr[2];
+    rand dma_desc_dst_addr_reg_model dma_desc_dst_addr[2];
+    rand dma_desc_num_bytes_reg_model dma_desc_num_bytes[2];
+    rand dma_desc_cfg_reg_model dma_desc_cfg[2];
     function new(string name);
       super.new(name, 8, 0);
     endfunction
@@ -110,24 +110,12 @@ package csr_dma_ral_pkg;
       `rggen_ral_create_reg(dma_error_stats, '{}, 8'h18, "RO", "g_dma_error_stats.u_register")
       `rggen_ral_create_reg(dma_desc_src_addr[0], '{0}, 8'h20, "RW", "g_dma_desc_src_addr.g[0].u_register")
       `rggen_ral_create_reg(dma_desc_src_addr[1], '{1}, 8'h28, "RW", "g_dma_desc_src_addr.g[1].u_register")
-      `rggen_ral_create_reg(dma_desc_src_addr[2], '{2}, 8'h30, "RW", "g_dma_desc_src_addr.g[2].u_register")
-      `rggen_ral_create_reg(dma_desc_src_addr[3], '{3}, 8'h38, "RW", "g_dma_desc_src_addr.g[3].u_register")
-      `rggen_ral_create_reg(dma_desc_src_addr[4], '{4}, 8'h40, "RW", "g_dma_desc_src_addr.g[4].u_register")
-      `rggen_ral_create_reg(dma_desc_dst_addr[0], '{0}, 8'h48, "RW", "g_dma_desc_dst_addr.g[0].u_register")
-      `rggen_ral_create_reg(dma_desc_dst_addr[1], '{1}, 8'h50, "RW", "g_dma_desc_dst_addr.g[1].u_register")
-      `rggen_ral_create_reg(dma_desc_dst_addr[2], '{2}, 8'h58, "RW", "g_dma_desc_dst_addr.g[2].u_register")
-      `rggen_ral_create_reg(dma_desc_dst_addr[3], '{3}, 8'h60, "RW", "g_dma_desc_dst_addr.g[3].u_register")
-      `rggen_ral_create_reg(dma_desc_dst_addr[4], '{4}, 8'h68, "RW", "g_dma_desc_dst_addr.g[4].u_register")
-      `rggen_ral_create_reg(dma_desc_num_bytes[0], '{0}, 8'h70, "RW", "g_dma_desc_num_bytes.g[0].u_register")
-      `rggen_ral_create_reg(dma_desc_num_bytes[1], '{1}, 8'h78, "RW", "g_dma_desc_num_bytes.g[1].u_register")
-      `rggen_ral_create_reg(dma_desc_num_bytes[2], '{2}, 8'h80, "RW", "g_dma_desc_num_bytes.g[2].u_register")
-      `rggen_ral_create_reg(dma_desc_num_bytes[3], '{3}, 8'h88, "RW", "g_dma_desc_num_bytes.g[3].u_register")
-      `rggen_ral_create_reg(dma_desc_num_bytes[4], '{4}, 8'h90, "RW", "g_dma_desc_num_bytes.g[4].u_register")
-      `rggen_ral_create_reg(dma_desc_cfg[0], '{0}, 8'h98, "RW", "g_dma_desc_cfg.g[0].u_register")
-      `rggen_ral_create_reg(dma_desc_cfg[1], '{1}, 8'ha0, "RW", "g_dma_desc_cfg.g[1].u_register")
-      `rggen_ral_create_reg(dma_desc_cfg[2], '{2}, 8'ha8, "RW", "g_dma_desc_cfg.g[2].u_register")
-      `rggen_ral_create_reg(dma_desc_cfg[3], '{3}, 8'hb0, "RW", "g_dma_desc_cfg.g[3].u_register")
-      `rggen_ral_create_reg(dma_desc_cfg[4], '{4}, 8'hb8, "RW", "g_dma_desc_cfg.g[4].u_register")
+      `rggen_ral_create_reg(dma_desc_dst_addr[0], '{0}, 8'h30, "RW", "g_dma_desc_dst_addr.g[0].u_register")
+      `rggen_ral_create_reg(dma_desc_dst_addr[1], '{1}, 8'h38, "RW", "g_dma_desc_dst_addr.g[1].u_register")
+      `rggen_ral_create_reg(dma_desc_num_bytes[0], '{0}, 8'h40, "RW", "g_dma_desc_num_bytes.g[0].u_register")
+      `rggen_ral_create_reg(dma_desc_num_bytes[1], '{1}, 8'h48, "RW", "g_dma_desc_num_bytes.g[1].u_register")
+      `rggen_ral_create_reg(dma_desc_cfg[0], '{0}, 8'h50, "RW", "g_dma_desc_cfg.g[0].u_register")
+      `rggen_ral_create_reg(dma_desc_cfg[1], '{1}, 8'h58, "RW", "g_dma_desc_cfg.g[1].u_register")
     endfunction
   endclass
 endpackage

@@ -41,20 +41,20 @@ module csr_dma
   input logic i_dma_error_stats_error_type,
   input logic i_dma_error_stats_error_src,
   input logic i_dma_error_stats_error_trig,
-  output logic [4:0][31:0] o_dma_desc_src_addr_src_addr,
-  output logic [4:0][31:0] o_dma_desc_dst_addr_dst_addr,
-  output logic [4:0][31:0] o_dma_desc_num_bytes_num_bytes,
-  output logic [4:0] o_dma_desc_cfg_write_mode,
-  output logic [4:0] o_dma_desc_cfg_read_mode,
-  output logic [4:0] o_dma_desc_cfg_enable
+  output logic [1:0][31:0] o_dma_desc_src_addr_src_addr,
+  output logic [1:0][31:0] o_dma_desc_dst_addr_dst_addr,
+  output logic [1:0][31:0] o_dma_desc_num_bytes_num_bytes,
+  output logic [1:0] o_dma_desc_cfg_write_mode,
+  output logic [1:0] o_dma_desc_cfg_read_mode,
+  output logic [1:0] o_dma_desc_cfg_enable
 );
-  rggen_register_if #(8, 64, 64) register_if[24]();
+  rggen_register_if #(8, 64, 64) register_if[12]();
   rggen_axi4lite_adapter #(
     .ID_WIDTH             (ID_WIDTH),
     .ADDRESS_WIDTH        (ADDRESS_WIDTH),
     .LOCAL_ADDRESS_WIDTH  (8),
     .BUS_WIDTH            (64),
-    .REGISTERS            (24),
+    .REGISTERS            (12),
     .PRE_DECODE           (PRE_DECODE),
     .BASE_ADDRESS         (BASE_ADDRESS),
     .BYTE_SIZE            (256),
@@ -400,7 +400,7 @@ module csr_dma
   end endgenerate
   generate if (1) begin : g_dma_desc_src_addr
     genvar i;
-    for (i = 0;i < 5;++i) begin : g
+    for (i = 0;i < 2;++i) begin : g
       rggen_bit_field_if #(64) bit_field_if();
       `rggen_tie_off_unused_signals(64, 64'h00000000ffffffff, bit_field_if)
       rggen_default_register #(
@@ -447,21 +447,21 @@ module csr_dma
   end endgenerate
   generate if (1) begin : g_dma_desc_dst_addr
     genvar i;
-    for (i = 0;i < 5;++i) begin : g
+    for (i = 0;i < 2;++i) begin : g
       rggen_bit_field_if #(64) bit_field_if();
       `rggen_tie_off_unused_signals(64, 64'h00000000ffffffff, bit_field_if)
       rggen_default_register #(
         .READABLE       (1),
         .WRITABLE       (1),
         .ADDRESS_WIDTH  (8),
-        .OFFSET_ADDRESS (8'h48),
+        .OFFSET_ADDRESS (8'h30),
         .BUS_WIDTH      (64),
         .DATA_WIDTH     (64),
         .REGISTER_INDEX (i)
       ) u_register (
         .i_clk        (i_clk),
         .i_rst_n      (i_rst_n),
-        .register_if  (register_if[9+i]),
+        .register_if  (register_if[6+i]),
         .bit_field_if (bit_field_if)
       );
       if (1) begin : g_dst_addr
@@ -494,21 +494,21 @@ module csr_dma
   end endgenerate
   generate if (1) begin : g_dma_desc_num_bytes
     genvar i;
-    for (i = 0;i < 5;++i) begin : g
+    for (i = 0;i < 2;++i) begin : g
       rggen_bit_field_if #(64) bit_field_if();
       `rggen_tie_off_unused_signals(64, 64'h00000000ffffffff, bit_field_if)
       rggen_default_register #(
         .READABLE       (1),
         .WRITABLE       (1),
         .ADDRESS_WIDTH  (8),
-        .OFFSET_ADDRESS (8'h70),
+        .OFFSET_ADDRESS (8'h40),
         .BUS_WIDTH      (64),
         .DATA_WIDTH     (64),
         .REGISTER_INDEX (i)
       ) u_register (
         .i_clk        (i_clk),
         .i_rst_n      (i_rst_n),
-        .register_if  (register_if[14+i]),
+        .register_if  (register_if[8+i]),
         .bit_field_if (bit_field_if)
       );
       if (1) begin : g_num_bytes
@@ -541,21 +541,21 @@ module csr_dma
   end endgenerate
   generate if (1) begin : g_dma_desc_cfg
     genvar i;
-    for (i = 0;i < 5;++i) begin : g
+    for (i = 0;i < 2;++i) begin : g
       rggen_bit_field_if #(64) bit_field_if();
       `rggen_tie_off_unused_signals(64, 64'h0000000000000007, bit_field_if)
       rggen_default_register #(
         .READABLE       (1),
         .WRITABLE       (1),
         .ADDRESS_WIDTH  (8),
-        .OFFSET_ADDRESS (8'h98),
+        .OFFSET_ADDRESS (8'h50),
         .BUS_WIDTH      (64),
         .DATA_WIDTH     (64),
         .REGISTER_INDEX (i)
       ) u_register (
         .i_clk        (i_clk),
         .i_rst_n      (i_rst_n),
-        .register_if  (register_if[19+i]),
+        .register_if  (register_if[10+i]),
         .bit_field_if (bit_field_if)
       );
       if (1) begin : g_write_mode
