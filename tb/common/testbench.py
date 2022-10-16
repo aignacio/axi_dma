@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 04.06.2022
-# Last Modified Date: 20.06.2022
+# Last Modified Date: 16.10.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import cocotb
 import os, errno
@@ -26,9 +26,9 @@ class Tb:
         self.dut = dut
         self.cfg = cfg
         self.flavor = flavor
-        self.bb = 4 if flavor == '32' else 8 # Number of bytes per data bus lane
+        self.bb = 4 if flavor == '32' or flavor == 'small' else 8 # Number of bytes per data bus lane
         self.max_addr = ((2**32)-1)
-        self.max_data = ((2**32)-1) if flavor == '32' else ((2**64)-1)
+        self.max_data = ((2**32)-1) if flavor == '32' or flavor == 'small' else ((2**64)-1)
         timenow_wstamp = self._gen_log(log_name)
         self.maxb = 255
         self.log.info("------------[LOG - %s]------------",timenow_wstamp)

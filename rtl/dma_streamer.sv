@@ -25,7 +25,7 @@ module dma_streamer
   output  s_dma_str_out_t                   dma_stream_o
 );
   localparam bytes_p_burst = (`DMA_DATA_WIDTH/8);
-  localparam max_txn_width = $clog2(256*(`DMA_DATA_WIDTH/8));
+  localparam max_txn_width = $clog2(`DMA_MAX_BEAT_BURST*(`DMA_DATA_WIDTH/8));
 
   dma_sm_t    cur_st_ff,      next_st;
   axi_addr_t  desc_addr_ff,   next_desc_addr;
@@ -68,12 +68,13 @@ module dma_streamer
       endcase
     end
 
-    for (logic [3:0] i=0; i<8; i++) begin
-      if (addr == i[2:0]) begin
-        strobe = strobe << i;
+    if (`DMA_EN_UNALIGNED) begin
+      for (logic [3:0] i=0; i<8; i++) begin
+        if (addr == i[2:0]) begin
+          strobe = strobe << i;
+        end
       end
     end
-
     return strobe;
   endfunction
 
@@ -141,13 +142,13 @@ module dma_streamer
     axi_alen_t alen = 0; // Single beat-burst
     desc_num_t txn_sz;
 
-    for (int i=256; i>0; i--) begin
+    for (int i=`DMA_MAX_BEAT_BURST; i>0; i--) begin
       // Check if we have enough bytes for this alen and that if
       // it is less or equal than the max burst configured in the
       // CSRs and the burst mode
       fut_addr = addr+(i*bytes_p_burst);
       txn_sz = (i*bytes_p_burst);
-      if ((bytes >= txn_sz) && ((i-'d1) <= dma_maxb_i) && valid_burst(dma_mode_ff, i[8:0])) begin
+      if ((bytes >= txn_sz) && ((`DMA_MAX_BURST_EN == 1) ? ((i-'d1) <= dma_maxb_i) : 1'b1) && ((`DMA_MAX_BEAT_BURST > 16) ? valid_burst(dma_mode_ff, i[8:0]) : 1'b1)) begin
         // Check if we respect the 4KB boundary per burst
         if (burst_r4KB(addr, fut_addr)) begin
           alen = axi_alen_t'(i-1);
@@ -237,17 +238,23 @@ module dma_streamer
           else begin
             next_dma_req.alen = axi_alen_t'('0);
             // Three possible cases here, beginning, end of processing or small descriptor
-            if (enough_for_burst(desc_bytes_ff)) begin // Beginning unaligned
-              num_unalign_bytes = bytes_to_align(desc_addr_ff);
-              next_dma_req.strb = get_strb(desc_addr_ff[2:0], num_unalign_bytes);
+            if (`DMA_EN_UNALIGNED) begin
+              if (enough_for_burst(desc_bytes_ff)) begin // Beginning unaligned
+                num_unalign_bytes = bytes_to_align(desc_addr_ff);
+                next_dma_req.strb = get_strb(desc_addr_ff[2:0], num_unalign_bytes);
+              end
+              else if (is_aligned(desc_addr_ff)) begin // Now it's aligned but not enough bytes, end of processing
+                num_unalign_bytes = desc_bytes_ff[3:0];
+                next_dma_req.strb = get_strb('d0, num_unalign_bytes);
+              end
+              else begin // Small descriptor
+                num_unalign_bytes = desc_bytes_ff[3:0];
+                next_dma_req.strb = get_strb(desc_addr_ff[2:0], num_unalign_bytes);
+              end
             end
-            else if (is_aligned(desc_addr_ff)) begin // Now it's aligned but not enough bytes, end of processing
+            else begin
               num_unalign_bytes = desc_bytes_ff[3:0];
               next_dma_req.strb = get_strb('d0, num_unalign_bytes);
-            end
-            else begin // Small descriptor
-              num_unalign_bytes = desc_bytes_ff[3:0];
-              next_dma_req.strb = get_strb(desc_addr_ff[2:0], num_unalign_bytes);
             end
           end
           /* verilator lint_off WIDTH */

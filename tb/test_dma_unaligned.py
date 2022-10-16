@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 21.06.2022
+# Last Modified Date: 16.10.2022
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import random
 import cocotb
@@ -40,6 +40,8 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
     await tb.setup_clks(config_clk)
     await tb.rst(config_clk)
 
+    if (dma_flavor == "small"):
+        return True
     #------------ Init test ------------#
     bb       = sim_settings['bb']
     max_data = sim_settings['max_data']

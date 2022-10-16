@@ -9,10 +9,10 @@
 |[dma_status](#csr_dma-dma_status)|0x08|
 |[dma_error_addr](#csr_dma-dma_error_addr)|0x10|
 |[dma_error_stats](#csr_dma-dma_error_stats)|0x18|
-|[dma_desc_src_addr[5]](#csr_dma-dma_desc_src_addr)|0x20<br>0x28<br>0x30<br>0x38<br>0x40|
-|[dma_desc_dst_addr[5]](#csr_dma-dma_desc_dst_addr)|0x48<br>0x50<br>0x58<br>0x60<br>0x68|
-|[dma_desc_num_bytes[5]](#csr_dma-dma_desc_num_bytes)|0x70<br>0x78<br>0x80<br>0x88<br>0x90|
-|[dma_desc_cfg[5]](#csr_dma-dma_desc_cfg)|0x98<br>0xa0<br>0xa8<br>0xb0<br>0xb8|
+|[dma_desc_src_addr[2]](#csr_dma-dma_desc_src_addr)|0x20<br>0x28|
+|[dma_desc_dst_addr[2]](#csr_dma-dma_desc_dst_addr)|0x30<br>0x38|
+|[dma_desc_num_bytes[2]](#csr_dma-dma_desc_num_bytes)|0x40<br>0x48|
+|[dma_desc_cfg[2]](#csr_dma-dma_desc_cfg)|0x50<br>0x58|
 
 ### <div id="csr_dma-dma_control"></div>dma_control
 
@@ -64,14 +64,11 @@
 |error_src|[1]|ro|0x0||Error source - 0 READ / 1 WRITE|
 |error_trig|[2]|ro|0x0||Error Trigger, asserted when error happens|
 
-### <div id="csr_dma-dma_desc_src_addr"></div>dma_desc_src_addr[5]
+### <div id="csr_dma-dma_desc_src_addr"></div>dma_desc_src_addr[2]
 
 * offset_address
     * 0x20
     * 0x28
-    * 0x30
-    * 0x38
-    * 0x40
 * type
     * default
 
@@ -79,14 +76,11 @@
 |:--|:--|:--|:--|:--|:--|
 |src_addr|[31:0]|rw|0x00000000||Source address to fetch data|
 
-### <div id="csr_dma-dma_desc_dst_addr"></div>dma_desc_dst_addr[5]
+### <div id="csr_dma-dma_desc_dst_addr"></div>dma_desc_dst_addr[2]
 
 * offset_address
-    * 0x48
-    * 0x50
-    * 0x58
-    * 0x60
-    * 0x68
+    * 0x30
+    * 0x38
 * type
     * default
 
@@ -94,14 +88,11 @@
 |:--|:--|:--|:--|:--|:--|
 |dst_addr|[31:0]|rw|0x00000000||Target address to write data|
 
-### <div id="csr_dma-dma_desc_num_bytes"></div>dma_desc_num_bytes[5]
+### <div id="csr_dma-dma_desc_num_bytes"></div>dma_desc_num_bytes[2]
 
 * offset_address
-    * 0x70
-    * 0x78
-    * 0x80
-    * 0x88
-    * 0x90
+    * 0x40
+    * 0x48
 * type
     * default
 
@@ -109,14 +100,11 @@
 |:--|:--|:--|:--|:--|:--|
 |num_bytes|[31:0]|rw|0x00000000||Number of bytes to transfer|
 
-### <div id="csr_dma-dma_desc_cfg"></div>dma_desc_cfg[5]
+### <div id="csr_dma-dma_desc_cfg"></div>dma_desc_cfg[2]
 
 * offset_address
-    * 0x98
-    * 0xa0
-    * 0xa8
-    * 0xb0
-    * 0xb8
+    * 0x50
+    * 0x58
 * type
     * default
 

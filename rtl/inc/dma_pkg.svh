@@ -6,40 +6,52 @@
   // xls sheet to generate the same
   // correspondent number of desc
   `ifndef DMA_NUM_DESC
-    `define DMA_NUM_DESC    5
+    `define DMA_NUM_DESC          2
   `endif
 
   `ifndef DMA_ADDR_WIDTH
-    `define DMA_ADDR_WIDTH  `AXI_ADDR_WIDTH
+    `define DMA_ADDR_WIDTH        `AXI_ADDR_WIDTH
   `endif
 
   `ifndef DMA_DATA_WIDTH
-    `define DMA_DATA_WIDTH  `AXI_DATA_WIDTH
+    `define DMA_DATA_WIDTH        `AXI_DATA_WIDTH
   `endif
 
   `ifndef DMA_BYTES_WIDTH
-    `define DMA_BYTES_WIDTH 32
+    `define DMA_BYTES_WIDTH       32
   `endif
 
   `ifndef DMA_RD_TXN_BUFF
-    `define DMA_RD_TXN_BUFF 8 // Must be power of 2
+    `define DMA_RD_TXN_BUFF       8 // Must be power of 2
   `endif
 
   `ifndef DMA_WR_TXN_BUFF
-    `define DMA_WR_TXN_BUFF 8 // Must be power of 2
+    `define DMA_WR_TXN_BUFF       8 // Must be power of 2
   `endif
 
   // FIFO size in bytes = (DMA_FIFO_DEPTH*(AXI_DATA_WIDTH/8))
   `ifndef DMA_FIFO_DEPTH
-    `define DMA_FIFO_DEPTH  16 // Must be power of 2
+    `define DMA_FIFO_DEPTH        16 // Must be power of 2
   `endif
 
   `ifndef DMA_ID_WIDTH
-      `define DMA_ID_WIDTH  `AXI_TXN_ID_WIDTH
+      `define DMA_ID_WIDTH        `AXI_TXN_ID_WIDTH
   `endif
 
   `ifndef DMA_ID_VAL
-      `define DMA_ID_VAL    0
+      `define DMA_ID_VAL          0
+  `endif
+
+  `ifndef DMA_MAX_BEAT_BURST
+      `define DMA_MAX_BEAT_BURST  256 // 1 up to 256
+  `endif
+
+  `ifndef DMA_EN_UNALIGNED
+      `define DMA_EN_UNALIGNED    1
+  `endif
+
+  `ifndef DMA_MAX_BURST_EN
+      `define DMA_MAX_BURST_EN    1
   `endif
 
   localparam FIFO_WIDTH = $clog2(`DMA_FIFO_DEPTH>1?`DMA_FIFO_DEPTH:2);
