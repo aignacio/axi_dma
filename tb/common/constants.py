@@ -92,10 +92,6 @@ class cfg_const:
     for param in DMA_CFG_SMALL.items():
         EXTRA_ARGS_SMALL.append("-D"+param[0].upper()+"="+str(param[1]))
 
-    EXTRA_ARGS_32b.append("-DRGGEN_NAIVE_MUX_IMPLEMENTATION")
-    EXTRA_ARGS_64b.append("-DRGGEN_NAIVE_MUX_IMPLEMENTATION")
-    EXTRA_ARGS_SMALL.append("-DRGGEN_NAIVE_MUX_IMPLEMENTATION")
-
     def _get_cfg_args(flavor):
         if flavor == "32":
             return cfg_const.EXTRA_ARGS_32b
