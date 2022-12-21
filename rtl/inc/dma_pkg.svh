@@ -38,10 +38,6 @@
       `define DMA_ID_WIDTH        `AXI_TXN_ID_WIDTH
   `endif
 
-  `ifndef DMA_ID_VAL
-      `define DMA_ID_VAL          0
-  `endif
-
   `ifndef DMA_MAX_BEAT_BURST
       `define DMA_MAX_BEAT_BURST  256 // 1 up to 256
   `endif

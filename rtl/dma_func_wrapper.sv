@@ -8,7 +8,9 @@
 module dma_func_wrapper
   import amba_axi_pkg::*;
   import dma_utils_pkg::*;
-(
+#(
+  parameter int DMA_ID_VAL = 0
+)(
   input                                     clk,
   input                                     rst,
   // From/To CSRs
@@ -104,7 +106,9 @@ module dma_func_wrapper
     .free_o           (dma_fifo_resp.space)
   );
 
-  dma_axi_if u_dma_axi_if(
+  dma_axi_if #(
+    .DMA_ID_VAL       (DMA_ID_VAL)
+  ) u_dma_axi_if (
     .clk              (clk),
     .rst              (rst),
     // From/To Streamers

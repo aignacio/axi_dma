@@ -8,7 +8,9 @@
 module dma_axi_if
   import amba_axi_pkg::*;
   import dma_utils_pkg::*;
-(
+#(
+  parameter int DMA_ID_VAL = 0
+)(
   input                     clk,
   input                     rst,
   // From/To Streamers
@@ -258,7 +260,7 @@ module dma_axi_if
     if (dma_active_i) begin
       // Address Read Channel - AR*
       dma_mosi_o.arprot = AXI_NONSECURE;
-      dma_mosi_o.arid   = `DMA_ID_VAL;
+      dma_mosi_o.arid   = axi_tid_t'(DMA_ID_VAL);
 
       dma_mosi_o.arvalid = (rd_counter_ff < `DMA_RD_TXN_BUFF) ? dma_axi_rd_req_i.valid : 1'b0;
       if (dma_mosi_o.arvalid) begin
@@ -280,7 +282,7 @@ module dma_axi_if
       end
       // Address Write Channel - AW*
       dma_mosi_o.awprot = AXI_NONSECURE;
-      dma_mosi_o.awid   = `DMA_ID_VAL;
+      dma_mosi_o.awid   = axi_tid_t'(DMA_ID_VAL);
       // Send a write txn based on the following conditions:
       // 1- if (we have enough buffer space - `DMA_WR_TXN_BUFF)
       // 2- We have a request coming from the streamer - ...valid

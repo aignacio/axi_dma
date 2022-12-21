@@ -8,7 +8,9 @@
 module dma_axi_wrapper
   import amba_axi_pkg::*;
   import dma_utils_pkg::*;
-(
+#(
+  parameter int DMA_ID_VAL = 0
+)(
   input                 clk,
   input                 rst,
   // CSR DMA I/F
@@ -100,7 +102,9 @@ module dma_axi_wrapper
   );
   /* verilator lint_on WIDTH */
 
-  dma_func_wrapper u_dma_func_wrapper(
+  dma_func_wrapper #(
+    .DMA_ID_VAL  (DMA_ID_VAL)
+  ) u_dma_func_wrapper (
     .clk         (clk),
     .rst         (rst),
     // From/To CSRs
