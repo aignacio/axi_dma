@@ -297,7 +297,7 @@ module dma_streamer
       desc_bytes_ff <= desc_num_t'('0);
       dma_mode_ff   <= dma_mode_t'('0);
       last_txn_ff   <= 1'b0;
-      dma_req_ff    <= 1'b0;
+      dma_req_ff    <= '0;
     end
     else begin
       cur_st_ff     <= next_st;
