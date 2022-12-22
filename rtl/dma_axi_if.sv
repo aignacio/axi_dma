@@ -324,7 +324,7 @@ module dma_axi_if
       wr_counter_ff     <= pend_rd_t'('0);
       dma_error_ff      <= s_dma_error_t'('0);
       err_lock_ff       <= 1'b0;
-      beat_counter_ff   <= next_beat_count;
+      beat_counter_ff   <= '0;
       wr_lock_ff        <= 1'b0;
       aw_txn_started_ff <= 1'b0;
     end
