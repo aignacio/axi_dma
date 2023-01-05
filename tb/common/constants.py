@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 16.10.2022
+# Last Modified Date: 05.01.2023
 import os
 import glob
 import copy
@@ -67,7 +67,7 @@ class cfg_const:
     INC_DIR   = [f'{RTL_DIR}inc',f'{RGGEN_V_DIR}']
     VERILOG_SOURCES = [] # The sequence below is important...
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RGGEN_V_DIR}/rggen_rtl_macros.vh',recursive=True)
-    VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'amba_sv_structs/amba_axi_pkg.sv',recursive=True)
+    VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'bus_arch_sv_pkg/amba_axi_pkg.sv',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}inc/*.sv',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}inc/dma_pkg.svh',recursive=True)
     VERILOG_SOURCES = VERILOG_SOURCES + glob.glob(f'{RTL_DIR}inc/dma_utils_pkg.sv',recursive=True)

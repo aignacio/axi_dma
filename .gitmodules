@@ -1,6 +1,6 @@
 [submodule "rggen-verilog-rtl"]
 	path = rggen-verilog-rtl
 	url = https://github.com/rggen/rggen-verilog-rtl.git
-[submodule "amba_sv_structs"]
-	path = amba_sv_structs
-	url = git@github.com:aignacio/amba_sv_structs.git
+[submodule "bus_arch_sv_pkg"]
+	path = bus_arch_sv_pkg
+	url = git@github.com:aignacio/bus_arch_sv_pkg.git

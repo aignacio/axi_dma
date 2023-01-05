@@ -39,13 +39,13 @@ module tb_axi_dma
   // Write Data channel
   output logic              dma_s_wready,
   // Write Response channel
-  output axi_error_t        dma_s_bresp,
+  output axi_resp_t        dma_s_bresp,
   output logic              dma_s_bvalid,
   // Read addr channel
   output logic              dma_s_arready,
   // Read data channel
   output axi_data_t         dma_s_rdata,
-  output axi_error_t        dma_s_rresp,
+  output axi_resp_t        dma_s_rresp,
   output logic              dma_s_rlast,
   output logic              dma_s_rvalid,
 
@@ -95,7 +95,7 @@ module tb_axi_dma
   input logic               dma_m_wready,
   // Write Response channel
   input axi_tid_t           dma_m_bid,
-  input axi_error_t         dma_m_bresp,
+  input axi_resp_t          dma_m_bresp,
   input axi_user_rsp_t      dma_m_buser,
   input logic               dma_m_bvalid,
   // Read addr channel
@@ -103,7 +103,7 @@ module tb_axi_dma
   // Read data channel
   input axi_tid_t           dma_m_rid,
   input axi_data_t          dma_m_rdata,
-  input axi_error_t         dma_m_rresp,
+  input axi_resp_t          dma_m_rresp,
   input logic               dma_m_rlast,
   input axi_user_data_t     dma_m_ruser,
   input logic               dma_m_rvalid
