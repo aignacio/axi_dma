@@ -3,7 +3,7 @@
  * License           : MIT license <Check LICENSE>
  * Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
  * Date              : 13.06.2022
- * Last Modified Date: 30.06.2022
+ * Last Modified Date: 27.02.2024
  */
 module dma_axi_if
   import amba_axi_pkg::*;
@@ -341,29 +341,61 @@ module dma_axi_if
 
 `ifndef NO_ASSERTIONS
   `ifndef VERILATOR
-    axi4_arvalid_arready : assert property(@(posedge clk) $rose(dma_mosi_o.arvalid) |-> dma_mosi_o.arvalid          throughout dma_miso_i.arready[->1]);
-    axi4_arvalid_araddr  : assert property(@(posedge clk) $rose(dma_mosi_o.arvalid) |-> $stable(dma_mosi_o.araddr)  throughout dma_miso_i.arready[->1]);
-    axi4_arvalid_arlen   : assert property(@(posedge clk) $rose(dma_mosi_o.arvalid) |-> $stable(dma_mosi_o.arlen)   throughout dma_miso_i.arready[->1]);
-    axi4_arvalid_arsize  : assert property(@(posedge clk) $rose(dma_mosi_o.arvalid) |-> $stable(dma_mosi_o.arsize)  throughout dma_miso_i.arready[->1]);
-    axi4_arvalid_arburst : assert property(@(posedge clk) $rose(dma_mosi_o.arvalid) |-> $stable(dma_mosi_o.arburst) throughout dma_miso_i.arready[->1]);
+    default clocking axi4_clk @(posedge clk); endclocking
 
-    axi4_awvalid_awready : assert property(@(posedge clk) $rose(dma_mosi_o.awvalid) |-> dma_mosi_o.awvalid          throughout dma_miso_i.awready[->1]);
-    axi4_awvalid_awaddr  : assert property(@(posedge clk) $rose(dma_mosi_o.awvalid) |-> $stable(dma_mosi_o.awaddr)  throughout dma_miso_i.awready[->1]);
-    axi4_awvalid_awlen   : assert property(@(posedge clk) $rose(dma_mosi_o.awvalid) |-> $stable(dma_mosi_o.awlen)   throughout dma_miso_i.awready[->1]);
-    axi4_awvalid_awsize  : assert property(@(posedge clk) $rose(dma_mosi_o.awvalid) |-> $stable(dma_mosi_o.awsize)  throughout dma_miso_i.awready[->1]);
-    axi4_awvalid_awburst : assert property(@(posedge clk) $rose(dma_mosi_o.awvalid) |-> $stable(dma_mosi_o.awburst) throughout dma_miso_i.awready[->1]);
+    // https://github.com/YosysHQ-GmbH/SVA-AXI4-FVIP/blob/250f1ffd47fc1cdc4b4dd1670c6e1df58dec1b12/AXI4/src/axi4_spec/amba_axi4_single_interface_requirements.sv#L68
+    property valid_before_handshake(valid, ready);
+       valid && !ready |-> ##1 valid;
+    endproperty // valid_before_handshake
 
-    axi4_wvalid_wready   : assert property(@(posedge clk) $rose(dma_mosi_o.wvalid)  |-> dma_mosi_o.wvalid           throughout dma_miso_i.wready[->1]);
-    axi4_wvalid_wdata    : assert property(@(posedge clk) $rose(dma_mosi_o.wvalid)  |-> dma_mosi_o.wdata            throughout dma_miso_i.wready[->1]);
-    axi4_wvalid_wstrb    : assert property(@(posedge clk) $rose(dma_mosi_o.wvalid)  |-> dma_mosi_o.wstrb            throughout dma_miso_i.wready[->1]);
-    axi4_wvalid_wlast    : assert property(@(posedge clk) $rose(dma_mosi_o.wvalid)  |-> dma_mosi_o.wlast            throughout dma_miso_i.wready[->1]);
+    // https://github.com/YosysHQ-GmbH/SVA-AXI4-FVIP/blob/250f1ffd47fc1cdc4b4dd1670c6e1df58dec1b12/AXI4/src/axi4_spec/amba_axi4_single_interface_requirements.sv#L54
+    property stable_before_handshake(valid, ready, control);
+      valid && !ready |-> ##1 $stable(control);
+    endproperty // stable_before_handshake
 
-    axi4_bvalid_bready   : assert property(@(posedge clk) $rose(dma_miso_i.bvalid)  |-> dma_miso_i.bvalid           throughout dma_mosi_o.bready[->1]);
-    axi4_bvalid_bresp    : assert property(@(posedge clk) $rose(dma_miso_i.bvalid)  |-> $stable(dma_miso_i.bresp)   throughout dma_mosi_o.bready[->1]);
+    axi4_arvalid_arready : assert property(disable iff (rst) valid_before_handshake  (dma_mosi_o.arvalid, dma_miso_i.arready))
+                           else $error("Violation AXI4: Once ARVALID is asserted it must remain asserted until the handshake");
+    axi4_arvalid_araddr  : assert property(disable iff (rst) stable_before_handshake (dma_mosi_o.arvalid, dma_miso_i.arready, dma_mosi_o.araddr))
+                           else $error("Violation AXI4: Once the master has asserted ARVALID, data and control information from master must remain stable [ADDR] until ARREADY is asserted");
+    axi4_arvalid_arlen   : assert property(disable iff (rst) stable_before_handshake (dma_mosi_o.arvalid, dma_miso_i.arready, dma_mosi_o.arlen))
+                           else $error("Violation AXI4: Once the master has asserted ARVALID, data and control information from master must remain stable [ALEN] until ARREADY is asserted");
+    axi4_arvalid_arsize  : assert property(disable iff (rst) stable_before_handshake (dma_mosi_o.arvalid, dma_miso_i.arready, dma_mosi_o.arsize))
+                           else $error("Violation AXI4: Once the master has asserted ARVALID, data and control information from master must remain stable [ASIZE] until ARREADY is asserted");
+    axi4_arvalid_arburst : assert property(disable iff (rst) stable_before_handshake (dma_mosi_o.arvalid, dma_miso_i.arready, dma_mosi_o.arburst))
+                           else $error("Violation AXI4: Once the master has asserted ARVALID, data and control information from master must remain stable [ABURST] until ARREADY is asserted");
 
-    axi4_rvalid_rready   : assert property(@(posedge clk) $rose(dma_miso_i.rvalid)  |-> dma_miso_i.rvalid           throughout dma_mosi_o.rready[->1]);
-    axi4_rvalid_rdata    : assert property(@(posedge clk) $rose(dma_miso_i.rvalid)  |-> $stable(dma_miso_i.rdata)   throughout dma_mosi_o.rready[->1]);
-    axi4_rvalid_rlast    : assert property(@(posedge clk) $rose(dma_miso_i.rvalid)  |-> $stable(dma_miso_i.rlast)   throughout dma_mosi_o.rready[->1]);
+    axi4_awvalid_awready : assert property(disable iff (rst) valid_before_handshake  (dma_mosi_o.awvalid, dma_miso_i.awready))
+                           else $error("Violation AXI4: Once AWVALID is asserted it must remain asserted until the handshake");
+    axi4_awvalid_awaddr  : assert property(disable iff (rst) stable_before_handshake (dma_mosi_o.awvalid, dma_miso_i.awready, dma_mosi_o.awaddr))
+                           else $error("Violation AXI4: Once the master has asserted AWVALID, data and control information from master must remain stable [ADDR] until AWREADY is asserted");
+    axi4_awvalid_awlen   : assert property(disable iff (rst) stable_before_handshake (dma_mosi_o.awvalid, dma_miso_i.awready, dma_mosi_o.awlen))
+                           else $error("Violation AXI4: Once the master has asserted AWVALID, data and control information from master must remain stable [ALEN] until AWREADY is asserted");
+    axi4_awvalid_awsize  : assert property(disable iff (rst) stable_before_handshake (dma_mosi_o.awvalid, dma_miso_i.awready, dma_mosi_o.awsize))
+                           else $error("Violation AXI4: Once the master has asserted AWVALID, data and control information from master must remain stable [ASIZE] until AWREADY is asserted");
+    axi4_awvalid_awburst : assert property(disable iff (rst) stable_before_handshake (dma_mosi_o.awvalid, dma_miso_i.awready, dma_mosi_o.awburst))
+                           else $error("Violation AXI4: Once the master has asserted AWVALID, data and control information from master must remain stable [ABURST] until AWREADY is asserted");
+
+    axi4_wvalid_wready   : assert property(disable iff (rst) valid_before_handshake  (dma_mosi_o.wvalid, dma_miso_i.wready))
+                           else $error("Violation AXI4: Once WVALID is asserted it must remain asserted until the handshake");
+    axi4_wvalid_wdata    : assert property(disable iff (rst) stable_before_handshake (dma_mosi_o.wvalid, dma_miso_i.wready, dma_mosi_o.wdata))
+                           else $error("Violation AXI4: Once the master has asserted WVALID, data and control information from master must remain stable [DATA] until WREADY is asserted");
+    axi4_wvalid_wstrb    : assert property(disable iff (rst) stable_before_handshake (dma_mosi_o.wvalid, dma_miso_i.wready, dma_mosi_o.wstrb))
+                           else $error("Violation AXI4: Once the master has asserted WVALID, data and control information from master must remain stable [WSTRB] until WREADY is asserted");
+    axi4_wvalid_wlast    : assert property(disable iff (rst) stable_before_handshake (dma_mosi_o.wvalid, dma_miso_i.wready, dma_mosi_o.wlast))
+                           else $error("Violation AXI4: Once the master has asserted WVALID, data and control information from master must remain stable [WLAST] until WREADY is asserted");
+
+    axi4_bvalid_bready   : assert property(disable iff (rst) valid_before_handshake  (dma_miso_i.bvalid, dma_mosi_o.bready))
+                           else $error("Violation AXI4: Once BVALID is asserted it must remain asserted until the handshake");
+    axi4_bvalid_bresp    : assert property(disable iff (rst) stable_before_handshake (dma_miso_i.bvalid, dma_mosi_o.bready, dma_miso_i.bresp))
+                           else $error("Violation AXI4: Once the slave has asserted BVALID, data and control information from slave must remain stable [RESP] until BREADY is asserted");
+
+    axi4_rvalid_rready   : assert property(disable iff (rst) valid_before_handshake  (dma_miso_i.rvalid, dma_mosi_o.rready))
+                           else $error("Violation AXI4: Once RVALID is asserted it must remain asserted until the handshake");
+    axi4_rvalid_rdata    : assert property(disable iff (rst) stable_before_handshake (dma_miso_i.rvalid, dma_mosi_o.rready, dma_miso_i.rdata))
+                           else $error("Violation AXI4: Once the slave has asserted RVALID, data and control information from slave must remain stable [DATA] until RREADY is asserted");
+    axi4_rvalid_rlast    : assert property(disable iff (rst) stable_before_handshake (dma_miso_i.rvalid, dma_mosi_o.rready, dma_miso_i.rlast))
+                           else $error("Violation AXI4: Once the slave has asserted RVALID, data and control information from slave must remain stable [RLAST] until RREADY is asserted");
+
   `endif
 `endif
 endmodule
