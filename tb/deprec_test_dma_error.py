@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 16.10.2022
+# Last Modified Date: 05.05.2024
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import random
 import cocotb
@@ -57,7 +57,7 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
     await tb.prg_desc(desc)
     tb.log.info("Start DMA GO")
     await tb.start_dma()
-    error_read = randint(50,350)
+    error_read = randint(50,100)
     await ClockCycles(tb.dut.clk, error_read)
     tb.log.info("Error on DMA transfer at: %d clk cycles", error_read)
     while int(tb.dut.dma_done_o == 0):

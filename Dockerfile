@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:latest
 LABEL author="Anderson Ignacio da Silva"
 LABEL maintainer="anderson@aignacio.com"
 ENV TZ=Europe/Dublin
@@ -24,7 +24,7 @@ RUN apt-get install python3 make g++ perl autoconf flex bison libfl2  \
 RUN git clone https://github.com/verilator/verilator
 WORKDIR /verilator
 RUN export VERILATOR_ROOT=/verilator
-RUN git checkout v4.106      # Update latest stable
+RUN git checkout stable      # Update latest stable
 RUN autoconf                 # Create ./configure script
 RUN ./configure              # Configure and create Makefile
 RUN make -j4                 # Build Verilator itself (if error, try just 'make')
