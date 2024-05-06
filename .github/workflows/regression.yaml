@@ -21,10 +21,12 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install Verilator
       run: |
-        sudo apt install -y git help2man perl python3 \
-                                make autoconf g++ flex bison ccache \
-                                libgoogle-perftools-dev numactl perl-doc \
-                                libfl2 libfl-dev zlibc zlib1g zlib1g-dev
+        sudo apt-get install git help2man perl python3 make autoconf g++ flex bison ccache -y
+        sudo apt-get install libgoogle-perftools-dev numactl perl-doc -y
+        sudo apt-get install libfl2 -y # Ubuntu only (ignore if gives error)
+        sudo apt-get install libfl-dev -y # Ubuntu only (ignore if gives error)
+        sudo apt-get install zlib1g zlib1g-dev -y # Ubuntu only (ignore if gives error)
+
         git clone https://github.com/verilator/verilator.git
         cd verilator
         git checkout stable
