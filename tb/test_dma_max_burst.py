@@ -4,7 +4,7 @@
 # License           : MIT license <Check LICENSE>
 # Author            : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 # Date              : 03.06.2022
-# Last Modified Date: 20.06.2022
+# Last Modified Date: 12.05.2024
 # Last Modified By  : Anderson Ignacio da Silva (aignacio) <anderson@aignacio.com>
 import random
 import cocotb
@@ -21,6 +21,7 @@ from cocotb_test.simulator import run
 from cocotb.result import TestFailure
 from cocotb.triggers import ClockCycles, RisingEdge
 from cocotb.result import SimTimeoutError
+from cocotb.utils import get_sim_time
 from random import randrange, randint
 from cocotbext.axi import AxiBus, AxiLiteBus, AxiMaster, AxiRam, AxiResp, AxiLiteMaster, AxiSlave
 import itertools
@@ -44,6 +45,7 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
     desc_sel = randint(0,dma_cfg.NUM_DESC-1)
 
     for burst_sz in range(256):
+        start_sim_time = get_sim_time(units='ns')
         bb         = sim_settings['bb']
         max_data   = sim_settings['max_data']
         h_mem_size = mem_size//2
@@ -65,8 +67,13 @@ async def run_test(dut, config_clk="100MHz", idle_inserter=None, backpressure_in
         tb.log.info("Max burst cfg: %d", burst_sz)
         await tb.start_dma()
         await tb.wait_done()
+        end_sim_time = get_sim_time(units='ns')
         await tb.stop_dma()
         tb.log.info("Checking data was transfered after DMA run")
+        delta = end_sim_time-start_sim_time
+        bw = ((h_mem_size/1024)/1024)/(delta*(10**-9))
+        tb.log.info(f"Sim time in ns: {delta} ns")
+        tb.log.info(f"Throughput: {bw} MiB/s")
         for i in range(0,h_mem_size,bb):
             # tb.log.debug("%s", tb.axi_ram.hexdump_str(h_mem_size+i,bb))
             assert tb.axi_ram.read(i, bb) == tb.axi_ram.read(h_mem_size+i, bb)
